@@ -1,0 +1,55 @@
+# Единый профиль (из my.itmo.ru, 25.07.2026)
+
+identity:
+  full_name: "Тимофей Данилов"
+  isu: 368086
+  email: "volinadtim@gmail.com"
+  itmo_id_login: "id368086"
+
+academic:
+  direction: "09.03.01 Информатика и вычислительная техника"
+  program: "Компьютерные системы и технологии 2022 (Индивидуальный)"
+  program_en: "Computer Systems and Technologies"
+  faculty: "ФПИиКТ"
+  main_plan_id: 18872
+  enrollment: "2022"
+  expelled_after: "4 семестр (2 курс), 2023/2024"
+  expulsion_reason: "неуспеваемость"
+  form_of_study: "бюджет (до отчисления)"
+  credits_total_plan: 141
+
+status:
+  current: "отчислен"
+  my_itmo_access: true
+  restoration_window_2026: "3–20 августа"
+
+debts_at_expulsion:
+  - name: "Вычислительная математика"
+    semester: 4
+    rate: "незач"
+    score: 19
+    attempts: 3
+    teacher: "Болдырева Елена Александровна"
+  - name: "Техники публичных выступлений и презентаций"
+    semester: 4
+    rate: "неявка"
+    score: 8
+    attempts: 3
+    teacher: "Тен Наталья Геннадьевна"
+  - name: "Физическая культура и спорт (базовая)"
+    semester: 4
+    rate: "неявка"
+    score: null
+    attempts: 3
+    teacher: "Ступаков Евгений Олегович"
+
+other_sem4_issues:
+  - name: "Введение в нутрициологию"
+    rate: "незач"
+    score: 10
+    attempts: 1
+
+finances:
+  scholarship_total_received: "114 600 ₽"
+  current_scholarship: "нет"
+  paid_contract: false

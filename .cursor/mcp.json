@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "my-itmo": {
+      "command": "node",
+      "args": ["integrations/my-itmo/mcp-server/index.js"]
+    }
+  }
+}

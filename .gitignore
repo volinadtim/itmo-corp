@@ -1,0 +1,16 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Browser automation state
+integrations/my-itmo/.session/
+.browser/
+.agent-browser/
+
+# MCP server
+integrations/my-itmo/mcp-server/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
