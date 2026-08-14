@@ -8,6 +8,7 @@
 |---|---|
 | [kt-curriculum.md](kt-curriculum.md) | Актуальный учебный план ОП «Компьютерные технологии» |
 | [academic-gap-years-1-2.md](academic-gap-years-1-2.md) | Ресурсы для подготовки по 1–2 курсу КТ |
+| [algorithms/](algorithms/README.md) | Обучение по АиСД (1 семестр): конспекты по неделям + решения |
 
 ## Контекст
 
