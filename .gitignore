@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.*.local
+.venv
 
 # Browser automation state
 integrations/my-itmo/.session/
@@ -14,3 +15,8 @@ integrations/my-itmo/mcp-server/node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+
+video-recovery/**/*.mp4
+video-recovery/**/*.mpa
+video-recovery/**/*.wav
