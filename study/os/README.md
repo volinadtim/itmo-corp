@@ -33,6 +33,15 @@ git -C os-course fetch upstream && git -C os-course merge upstream/main
 - [x] `src/graph_traverse*.c`: на macOS `#include <sys/endian.h>` — такого файла нет
   (он из FreeBSD). Исправлено локально через `<libkern/OSByteOrder.h>` + макросы
   `le64toh/le32toh/htole64`. Не закоммичено.
+- [ ] **`graph_traverse.c`: `--no-cache` не работает на Linux.** `O_DIRECT` требует
+  выравнивания буфера/смещения/длины на 512 байт, а заголовок читается как 40 байт
+  в невыровненный буфер → `read() = EINVAL`, программа падает с
+  `Failed to read header`. Проверено strace на Ubuntu 24.04, ext4/NVMe.
+  Следствие: холодный кэш на Linux приходится делать через `drop_caches`.
+  Фикс: читать через выровненный буфер (`posix_memalign`, кратно 512) либо
+  заменить `O_DIRECT` на `posix_fadvise(POSIX_FADV_DONTNEED)`.
+- [ ] `gcc -Wall -O2` на Linux: `graph_traverse.c:232` — `'child' may be used
+  uninitialized` (путь, где `degree == 0`). Проверить логику.
 - [ ] README: `-b/--branching` «фактор ветвления», а в `graphgen.py` это
   `-b/--backprob` — вероятность обратного перехода.
 - [ ] `cheat-sheet.md`: разные seed (427 и 42), README требует одинаковый.
