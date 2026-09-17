@@ -19,6 +19,7 @@ itmo-corp/
 ├── apply-itmo/         ← восстановление, финансы, документы, план
 ├── integrations/my-itmo/  ← доступ к my.itmo.ru (MCP + scripts)
 ├── study/              ← учебный план КТ, ресурсы для академ. разницы
+│   └── os/             ← курс ОС (os-course, xv6-riscv)
 └── shared/             ← общий контекст: профиль, ссылки, календарь
 ```
 
