@@ -1,8 +1,7 @@
 # Единый профиль (из my.itmo.ru, 25.07.2026)
 
 identity:
-  full_name: "Тимофей Данилов"
-  full_name_ru: "Данилов Тимофей Николаевич"  # для титульных листов, отчётов, ЛР
+  full_name: "Данилов Тимофей Николаевич"
   group: "P3331"
   isu: 368086
   email: "volinadtim@gmail.com"
