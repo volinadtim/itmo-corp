@@ -7,7 +7,7 @@
 | Папка | Origin (приватный) | Upstream |
 |---|---|---|
 | `os-course/` | [volinadtim/os-course](https://github.com/volinadtim/os-course) | [secs-dev/os-course](https://github.com/secs-dev/os-course) |
-| `xv6-riscv/` | — (ещё не создан) | [secs-dev/xv6-riscv](https://github.com/secs-dev/xv6-riscv) |
+| `xv6-riscv/` | [volinadtim/xv6-riscv](https://github.com/volinadtim/xv6-riscv) | [secs-dev/xv6-riscv](https://github.com/secs-dev/xv6-riscv) |
 
 Клоны — отдельные git-репозитории, игнорируются в `itmo-corp`.
 
