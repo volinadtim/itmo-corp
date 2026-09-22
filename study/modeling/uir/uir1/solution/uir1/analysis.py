@@ -21,6 +21,16 @@ from .estimates import (
     sturges_bins,
 )
 
+def _upper_first(text: str) -> str:
+    """Заглавная первая буква без порчи остальной строки (в отличие от capitalize)."""
+    return text[:1].upper() + text[1:]
+
+
+def _instrumental(name: str) -> str:
+    """Название закона в творительном падеже: «аппроксимируется ... законом»."""
+    return name[:-2] + "ым" if name.endswith("ый") else name
+
+
 DEFAULT_SEED = 20261105  # дата дедлайна — чтобы прогон был воспроизводим
 
 
@@ -124,20 +134,44 @@ def _series_character(sample: list[float]) -> str:
 
 
 def _randomness_verdict(autocorr: dict[int, float], n: int) -> tuple[str, bool]:
+    """Вывод о случайности последовательности по коэффициентам автокорреляции.
+
+    Порог ±t_p/√n рассчитан на одну проверку, а проверок здесь десять.
+    Для истинно случайного ряда одно-два небольших превышения — ожидаемая
+    случайность, а не признак зависимости (при уровне 5 % и 10 сдвигах
+    в среднем 0,5 ложных срабатывания). Поэтому вердикт выносится по двум
+    признакам сразу: сколько коэффициентов вышло за порог и насколько сильно.
+    """
     threshold = significance_threshold(n)
-    significant = {k: v for k, v in autocorr.items() if abs(v) > threshold}
-    if not significant:
+    exceeded = {k: v for k, v in autocorr.items() if abs(v) > threshold}
+    peak = max((abs(v) for v in autocorr.values()), default=0.0)
+
+    if not exceeded:
         return (
             f"все коэффициенты автокорреляции по модулю меньше порога значимости "
-            f"{threshold:.4f} (=1,96/√{n}), систематической связи между соседними "
-            "значениями нет — последовательность можно считать случайной",
+            f"{threshold:.4f} (= 1,96/√{n}), наибольший равен {peak:.4f}. "
+            "Систематической связи между значениями нет — последовательность "
+            "можно считать случайной",
             True,
         )
-    listed = ", ".join(f"k={k}: {v:+.4f}" for k, v in sorted(significant.items()))
+
+    listed = ", ".join(f"k = {k}: {v:+.4f}" for k, v in sorted(exceeded.items()))
+    borderline = len(exceeded) <= 2 and peak < 2 * threshold
+    if borderline:
+        return (
+            f"порог значимости {threshold:.4f} превышен лишь при {listed}, причём "
+            f"незначительно (максимум {peak:.4f} против порога {threshold:.4f}). "
+            f"При десяти проверках уровня 5 % одно-два таких превышения ожидаемы "
+            "даже для полностью случайной последовательности, поэтому "
+            "систематической связи здесь нет — последовательность можно считать "
+            "случайной",
+            True,
+        )
     return (
-        f"порог значимости {threshold:.4f} превышен при {listed}. "
-        "Значит, между значениями есть статистическая связь и считать "
-        "последовательность случайной нельзя",
+        f"порог значимости {threshold:.4f} превышен при {listed} "
+        f"(максимум {peak:.4f}, это в {peak / threshold:.1f} раза больше порога). "
+        "Превышения систематические, значит между значениями есть статистическая "
+        "связь и считать последовательность случайной нельзя",
         False,
     )
 
@@ -150,7 +184,6 @@ def build_report(result: Result, plots_dir: Path, rel: str = ".") -> str:
     n = len(result.given)
 
     randomness_text, is_random = _randomness_verdict(result.given_autocorr, n)
-    gen_random_text, _ = _randomness_verdict(result.generated_autocorr, n)
 
     lines: list[str] = []
     add = lines.append
@@ -191,7 +224,7 @@ def build_report(result: Result, plots_dir: Path, rel: str = ".") -> str:
     add("")
     add(f"![График 1]({rel}/{plots_dir.name}/plot1_series.png)")
     add("")
-    add(f"**Вывод.** {_series_character(result.given).capitalize()}.")
+    add(f"**Вывод.** {_upper_first(_series_character(result.given))}.")
     add("")
 
     add("## 3. Автокорреляционный анализ заданной ЧП (форма 3)")
@@ -200,7 +233,7 @@ def build_report(result: Result, plots_dir: Path, rel: str = ".") -> str:
     add("")
     add(f"![Автокорреляция]({rel}/{plots_dir.name}/plot_autocorr.png)")
     add("")
-    add(f"**Вывод.** {randomness_text.capitalize()}.")
+    add(f"**Вывод.** {_upper_first(randomness_text)}.")
     add("")
 
     add("## 4. Гистограмма распределения частот (график 2)")
@@ -274,8 +307,18 @@ def build_report(result: Result, plots_dir: Path, rel: str = ".") -> str:
     add("")
     add(report.autocorr_table(result.given_autocorr, result.generated_autocorr))
     add("")
-    add(f"**Вывод.** Для сгенерированной ЧП {gen_random_text}. "
-        "Это ожидаемо: генератор выдаёт независимые значения по построению.")
+    gen_random_text, gen_is_random = _randomness_verdict(
+        result.generated_autocorr, n
+    )
+    add(f"**Вывод.** Для сгенерированной ЧП {gen_random_text}.")
+    if gen_is_random:
+        add("")
+        add("Это ожидаемый результат: генератор формирует значения независимо "
+            "друг от друга, поэтому автокорреляции у него быть не должно.")
+    else:
+        add("")
+        add("Для независимого по построению генератора это неожиданно — стоит "
+            "перепроверить реализацию или повторить прогон с другим seed.")
     if not is_random:
         add("")
         add("Контраст с заданной ЧП показателен: там связь между значениями "
@@ -309,7 +352,7 @@ def build_report(result: Result, plots_dir: Path, rel: str = ".") -> str:
         f"имеет мат. ожидание {full.mean:.4f} и коэффициент вариации ν = {full.cv:.4f}. "
         f"{'Её можно считать случайной' if is_random else 'Случайной её считать нельзя'} "
         "по результатам автокорреляционного анализа. "
-        f"По двум моментам она аппроксимируется {law.name} законом "
+        f"По двум моментам она аппроксимируется {_instrumental(law.name)} законом "
         f"({law.describe()}), который воспроизводит оба момента с расхождением "
         f"не хуже {max(abs((law.theoretical_mean - full.mean) / full.mean), abs((law.theoretical_cv - full.cv) / full.cv)) * 100:.2f} %.")
     add("")
@@ -337,10 +380,13 @@ def _generator_description(law: Distribution) -> str:
             "единицы обнуляется при большом k."
         )
     elif name == "гипоэкспоненциальный":
+        terms = " − ".join(f"t_{i + 1}·ln(U_{i + 1})" for i in range(law.k))
+        means = ", ".join(f"t_{i + 1} = {t:.6g}" for i, t in enumerate(law.means))
         body = (
-            f"```\nx = −t₁·ln(U₁) − t₂·ln(U₂),   t₁ = {law.t1:.6g}, "
-            f"t₂ = {law.t2:.6g}\n```\n\n"
-            "Две последовательные экспоненциальные фазы с разными средними."
+            f"```\nx = − {terms}\n\n{means}\n```\n\n"
+            f"Последовательные экспоненциальные фазы: {law.k - 1} по "
+            f"{law.t_a:.6g} и одна {law.t_b:.6g}. На каждое значение требуется "
+            f"{law.k} независимых равномерных величин."
         )
     elif name == "гиперэкспоненциальный":
         body = (

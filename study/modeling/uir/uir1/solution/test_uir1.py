@@ -106,6 +106,7 @@ class TestDistributions(unittest.TestCase):
         ("exponential", 100.0, 1.0),
         ("erlang", 100.0, 0.5),
         ("hypoexponential", 100.0, 0.8),
+        ("hypoexponential", 300.0, 0.6274),
         ("hyperexponential", 100.0, 2.0),
     ]
 
@@ -160,9 +161,35 @@ class TestDistributions(unittest.TestCase):
             self.assertGreater(law.t2, 0, msg=f"ν={cv}")
             self.assertLess(law.q, law.q_max)
 
-    def test_hypoexponential_requires_cv_above_one_over_sqrt2(self):
-        with self.assertRaises(ValueError):
-            approx.Hypoexponential(100.0, 0.5)
+    def test_hypoexponential_rejects_cv_outside_zero_one(self):
+        for cv in (0.0, 1.0, 1.5):
+            with self.subTest(cv=cv), self.assertRaises(ValueError):
+                approx.Hypoexponential(100.0, cv)
+
+    def test_hypoexponential_picks_minimal_phase_count(self):
+        """k = ⌈1/ν²⌉ — минимальное, при котором закон существует."""
+        for cv, expected_k in [(0.9, 2), (0.75, 2), (0.6274, 3), (0.45, 5), (0.3, 12)]:
+            with self.subTest(cv=cv):
+                law = approx.Hypoexponential(100.0, cv)
+                self.assertEqual(law.k, expected_k)
+                self.assertGreaterEqual(cv, 1 / math.sqrt(law.k) - 1e-12)
+
+    def test_hypoexponential_fits_both_moments_exactly(self):
+        for cv in (0.3, 0.45, 0.6, 0.6274, 0.75, 0.9, 0.95):
+            with self.subTest(cv=cv):
+                law = approx.Hypoexponential(250.0, cv)
+                self.assertAlmostEqual(law.theoretical_mean, 250.0, places=8)
+                self.assertAlmostEqual(law.theoretical_cv, cv, places=8)
+
+    def test_hypoexponential_pdf_integrates_to_one(self):
+        for cv in (0.35, 0.6274, 0.85):
+            with self.subTest(cv=cv):
+                law = approx.Hypoexponential(100.0, cv)
+                step, total, x = 0.2, 0.0, 0.0
+                while x < 1500:
+                    total += law.pdf(x) * step
+                    x += step
+                self.assertAlmostEqual(total, 1.0, delta=0.005)
 
     def test_choose_picks_expected_law(self):
         self.assertIsInstance(approx.choose(100.0, 0.25), approx.NormalizedErlang)
@@ -210,3 +237,36 @@ class TestAllVariants(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestReportRendering(unittest.TestCase):
+    """Отчёт должен собираться для каждого закона.
+
+    Раньше эти тесты отсутствовали, и смена сигнатуры гипоэкспоненты
+    уронила генерацию отчёта, хотя все расчётные тесты проходили.
+    """
+
+    LAWS = ["uniform", "exponential", "erlang", "hypoexponential", "hyperexponential"]
+
+    def _sample(self, law_name: str) -> list[float]:
+        cv = {"uniform": 0.4, "exponential": 1.0, "erlang": 0.5,
+              "hypoexponential": 0.6274, "hyperexponential": 2.0}[law_name]
+        law = approx.LAWS[law_name](200.0, cv)
+        return law.generate(300, random.Random(9))
+
+    def test_report_builds_for_every_law(self):
+        import tempfile
+
+        from uir1.analysis import render
+
+        for name in self.LAWS:
+            with self.subTest(law=name), tempfile.TemporaryDirectory() as tmp:
+                result = analyse(self._sample(name), 1, law_name=name)
+                path = render(result, Path(tmp))
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("## 6. Генератор случайных величин", text)
+                self.assertIn(result.law.name, text)
+                # В формулах генератора не должно остаться незаполненных полей.
+                self.assertNotIn("{", text)
+                for plot in ("plot1_series", "plot2_histogram", "plot3_fit"):
+                    self.assertTrue((Path(tmp) / "plots" / f"{plot}.png").exists())

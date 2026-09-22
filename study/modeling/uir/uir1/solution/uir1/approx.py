@@ -17,8 +17,8 @@ EXPONENTIAL_TOLERANCE = 0.05
 # Равномерный закон возможен только при ν < 1/√3.
 UNIFORM_MAX_CV = 1.0 / math.sqrt(3.0)
 
-# Двухфазная гипоэкспонента подгоняет два момента точно лишь при ν ≥ 1/√2.
-HYPOEXPONENTIAL_MIN_CV = 1.0 / math.sqrt(2.0)
+# Гипоэкспонента из k фаз существует при ν ≥ 1/√k, поэтому нужное k
+# подбирается автоматически как ⌈1/ν²⌉ — ограничения снизу на ν нет.
 
 # Насколько 1/ν² должно быть близко к целому, чтобы Эрланг считался точным.
 ERLANG_INTEGER_TOLERANCE = 0.05
@@ -161,44 +161,96 @@ class NormalizedErlang(Distribution):
 
 
 class Hypoexponential(Distribution):
-    """Две последовательные экспоненты с разными средними t₁, t₂.
+    """Гипоэкспоненциальный закон: k последовательных экспонент с разными средними.
 
-    Подгоняет оба момента точно (в отличие от Эрланга с округлённым k),
-    но существует только при 1/√2 ≤ ν < 1:
-        t₁ + t₂ = t,  t₁² + t₂² = ν²t²  →  t₁,₂ = t(1 ± √(2ν² − 1))/2
+    Подгоняет оба момента точно (в отличие от Эрланга с округлённым k).
+    Берём (k−1) одинаковых фаз со средним t_a и одну со средним t_b —
+    этого достаточно, чтобы при заданных t и ν система имела решение:
+
+        (k−1)·t_a + t_b = t
+        (k−1)·t_a² + t_b² = ν²·t²
+
+    Решение существует при ν ≥ 1/√k, поэтому по умолчанию берём минимальное
+    подходящее k = ⌈1/ν²⌉. При k = 2 сводится к двухфазному случаю из
+    методички: t₁,₂ = t(1 ± √(2ν²−1))/2.
     """
 
-    def __init__(self, mean: float, cv: float):
-        if not HYPOEXPONENTIAL_MIN_CV <= cv < 1.0:
+    def __init__(self, mean: float, cv: float, phases: int | None = None):
+        if not 0.0 < cv < 1.0:
+            raise ValueError(f"гипоэкспонента определена при 0 < ν < 1, получено {cv:.4f}")
+        k = phases if phases is not None else math.ceil(1.0 / (cv * cv))
+        k = max(2, k)
+        if cv < 1.0 / math.sqrt(k) - 1e-12:
             raise ValueError(
-                f"двухфазная гипоэкспонента требует 0,707 ≤ ν < 1, получено ν = {cv:.4f}"
+                f"при k = {k} фазах нужно ν ≥ 1/√k = {1 / math.sqrt(k):.4f}, "
+                f"получено ν = {cv:.4f}"
             )
-        root = math.sqrt(2.0 * cv * cv - 1.0)
-        self.t1 = mean * (1.0 + root) / 2.0
-        self.t2 = mean * (1.0 - root) / 2.0
-        super().__init__("гипоэкспоненциальный", {"t₁": self.t1, "t₂": self.t2})
+        self.k = k
+        m = k - 1
+        # m(1+m)·t_a² − 2·t·m·t_a + t²(1−ν²) = 0
+        discriminant = m * m - m * (1 + m) * (1.0 - cv * cv)
+        root = math.sqrt(max(discriminant, 0.0))
+        options = []
+        for sign in (1.0, -1.0):
+            t_a = mean * (m + sign * root) / (m * (1 + m))
+            t_b = mean - m * t_a
+            if t_a > 0 and t_b > 0:
+                options.append((t_a, t_b))
+        if not options:
+            raise ValueError(
+                f"не удалось подобрать положительные фазы при ν = {cv:.4f}, k = {k}"
+            )
+        self.t_a, self.t_b = options[0]
+        self.means = [self.t_a] * m + [self.t_b]
+        super().__init__(
+            "гипоэкспоненциальный",
+            {"k": self.k, "t_a (×%d)" % m: self.t_a, "t_b": self.t_b},
+        )
+        if math.isclose(self.t_a, self.t_b, rel_tol=1e-9):
+            self.notes.append(
+                "все фазы совпали — закон вырождается в нормированный Эрланга"
+            )
 
     def pdf(self, x: float) -> float:
         if x < 0:
             return 0.0
-        if math.isclose(self.t1, self.t2):
-            return Erlang2Fallback(self.t1).pdf(x)
-        return (math.exp(-x / self.t1) - math.exp(-x / self.t2)) / (self.t2 - self.t1)
+        m = self.k - 1
+        la, lb = 1.0 / self.t_a, 1.0 / self.t_b
+        if math.isclose(la, lb, rel_tol=1e-9):
+            # Вырожденный случай — это Эрланг k-го порядка с интенсивностью la.
+            if x == 0:
+                return la if self.k == 1 else 0.0
+            log_pdf = (
+                self.k * math.log(la) + (self.k - 1) * math.log(x)
+                - la * x - math.lgamma(self.k)
+            )
+            return math.exp(log_pdf)
+        # Плотность суммы Erlang(m, la) и Exp(lb):
+        #   f(x) = la^m·lb/(la−lb)^m · [e^(−lb x) − e^(−la x)·Σ_{j<m} ((la−lb)x)^j/j!]
+        diff = la - lb
+        tail = sum((diff * x) ** j / math.factorial(j) for j in range(m))
+        value = (la**m) * lb / (diff**m) * (
+            math.exp(-lb * x) - math.exp(-la * x) * tail
+        )
+        return max(value, 0.0)
 
     def generate(self, n: int, rng: random.Random) -> list[float]:
-        return [
-            -self.t1 * math.log(1.0 - rng.random())
-            - self.t2 * math.log(1.0 - rng.random())
-            for _ in range(n)
-        ]
+        out = []
+        for _ in range(n):
+            total = 0.0
+            for phase_mean in self.means:
+                total -= phase_mean * math.log(1.0 - rng.random())
+            out.append(total)
+        return out
 
     @property
     def theoretical_mean(self) -> float:
-        return self.t1 + self.t2
+        return sum(self.means)
 
     @property
     def theoretical_cv(self) -> float:
-        return math.sqrt(self.t1**2 + self.t2**2) / (self.t1 + self.t2)
+        mean = self.theoretical_mean
+        return math.sqrt(sum(t * t for t in self.means)) / mean
 
 
 class Erlang2Fallback:
@@ -291,7 +343,7 @@ def choose(mean: float, cv: float, q: float | None = None) -> Distribution:
     # Задание требует аппроксимации по двум моментам, а округление k искажает
     # второй момент. Если искажение заметно и двухфазная гипоэкспонента
     # существует (ν ≥ 1/√2) — она подгоняет оба момента точно, берём её.
-    if erlang.notes and cv >= HYPOEXPONENTIAL_MIN_CV:
+    if erlang.notes:
         law = Hypoexponential(mean, cv)
         law.notes.append(
             f"нормированный Эрланг потребовал бы k = 1/ν² = {1 / cv**2:.4f}; "
