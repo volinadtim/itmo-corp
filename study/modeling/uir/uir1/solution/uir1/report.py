@@ -1,0 +1,221 @@
+"""Формы 1–3, графики 1–3 и сборка markdown-отчёта."""
+
+from __future__ import annotations
+
+import csv
+from dataclasses import dataclass
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")  # рендер в файл, без окна
+import matplotlib.pyplot as plt  # noqa: E402
+
+from .approx import Distribution  # noqa: E402
+from .estimates import (  # noqa: E402
+    AUTOCORR_LAGS,
+    CONFIDENCE_LEVELS,
+    Histogram,
+    Moments,
+    significance_threshold,
+)
+
+PLOT_DPI = 150
+FIGSIZE_WIDE = (11, 4.5)
+FIGSIZE = (8, 5)
+
+
+def _fmt(x: float, digits: int = 4) -> str:
+    return f"{x:.{digits}f}".replace(".", ",")
+
+
+def _pct(value: float, reference: float) -> str:
+    """Относительное отклонение в процентах."""
+    if reference == 0:
+        return "—"
+    return _fmt((value - reference) / reference * 100.0, 2)
+
+
+@dataclass
+class FormRow:
+    label: str
+    values: list[float]
+    reference: float  # эталон для колонки «%»
+
+
+def _rows(by_size: dict[int, Moments]) -> list[FormRow]:
+    """Строки формы 1/2 в порядке из задания."""
+    sizes = sorted(by_size)
+    last = by_size[sizes[-1]]
+    rows = [FormRow("Мат.ож.", [by_size[n].mean for n in sizes], last.mean)]
+    for p in CONFIDENCE_LEVELS:
+        rows.append(
+            FormRow(
+                f"Дов. инт. ({_fmt(p, 2)})",
+                [by_size[n].half_interval(p) for n in sizes],
+                last.half_interval(p),
+            )
+        )
+    rows.append(FormRow("Дисперсия", [by_size[n].variance for n in sizes], last.variance))
+    rows.append(FormRow("С.к.о.", [by_size[n].std for n in sizes], last.std))
+    rows.append(FormRow("К-т вариации", [by_size[n].cv for n in sizes], last.cv))
+    return rows
+
+
+def form_table(
+    by_size: dict[int, Moments],
+    reference: dict[int, Moments] | None = None,
+    interval_prefix: str = "±",
+) -> str:
+    """Форма 1 (reference=None) или форма 2 (reference — заданная ЧП).
+
+    В форме 1 эталон для «%» — собственная колонка n=300.
+    В форме 2 эталон — одноимённые значения заданной ЧП при том же n.
+    """
+    sizes = sorted(by_size)
+    rows = _rows(by_size)
+    ref_rows = _rows(reference) if reference else None
+
+    head = " | ".join(str(n) for n in sizes)
+    out = [f"| Характеристика | | {head} |", "|---|---|" + "---|" * len(sizes)]
+    for index, row in enumerate(rows):
+        is_interval = row.label.startswith("Дов. инт.")
+        cells = []
+        for value in row.values:
+            text = _fmt(value)
+            cells.append(f"{interval_prefix}{text}" if is_interval else text)
+        out.append(f"| {row.label} | Знач. | " + " | ".join(cells) + " |")
+
+        if ref_rows is None:
+            pcts = [_pct(v, row.reference) for v in row.values]
+        else:
+            pcts = [_pct(v, r) for v, r in zip(row.values, ref_rows[index].values)]
+        out.append("| | % | " + " | ".join(pcts) + " |")
+    return "\n".join(out)
+
+
+def autocorr_table(
+    given: dict[int, float], generated: dict[int, float] | None = None
+) -> str:
+    """Форма 3."""
+    lags = sorted(given)
+    out = [
+        "| Сдвиг ЧП | " + " | ".join(str(k) for k in lags) + " |",
+        "|---|" + "---|" * len(lags),
+        "| К-т АК для задан. ЧП | "
+        + " | ".join(_fmt(given[k]) for k in lags)
+        + " |",
+    ]
+    if generated:
+        out.append(
+            "| К-т АК для сгенерир. ЧП | "
+            + " | ".join(_fmt(generated[k]) for k in lags)
+            + " |"
+        )
+        out.append(
+            "| % | " + " | ".join(_pct(generated[k], given[k]) for k in lags) + " |"
+        )
+    return "\n".join(out)
+
+
+def write_csv(path: Path, by_size: dict[int, Moments]) -> None:
+    """Формы в CSV — чтобы вставить в Excel при оформлении отчёта."""
+    sizes = sorted(by_size)
+    with path.open("w", newline="", encoding="utf-8-sig") as fh:
+        writer = csv.writer(fh, delimiter=";")
+        writer.writerow(["Характеристика", ""] + sizes)
+        for row in _rows(by_size):
+            writer.writerow([row.label, "Знач."] + [f"{v:.6f}" for v in row.values])
+            writer.writerow(
+                ["", "%"]
+                + [f"{(v - row.reference) / row.reference * 100:.4f}" for v in row.values]
+            )
+
+
+# ---------------------------------------------------------------- графики
+
+
+def plot_series(sample: list[float], path: Path, title: str) -> None:
+    """График 1: значения ЧП по номеру измерения."""
+    fig, ax = plt.subplots(figsize=FIGSIZE_WIDE)
+    ax.plot(range(1, len(sample) + 1), sample, linewidth=0.9)
+    mean = sum(sample) / len(sample)
+    ax.axhline(mean, color="tab:red", linestyle="--", linewidth=1,
+               label=f"м.о. = {mean:.3f}")
+    ax.set_xlabel("Номер измерения")
+    ax.set_ylabel("Значение")
+    ax.set_title(title)
+    ax.legend()
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(path, dpi=PLOT_DPI)
+    plt.close(fig)
+
+
+def plot_histogram(hist: Histogram, path: Path, title: str) -> None:
+    """График 2: гистограмма частот."""
+    fig, ax = plt.subplots(figsize=FIGSIZE)
+    ax.bar(hist.centers, hist.counts, width=hist.width * 0.95,
+           edgecolor="black", linewidth=0.5)
+    ax.set_xlabel("Значение")
+    ax.set_ylabel("Частота")
+    ax.set_title(title)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(path, dpi=PLOT_DPI)
+    plt.close(fig)
+
+
+def plot_fit(
+    hist: Histogram, law: Distribution, path: Path, title: str,
+    generated_hist: Histogram | None = None,
+) -> None:
+    """График 3: нормированная гистограмма + плотность аппроксимирующего закона.
+
+    Гистограмма нормирована на n·Δx, иначе она и f(x) окажутся в разных
+    масштабах и сравнение будет бессмысленным.
+    """
+    fig, ax = plt.subplots(figsize=FIGSIZE)
+    ax.bar(hist.centers, hist.density, width=hist.width * 0.95, alpha=0.6,
+           edgecolor="black", linewidth=0.5, label="заданная ЧП (норм. частоты)")
+    if generated_hist is not None:
+        ax.step(generated_hist.centers, generated_hist.density, where="mid",
+                color="tab:green", linewidth=1.3, label="сгенерированная ЧП")
+    xs = [hist.edges[0] + i * (hist.edges[-1] - hist.edges[0]) / 400 for i in range(401)]
+    ax.plot(xs, [law.pdf(x) for x in xs], color="tab:red", linewidth=2,
+            label=f"f(x): {law.name}")
+    ax.set_xlabel("Значение")
+    ax.set_ylabel("Плотность")
+    ax.set_title(title)
+    ax.legend()
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(path, dpi=PLOT_DPI)
+    plt.close(fig)
+
+
+def plot_autocorrelation(
+    given: dict[int, float], n: int, path: Path, title: str,
+    generated: dict[int, float] | None = None,
+) -> None:
+    """Коэффициенты автокорреляции с границами значимости ±t_p/√n."""
+    lags = sorted(given)
+    fig, ax = plt.subplots(figsize=FIGSIZE)
+    ax.plot(lags, [given[k] for k in lags], marker="o", label="заданная ЧП")
+    if generated:
+        ax.plot(lags, [generated[k] for k in lags], marker="s",
+                label="сгенерированная ЧП")
+    threshold = significance_threshold(n)
+    ax.axhline(threshold, color="tab:red", linestyle="--", linewidth=1,
+               label=f"порог значимости ±{threshold:.3f}")
+    ax.axhline(-threshold, color="tab:red", linestyle="--", linewidth=1)
+    ax.axhline(0, color="black", linewidth=0.8)
+    ax.set_xlabel("Сдвиг k")
+    ax.set_ylabel("Коэффициент автокорреляции")
+    ax.set_title(title)
+    ax.set_xticks(list(AUTOCORR_LAGS))
+    ax.legend()
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(path, dpi=PLOT_DPI)
+    plt.close(fig)
