@@ -8,8 +8,10 @@
 #show table: set text(size: 10pt)
 #show figure.caption: set text(size: 10pt)
 #show figure: set block(breakable: false)
-// Подпись таблицы — сверху, подпись рисунка — снизу (ГОСТ 7.32).
-#show figure.where(kind: table): set figure.caption(position: top)
+// Подпись всегда снизу — и у рисунков, и у таблиц.
+#show figure.where(kind: table): set figure.caption(position: bottom)
+// Единое слово для всех изображений: «Рисунок», а не «Рис.».
+#show figure.where(kind: image): set figure(supplement: [Рисунок])
 
 // Числа и выводы берутся из расчёта, а не набираются руками:
 //   cd ../../uir/uir1/solution && python3 -m uir1 -v 60 --typst ../../../reports/uir1
@@ -70,7 +72,7 @@ $ tilde(sigma)_m = sqrt(tilde(D) \/ n), quad Delta_p = t_p tilde(sigma)_m, quad
 1,643 при доверительной вероятности 0,9; 1,960 при 0,95 и 2,576 при 0,99.
 
 #figure(
-  caption: [Форма 1. Характеристики заданной ЧП (вариант #d.variant)],
+  caption: [Характеристики заданной ЧП, форма 1 (вариант #d.variant)],
   table(
     columns: (3.1cm, 1.3cm) + d.sizes.map(_ => 1fr),
     align: (left, center) + d.sizes.map(_ => right),
@@ -93,7 +95,7 @@ $ tilde(sigma)_m = sqrt(tilde(D) \/ n), quad Delta_p = t_p tilde(sigma)_m, quad
 
 #figure(
   image("plots/plot1_series.png", width: 100%),
-  caption: [График 1. Значения заданной числовой последовательности],
+  caption: [Значения заданной числовой последовательности],
 )
 
 *Вывод.* #d.conclusions.series
@@ -111,7 +113,7 @@ $ r_k approx (sum_i (x_i - tilde(m)) (x_(i+k) - tilde(m)))
 в этих пределах.
 
 #figure(
-  caption: [Форма 3. Коэффициенты автокорреляции],
+  caption: [Коэффициенты автокорреляции, форма 3],
   table(
     columns: (3.6cm,) + d.lags.map(_ => 1fr),
     align: (left,) + d.lags.map(_ => right),
@@ -138,7 +140,7 @@ $L = 1 + 3 comma 322 dot lg n$, что для #d.n значений даёт
 
 #figure(
   image("plots/plot2_histogram.png", width: 80%),
-  caption: [График 2. Гистограмма распределения частот заданной ЧП],
+  caption: [Гистограмма распределения частот заданной ЧП],
 )
 
 #figure(
@@ -196,7 +198,7 @@ $ #eval(d.generator.formula, mode: "math") $
 = Характеристики сгенерированной ЧП
 
 #figure(
-  caption: [Форма 2. Характеристики сгенерированной случайной ЧП],
+  caption: [Характеристики сгенерированной случайной ЧП, форма 2],
   table(
     columns: (3.1cm, 1.3cm) + d.sizes.map(_ => 1fr),
     align: (left, center) + d.sizes.map(_ => right),
@@ -219,7 +221,7 @@ $ #eval(d.generator.formula, mode: "math") $
 #figure(
   image("plots/plot3_fit.png", width: 80%),
   caption: [
-    График 3. Гистограмма заданной ЧП, гистограмма сгенерированной ЧП
+    Гистограмма заданной ЧП, гистограмма сгенерированной ЧП
     и плотность аппроксимирующего закона
   ],
 )

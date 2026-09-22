@@ -129,7 +129,7 @@ def _series_character(sample: list[float]) -> str:
     return (
         f"заметен сдвиг уровня: среднее первой половины {first:.3f}, "
         f"второй {second:.3f} ({change:+.1f} %), последовательность "
-        f"можно считать {direction} — проверить по графику 1"
+        f"можно считать {direction}"
     )
 
 
@@ -412,16 +412,12 @@ def render(result: Result, out_dir: Path) -> Path:
     plots = out_dir / "plots"
     plots.mkdir(exist_ok=True)
 
-    report.plot_series(result.given, plots / "plot1_series.png",
-                       f"График 1. Значения заданной ЧП, вариант {result.variant}")
-    report.plot_histogram(result.given_hist, plots / "plot2_histogram.png",
-                          f"График 2. Гистограмма частот, вариант {result.variant}")
+    report.plot_series(result.given, plots / "plot1_series.png")
+    report.plot_histogram(result.given_hist, plots / "plot2_histogram.png")
     report.plot_fit(result.given_hist, result.law, plots / "plot3_fit.png",
-                    f"График 3. Гистограмма и плотность ({result.law.name})",
                     generated_hist=result.generated_hist)
     report.plot_autocorrelation(result.given_autocorr, len(result.given),
                                 plots / "plot_autocorr.png",
-                                "Коэффициенты автокорреляции",
                                 generated=result.generated_autocorr)
 
     report.write_csv(out_dir / "form1.csv", result.given_by_size)

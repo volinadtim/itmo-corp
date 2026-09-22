@@ -133,33 +133,63 @@ def write_csv(path: Path, by_size: dict[int, Moments]) -> None:
 
 
 # ---------------------------------------------------------------- графики
+#
+# Заголовок внутри изображения намеренно не рисуется: в отчёте у каждого
+# рисунка есть подпись, и заголовок на картинке дублировал бы её.
 
 
-def plot_series(sample: list[float], path: Path, title: str) -> None:
-    """График 1: значения ЧП по номеру измерения."""
+def plot_series(sample: list[float], path: Path) -> None:
+    """График 1: значения ЧП по номеру измерения.
+
+    Заданием требуется только линия значений; м.о., линия тренда и скользящее
+    среднее добавлены, чтобы вывод о характере последовательности опирался на
+    числа, а не на впечатление от картинки.
+    """
+    n = len(sample)
+    xs = list(range(1, n + 1))
+    mean = sum(sample) / n
+
+    # линейный тренд по МНК: X ~ a + b*i
+    mid = (n + 1) / 2
+    denom = sum((i - mid) ** 2 for i in xs)
+    slope = sum((xs[k] - mid) * (sample[k] - mean) for k in range(n)) / denom
+    intercept = mean - slope * mid
+
+    # скользящее среднее — гасит шум, проявляет движение уровня
+    window = max(5, n // 15)
+    half = window // 2
+    smooth = [
+        sum(sample[max(0, k - half):min(n, k + half + 1)])
+        / len(sample[max(0, k - half):min(n, k + half + 1)])
+        for k in range(n)
+    ]
+
     fig, ax = plt.subplots(figsize=FIGSIZE_WIDE)
-    ax.plot(range(1, len(sample) + 1), sample, linewidth=0.9)
-    mean = sum(sample) / len(sample)
-    ax.axhline(mean, color="tab:red", linestyle="--", linewidth=1,
-               label=f"м.о. = {mean:.3f}")
+    ax.plot(xs, sample, linewidth=0.9, label="значения ЧП")
+    ax.plot(xs, smooth, color="tab:orange", linewidth=1.8,
+            label=f"скользящее среднее (окно {window})")
+    ax.plot(xs, [intercept + slope * i for i in xs], color="black",
+            linestyle="--", linewidth=1.6,
+            label="тренд: " + f"{intercept:.1f} + {slope:.3f}".replace(".", ",") + "·i")
+    ax.axhline(mean, color="tab:red", linestyle=":", linewidth=1.4,
+               label="м.о. = " + f"{mean:.3f}".replace(".", ","))
     ax.set_xlabel("Номер измерения")
     ax.set_ylabel("Значение")
-    ax.set_title(title)
-    ax.legend()
+    ax.set_xlim(1, n)
+    ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     fig.tight_layout()
     fig.savefig(path, dpi=PLOT_DPI)
     plt.close(fig)
 
 
-def plot_histogram(hist: Histogram, path: Path, title: str) -> None:
+def plot_histogram(hist: Histogram, path: Path) -> None:
     """График 2: гистограмма частот."""
     fig, ax = plt.subplots(figsize=FIGSIZE)
     ax.bar(hist.centers, hist.counts, width=hist.width * 0.95,
            edgecolor="black", linewidth=0.5)
     ax.set_xlabel("Значение")
     ax.set_ylabel("Частота")
-    ax.set_title(title)
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     fig.savefig(path, dpi=PLOT_DPI)
@@ -167,7 +197,7 @@ def plot_histogram(hist: Histogram, path: Path, title: str) -> None:
 
 
 def plot_fit(
-    hist: Histogram, law: Distribution, path: Path, title: str,
+    hist: Histogram, law: Distribution, path: Path,
     generated_hist: Histogram | None = None,
 ) -> None:
     """График 3: нормированная гистограмма + плотность аппроксимирующего закона.
@@ -186,7 +216,6 @@ def plot_fit(
             label=f"f(x): {law.name}")
     ax.set_xlabel("Значение")
     ax.set_ylabel("Плотность")
-    ax.set_title(title)
     ax.legend()
     ax.grid(alpha=0.3)
     fig.tight_layout()
@@ -195,7 +224,7 @@ def plot_fit(
 
 
 def plot_autocorrelation(
-    given: dict[int, float], n: int, path: Path, title: str,
+    given: dict[int, float], n: int, path: Path,
     generated: dict[int, float] | None = None,
 ) -> None:
     """Коэффициенты автокорреляции с границами значимости ±t_p/√n."""
@@ -207,12 +236,11 @@ def plot_autocorrelation(
                 label="сгенерированная ЧП")
     threshold = significance_threshold(n)
     ax.axhline(threshold, color="tab:red", linestyle="--", linewidth=1,
-               label=f"порог значимости ±{threshold:.3f}")
+               label="порог значимости ±" + f"{threshold:.3f}".replace(".", ","))
     ax.axhline(-threshold, color="tab:red", linestyle="--", linewidth=1)
     ax.axhline(0, color="black", linewidth=0.8)
     ax.set_xlabel("Сдвиг k")
     ax.set_ylabel("Коэффициент автокорреляции")
-    ax.set_title(title)
     ax.set_xticks(list(AUTOCORR_LAGS))
     ax.legend()
     ax.grid(alpha=0.3)
