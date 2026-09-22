@@ -1,0 +1,36 @@
+# IDE and Editors
+.idea/
+.vs/
+.vscode/
+*.swp
+*~
+
+# CMake
+/build*/
+/cmake-build*/
+/out/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# Build artifacts
+*.out
+*.o
+*.a
+*.so
+*.obj
+*.lib
+*.dylib
+*.dll
+*.exe
+
+# Python
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.py[codz]
+
+# OS
+.DS_Store

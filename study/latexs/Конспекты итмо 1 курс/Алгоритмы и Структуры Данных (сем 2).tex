@@ -1,0 +1,3179 @@
+\documentclass{article}
+\input{header}
+
+\usepackage{adjustbox}
+
+\usepackage{minted}
+\makeatletter
+\renewcommand*{\minted@cleancache}{}
+\makeatother
+\usemintedstyle{tango}
+
+\tikzset{treenode/.style={
+        inner sep=0pt,
+        text width=5mm,
+        scale=.8,
+        circle,
+        outer sep=2mm,
+        align=center,
+        draw=black,
+        fill=white,
+        thin
+}}
+\tikzset{subtree/.style={
+        regular polygon,
+        regular polygon sides=3,
+        inner sep=0pt,
+        text width=5mm,
+        yscale=1.5,
+        xscale=.7,
+        draw=black,
+        fill=white,
+        thin
+}}
+
+\usepackage{svg}
+
+\geometry{legalpaper, paperheight=16383pt, margin=1in}
+\setcounter{totalnumber}{100}
+\pagestyle{empty}
+
+\newcommand{\pseudo}{PseudoLexer.py:PseudoLexer -x}
+\newcommand{\pseudocode}[1]{\mintinline{\pseudo}{#1}}
+
+\begin{document}
+    \paragraph{\undercolorblack{orange}{Дерево отрезков}.}
+    Что есть такое ДО? Хочется такую СД: есть массив \pseudocode{a} и на нём быстро считает, скажем, сумму на отрезке. То есть операцию \pseudocode{sum(l, r)}, которая возвращает сумму на \pseudocode{a[l..r)}. Если есть только эта операция, то можно посчитать сумму для каждого префикса, а потом вернуть разность \pseudocode{r}-той суммы и \pseudocode{l}-той. Работает за $O(1)$. Это работает со всеми функциями, у которых есть обратная (тут мы умеем вычитать). Например, с минимумом так не получится. Для него есть другая штука, которую мы рассмотрим в этом семестре позже. Хорошо, эта была статическая задача. Её можно решать за константу, если есть обратная, для минимума тоже можно, который мы разберём потом.\\
+    Но это скучно, интересно, если задача динамическая, то есть массив может меняться. Самое простое изменение --- \pseudocode{set(i, v)} --- задать \pseudocode{a[i] = v}. Тут уже префиксный массив не работает. Поэтому есть ДО. Возьмём наш массив. Будем для простоты считать, что длина массива --- степень 2 (иначе дополним его фиктивными элементами до степени двойки). Его размер увеличится не более, чем вдвое. Что мы делаем с массивом? Построим на нём двоичное дерево, листья которого --- элементы массива, а в прочих вершинах находится сумма детей. Так это выглядит для массива \pseudocode{[5, 2, 4, 1, 6, 8, 3, 1]}:
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {30};
+            \node[treenode] (l) at (-4,-2) {12};
+            \node[treenode] (r) at (4,-2) {18};
+            \node[treenode] (ll) at (-6,-4) {7};
+            \node[treenode] (lr) at (-2,-4) {5};
+            \node[treenode] (rl) at (2,-4) {14};
+            \node[treenode] (rr) at (6,-4) {4};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {2};
+            \node[treenode] (lrl) at (-3,-6) {4};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {8};
+            \node[treenode] (rrl) at (5,-6) {1};
+            \node[treenode] (rrr) at (7,-6) {3};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    Оно, очевидно, строится за линейное время. Утверждается, что обе операции мы можем делать за $\log n$. Давайте подумаем, что у нас написано в узлах дерева? Ну, сумма на каком-то отрезке массива. Как мы делаем \pseudocode{set}? Мы меняем элемент, значит нам нужно пересчитать сумму на тех отрезках, которые его содержат. А это только все его предки. Причём пересчитать можно делать даже если у нас нет обратной функции.
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode, rectangle, minimum height=5mm, text centered] (root) at (0,0) {26};
+            \node[treenode] (l) at (-4,-2) {12};
+            \node[treenode, rectangle, minimum height=5mm, text centered] (r) at (4,-2) {14};
+            \node[treenode] (ll) at (-6,-4) {7};
+            \node[treenode] (lr) at (-2,-4) {5};
+            \node[treenode, rectangle, minimum height=5mm, text centered] (rl) at (2,-4) {10};
+            \node[treenode] (rr) at (6,-4) {4};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {2};
+            \node[treenode] (lrl) at (-3,-6) {4};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode, rectangle, minimum height=5mm, text centered, draw=red, text=red] (rll) at (1,-6) {2};
+            \node[treenode] (rlr) at (3,-6) {8};
+            \node[treenode] (rrl) at (5,-6) {1};
+            \node[treenode] (rrr) at (7,-6) {3};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    Мы пересчитали $\log n$ узлов. Как делать \pseudocode{sum}? Каков план? Возьмём наш отрезок, разобьём его на отрезки, на которых мы знаем сумму, сложим их и чилл. В нашем изначальном примере для промежутка \pseudocode{[2..7)} надо будет взять вот эти узлы дерева:
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {30};
+            \node[treenode] (l) at (-4,-2) {12};
+            \node[treenode] (r) at (4,-2) {18};
+            \node[treenode] (ll) at (-6,-4) {7};
+            \node[treenode, thick, draw=darkgreen] (lr) at (-2,-4) {5};
+            \node[treenode, thick, draw=darkgreen] (rl) at (2,-4) {14};
+            \node[treenode] (rr) at (6,-4) {4};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {2};
+            \node[treenode] (lrl) at (-3,-6) {4};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {8};
+            \node[treenode, thick, draw=darkgreen] (rrl) at (5,-6) {1};
+            \node[treenode] (rrr) at (7,-6) {3};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+            
+            \draw[darkgreen, thick] ($(llr)!.66!(lrl)$) -- ++(0,-.66) -| ($(rrl)!.33!(rrr)$);
+        \end{tikzpicture}
+    \end{center}
+    Как мы это сделаем? Давайте рекурсивно искать те отрезки, которые нужно включить. Если отрезок нашей вершины не пересекается с \pseudocode{[l..r)}, то просто выходим из него. Если отрезок целиком лежит внутри \pseudocode{[l..r)}, то добавляем в ответ и выходим. Если ничего из этого, опускаемся по рекурсии вниз.
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {30};
+            \node[treenode] (l) at (-4,-2) {12};
+            \node[treenode] (r) at (4,-2) {18};
+            \node[treenode] (ll) at (-6,-4) {7};
+            \node[treenode, thick, draw=darkgreen] (lr) at (-2,-4) {5};
+            \node[treenode, thick, draw=darkgreen] (rl) at (2,-4) {14};
+            \node[treenode] (rr) at (6,-4) {4};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {2};
+            \node[treenode] (lrl) at (-3,-6) {4};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {8};
+            \node[treenode, thick, draw=darkgreen] (rrl) at (5,-6) {1};
+            \node[treenode] (rrr) at (7,-6) {3};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+            
+            \draw[red,->] (root) to[out=180,in=90,looseness=.75] (l);
+            \draw[red,->] (root) to[out=0,in=90,looseness=.75] (r);
+            \draw[red,->] (l) to[out=180,in=90,looseness=.75] (ll);
+            \draw[red,->] (l) to[out=0,in=90,looseness=.75] (lr);
+            \draw[red,->] (r) to[out=180,in=90,looseness=.75] (rl);
+            \draw[red,->] (r) to[out=0,in=90,looseness=.75] (rr);
+            \draw[red,->] (rr) to[out=180,in=90,looseness=.75] (rrl);
+            \draw[red,->] (rr) to[out=0,in=90,looseness=.75] (rrr);
+            
+            \draw[darkgreen, thick] ($(llr)!.66!(lrl)$) -- ++(0,-.66) -| ($(rrl)!.33!(rrr)$);
+        \end{tikzpicture}
+    \end{center}
+    Почему это работает? Есть некоторый узел. Докажем по индукции, что на каждом этапе рекурсии мы добавляем пересечение этого узла с \pseudocode{[l..r)}. Доказательство, собственно, очевидно. Теперь про скорость. Сколько отрезков мы суммарно посетили? Не очень много. Почему? Хочется сказать, что случай, когда мы запускаем обе рекурсии, происходит редко. Когда он происходит? Когда на отрезке вершины есть граница отрезка \pseudocode{[l;r)}. Но посмотрим на слои нашего дерева. Каждый слой содержит непересекающиеся отрезки, и только 2 из них могут содержать границы. А слоёв $\log n$. То есть плохих ситуаций не больше $2\log n$. Теперь посмотрим на наше дерево рекурсии. Каждая из этих $2\log n$ плохих ситуаций разделяет ветку рекурсии на две. То есть у нас есть $2\log n$ внутренних вершин дерева рекурсии. Понятно, что листьев у нас $2\log n+1$. То есть суммарно запусков всё равно мало.\\
+    Хорошо, как хранить дерево? Можно стандартно:
+    \begin{minted}{c++}
+        class Node
+        {
+            Node* left, right;
+            int value;
+        };
+    \end{minted}
+    Это в целом годный метод, но медленно. Поэтому можно перенумеровать вершинки дерева как в куче. Хорошо, как жить?
+    \begin{minted}{\pseudo}
+        set(i, v, x, xl, xr):
+            if xl == xr - 1
+                t[x] = v
+                return
+            xm = (xl + xr) / 2
+            if i < xm
+                set(i, v, 2 * x + 1, xl, xm)
+            else
+                set(i, v, 2 * x + 2, xm, xr)
+            t[x] = t[2 * x + 1] + t[2 * x + 2]
+
+
+        sum(l, r, x, xl, xr):
+            if xl >= r || l >= xr
+                return 0
+            elif xl >= l && xr <= r
+                return t[x]
+            else
+                xm = (xl + xr) / 2
+                return sum(l, r, 2 * x + 1, xl, xm) + sum(l, r, 2 * x + 2, xm, xr)
+    \end{minted}
+    Что если хочется вместо суммы что-нибудь другое? Минимум, например. Ну, меняется примерно ничего. Только вместо \pseudocode{0} имеем \mintinline{c++}{INT_MAX}. Собственно, то же самое можно сделать с произвольной ассоциативной операцией. Удобно, если у нас есть в ней нейтральный элемент, а если нет --- можно создать искусственно.\\
+    То же самое можно написать нерекурсивно снизу вверх. Это немного быстрее. Как это делать? Сначала надо определить, где в дереве лежит \pseudocode{i}-тый элемент массива? Ну, он лежит на позиции $i+n-1$, где $n$ --- размер массива. Как тогда писать \pseudocode{set}?
+    \begin{minted}{\pseudo}
+        set(i, v):
+            x = i + n - 1
+            t[x] = v
+            while x != 0
+                x = (x - 1) / 2
+                t[x] = t[2 * x + 1] + t[2 * x + 2]
+    \end{minted} 
+    Как переходить на один слой вверх? Посмотрим на родителя левой границы. Если это левый ребёнок родителя, можно просто перейти вверх. А если левая граница --- это правый сын. Тогда мы возьмём наш отрезок, добавим его к ответу сразу, а потом перейдём к следующему элементу за родителем.
+    \begin{minted}{\pseudo}
+        sum(l, r):
+            l = l + n - 1
+            r = r + n - 2 // Теперь r включительно, чтобы было проще.
+            ans = 0
+            while l <= r
+                if l % 2 == 0
+                    ans += t[l]
+                l = l / 2
+                if r % 2 == 1
+                    ans += t[r]
+                r = r / 2 - 1
+            return ans
+    \end{minted}
+    Тут появится проблема, если операция не коммутативна. Но это легко исправить, достаточно вместо \pseudocode{ans} сделать \pseudocode{ansl} и \pseudocode{ansr}, в первый добавляем новые левые элементы (добавляем справа), во второй --- правые (и добавляем слева). В конце возвращаем \pseudocode{ansl + ansr}.\\
+    Утверждается, что время работы этого кода --- $O(\log(r-l))$, а не просто $O(\log n)$. Ну, видно, каждое действие уменьшает $r-l$ вдвое. Поэтому в некотором смысле дерево снизу быстрее дерева сверху.
+    \subparagraph{\undercolorblack{orange}{Персистентное ДО}.}
+    Когда нам нужно что-то изменить, мы вместо этого добавляем новую вершину. Подвешиваем её не у исходному родителю, а к новому скопированному. И так заиметь вторую версию. Например, так выглядит изменение пятого элемента массива на \pseudocode{3}:
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {30};
+            \node[treenode] (l) at (-4,-2) {12};
+            \node[treenode] (r) at (4,-2) {18};
+            \node[treenode] (ll) at (-6,-4) {7};
+            \node[treenode] (lr) at (-2,-4) {5};
+            \node[treenode] (rl) at (2,-4) {14};
+            \node[treenode] (rr) at (6,-4) {4};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {2};
+            \node[treenode] (lrl) at (-3,-6) {4};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {8};
+            \node[treenode] (rrl) at (5,-6) {1};
+            \node[treenode] (rrr) at (7,-6) {3};
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+            
+            \node[treenode,draw=red,text=red] (root') at (1,0) {25};
+            \node[treenode,draw=red,text=red] (r') at (5,-2) {13};
+            \node[treenode,draw=red,text=red] (rl') at (3,-4) {9};
+            \node[treenode,draw=red,text=red] (rlr') at (4,-6) {3};
+            \draw[->,red] (root') -- (l);
+            \draw[->,red] (root') -- (r');
+            \draw[->,red] (r') -- (rl');
+            \draw[->,red] (r') -- (rr);
+            \draw[->,red] (rl') -- (rll);
+            \draw[->,red] (rl') -- (rlr');
+        \end{tikzpicture}
+    \end{center}
+    Тут уже очень сложно делать это с индексацией кучи, разумнее делать указателями. Время, очевидно, такое же. С памятью небольшая проблема, мы создаём новую вертикаль на каждом добавлении, тратя $\log n$ памяти.
+    \subparagraph{\undercolorblack{orange}{ДО наоборот}.}
+    В прошлый раз у нас дерево могло считать какую-то функцию и делать \pseudocode{set}. Теперь мы хотим наоборот. Мы хотим менять сразу много элементов, а считать один. То есть у нас будет операция \pseudocode{add(l, r, v)}, которая всем на интервале \pseudocode{[l;r)} прибавляет \pseudocode{v} к каждому элементу, и операция \pseudocode{get(i)}, которая возвращает значение текущего элемента. Построим дерево отрезков. Пусть изначально наш массив состоит из нулей.
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {0};
+            \node[treenode] (l) at (-4,-2) {0};
+            \node[treenode] (r) at (4,-2) {0};
+            \node[treenode] (ll) at (-6,-4) {0};
+            \node[treenode] (lr) at (-2,-4) {0};
+            \node[treenode] (rl) at (2,-4) {0};
+            \node[treenode] (rr) at (6,-4) {0};
+            \node[treenode] (lll) at (-7,-6) {0};
+            \node[treenode] (llr) at (-5,-6) {0};
+            \node[treenode] (lrl) at (-3,-6) {0};
+            \node[treenode] (lrr) at (-1,-6) {0};
+            \node[treenode] (rll) at (1,-6) {0};
+            \node[treenode] (rlr) at (3,-6) {0};
+            \node[treenode] (rrl) at (5,-6) {0};
+            \node[treenode] (rrr) at (7,-6) {0};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    Но теперь смысл вершин будет немного другим. Всё ещё вершины отвечают за некий отрезок, но значение в узле --- это то, что нужно прибавить к этому отрезку. Мы опять разбивает отрезок на куски всё тем же способом. Пусть нам нужно, скажем, прибавить 3 к каждому элементу на \pseudocode{[2..7)}. Мы опять разбиваем их на отрезки, которые есть в дереве, и прибавляем к каждому тройку.
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {0};
+            \node[treenode] (l) at (-4,-2) {0};
+            \node[treenode] (r) at (4,-2) {0};
+            \node[treenode] (ll) at (-6,-4) {0};
+            \node[treenode, thick, draw=darkgreen] (lr) at (-2,-4) {+3};
+            \node[treenode, thick, draw=darkgreen] (rl) at (2,-4) {+3};
+            \node[treenode] (rr) at (6,-4) {0};
+            \node[treenode] (lll) at (-7,-6) {0};
+            \node[treenode] (llr) at (-5,-6) {0};
+            \node[treenode] (lrl) at (-3,-6) {0};
+            \node[treenode] (lrr) at (-1,-6) {0};
+            \node[treenode] (rll) at (1,-6) {0};
+            \node[treenode] (rlr) at (3,-6) {0};
+            \node[treenode, thick, draw=darkgreen] (rrl) at (5,-6) {+3};
+            \node[treenode] (rrr) at (7,-6) {0};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+            
+            \draw[darkgreen, thick] ($(llr)!.66!(lrl)$) -- ++(0,-.66) -| ($(rrl)!.33!(rrr)$);
+        \end{tikzpicture}
+    \end{center}
+    Делается эта операция точно также, как делалась операция \pseudocode{sum} в нашем изначальном ДО: идём рекурсивно, если целиком снаружи --- выходим, если целиком внутри --- прибавляем и выходим, иначе разбиваем на левый и правый подотрезки и запускаемся от обоих из них. Чтобы сделать \pseudocode{get}, нужно сложить всё, что мы прибавили. Как это сделать? Ну, всё так же, идём по пути от данного элемента до корня, считаем, сколько суммарно. Утверждается, что обе операции работают за логарифмическое время. Доказывается аналогично предыдущему ДО.\\
+    Хорошо, давайте делать что-то сложнее, чем \pseudocode{add}. Какую-то абстрактную операцию. Почему нельзя совсем то же самое? Ну, потому что операция может быть не коммутативна. А ещё, справедливо, нужна ассоциативность, как и в прошлый раз. Ассоциативных операций много, а коммутативных --- нет. Присваивание не коммутативно, например. То есть мы по сути заменяем \pseudocode{x} на \pseudocode{x ? y}, где \pseudocode{?} --- наша операция. Для присваивания \pseudocode{x ? y} равно \pseudocode{y}. Видно, что ассоциативна, но не коммутативна. Поэтому без коммутативности хочется как-то жить. В таком случае надо как-то хранить порядок. План такой: все операции мы применяем снизу вверх, при этом поддерживаем, что они упорядочены (ниже --- старые операции, выше --- новые). Как поддерживаем порядок? Пусть мы в какой-то момент хотим применить операцию на отрезок. Она должна быть самой новой, а значит выше всех, то есть проблемы будут, когда выше неё что-то есть. Поэтому проведём такую операцию, которая называется <<ленивое проталкивание>> (lazy propogation). Работает она так: мы каждую операцию применяем отдельно левому и правому отрезку. Это можно сделать со всеми узлами выше нашего. К счастью, операция ассоциативная, поэтому так нам сделать никто не мешает:
+    \begin{minted}{\pseudo}
+        change(l, r, v, x, xl, xr):
+            if l >= xr || xl >= r
+                return
+            if xl >= l && xr <= r
+                t[x] = t[x] + v
+                return
+            propogate(x)
+            xm = (xl + xr) / 2
+            change(l, r, v, 2 * x + 1, xl, xm)
+            change(l, r, v, 2 * x + 2, xm, xr)
+
+
+        propogate(x):
+            t[2 * x + 1] = t[2 * x + 1] + t[x]
+            t[2 * x + 2] = t[2 * x + 2] + t[x]
+            t[x] = 0
+    \end{minted}
+    Теперь перед тем, как идти рекурсивно в дочерние узлы, мы убираем операцию из текущего. Тогда инвариант, что мы добавляем операцию только если выше никого нет, отлично выполняется.
+    \subparagraph{\undercolorblack{orange}{Скрестим ужа с ежом}.}
+    Теперь мы хотим дерево, которое и считает на отрезке, и меняет на отрезке. То есть имеем \pseudocode{change(l, r, v)} и \pseudocode{calc(l, r)}. И операции разные совершенно. Например, первое считает,, например, сумму, а вторая --- минимум. Давайте сделаем дерево. Оно хранит 2 числа в каждом узле (собственно, минимум и то, что нужно прибавить).
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {1};
+            \node[treenode] (l) at (-4,-2) {1};
+            \node[treenode] (r) at (4,-2) {2};
+            \node[treenode] (ll) at (-6,-4) {4};
+            \node[treenode] (lr) at (-2,-4) {1};
+            \node[treenode] (rl) at (2,-4) {2};
+            \node[treenode] (rr) at (6,-4) {3};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {4};
+            \node[treenode] (lrl) at (-3,-6) {8};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {2};
+            \node[treenode] (rrl) at (5,-6) {3};
+            \node[treenode] (rrr) at (7,-6) {4};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    Что мы делаем при, скажем, прибавлении? Ну, берём и прибавляем.
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {1};
+            \node[treenode] (l) at (-4,-2) {1};
+            \node[treenode] (r) at (4,-2) {2};
+            \node[treenode] (ll) at (-6,-4) {4};
+            \node[treenode] (lr) at (-2,-4) {1};
+            \node[treenode] (rl) at (2,-4) {2};
+            \node[treenode] (rr) at (6,-4) {3};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {4};
+            \node[treenode] (lrl) at (-3,-6) {8};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {2};
+            \node[treenode] (rrl) at (5,-6) {3};
+            \node[treenode] (rrr) at (7,-6) {4};
+            
+            \node[anchor=west] at (lr) {+4};
+            \node[anchor=west] at (r) {+4};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    Но тогда умрут минимумы. Пересчитывать их мы очень не хотим. Вместо этого скажем, что в дереве хранятся минимумы без учёта операций выше. Тогда нужно пересчитать существенно меньше вершин:
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {4};
+            \node[treenode] (l) at (-4,-2) {4};
+            \node[treenode] (r) at (4,-2) {6};
+            \node[treenode] (ll) at (-6,-4) {4};
+            \node[treenode] (lr) at (-2,-4) {5};
+            \node[treenode] (rl) at (2,-4) {2};
+            \node[treenode] (rr) at (6,-4) {3};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {4};
+            \node[treenode] (lrl) at (-3,-6) {8};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {2};
+            \node[treenode] (rrl) at (5,-6) {3};
+            \node[treenode] (rrr) at (7,-6) {4};
+            
+            \node[anchor=west] at (lr) {+4};
+            \node[anchor=west] at (r) {+4};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    То есть мы берём наши отрезки, к которым операция применялась, пересчитываем минимум на них, после чего при возвращении из рекурсии пересчитываем родителей. При этом при пересчёте надо не забывать применять операцию, лежащею в родителе, если такая есть. То есть если в предыдущем примере вычесть 3 из отрезка \pseudocode{[4..7)}, то получим вот это:
+    \begin{center}
+        \begin{tikzpicture}[scale=.5]
+            \node[treenode] (root) at (0,0) {3};
+            \node[treenode] (l) at (-4,-2) {4};
+            \node[treenode] (r) at (4,-2) {3};
+            \node[treenode] (ll) at (-6,-4) {4};
+            \node[treenode] (lr) at (-2,-4) {5};
+            \node[treenode] (rl) at (2,-4) {-1};
+            \node[treenode] (rr) at (6,-4) {0};
+            \node[treenode] (lll) at (-7,-6) {5};
+            \node[treenode] (llr) at (-5,-6) {4};
+            \node[treenode] (lrl) at (-3,-6) {8};
+            \node[treenode] (lrr) at (-1,-6) {1};
+            \node[treenode] (rll) at (1,-6) {6};
+            \node[treenode] (rlr) at (3,-6) {2};
+            \node[treenode] (rrl) at (5,-6) {0};
+            \node[treenode] (rrr) at (7,-6) {4};
+            
+            \node[anchor=west] at (lr) {+4};
+            \node[anchor=west] at (r) {+4};
+            \node[anchor=west] at (rl) {-3};
+            \node[anchor=west] at (rrl) {-3};
+            
+            \draw[->] (root) -- (l);
+            \draw[->] (root) -- (r);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+            \draw[->] (ll) -- (lll);
+            \draw[->] (ll) -- (llr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (lr) -- (lrr);
+            \draw[->] (rl) -- (rll);
+            \draw[->] (rl) -- (rlr);
+            \draw[->] (rr) -- (rrl);
+            \draw[->] (rr) -- (rrr);
+        \end{tikzpicture}
+    \end{center}
+    Тут подобная ситуация произошла с правым ребёнком корня. Мы сначала пересчитали его минимум (он получился равен минус единице), а потом применили отложенную операцию прибавления четырёх. На самом деле тут очень сложно жить без проталкивания, даже если операция коммутативна. Ведь для подсчёта минимума на, например, отрезке \pseudocode{[1..7)} в вершине с -1 надо как-то помнить про +4 выше. Это реализуемо, но сложно, проще всегда делать проталкивание. Но сначала поймём, какие свойства операций нам нужны. Для начала, они обе должны быть ассоциативны. Но этого не достаточно. Надо ещё такое: $(a*b)\star(c*b)=(a\star c)*b$. В нашем случае --- $\min(a+v;b+v)=\min(a;b)+v$. То есть нам нужна дистрибутивность одной относительно другой. Если её нет, то обычно грустно, но вообще бывает когда можно без неё. Например, с суммой на отрезке и прибавлением на отрезке. Где возникает проблема? В пересчитывании суммы на отрезке. Но на самом деле, не возникает, потому что мы всё равно можем посчитать новую сумму, просто она будет не так просто пересчитываться, а с использованием количества элементов в отрезке. А ещё (в нашей текущей реализации) операция, меняющая отрезок, должна быть коммутативна. От этого мы снова хотим избавиться, и избавимся тем же самым методом:
+    \begin{minted}{\pseudo}
+        change(l, r, v, x, xl, xr):
+            if l >= xr || xl >= r
+                return
+            if xl >= l && xr <= r
+                d[x] += v
+                t[x] += v
+                return
+            propogate(x)
+            xm = (xl + xr) / 2
+            change(l, r, v, 2 * x + 1, xl, xm):
+            change(l, r, v, 2 * x + 2, xm, xr):
+            t[x] = min(t[2 * x + 1], t[2 * x + 2])
+
+
+        propogate(x):
+            t[2 * x + 1] += d[x]
+            d[2 * x + 1] += d[x]
+            t[2 * x + 2] += d[x]
+            d[2 * x + 2] += d[x]
+            d[x] = 0 // Нейтральный элемент по сложению
+
+
+        calc(l, r, x, xl, xr):
+            if l >= xr || xl >= r
+                return INT_MAX // Нейтральный элемент по минимуму
+            if xl >= l && xr <= r
+                return t[x]
+            propogate(x)
+            xm = (xl + xr) / 2
+            return min(calc(l, r, 2 * x + 1, xl, xm), calc(l, r, 2 * x + 2, xm, xr))
+    \end{minted}
+    Если кто не заметил, всё это можно делать персистентно. Там есть нюансы с \pseudocode{propogate}'ом, но пофиг. А давайте узнаем, зачем вообще персистентные деревья. Пусть нам нужно знать число различных элементов на отрезке. При этом массив не меняется, поэтому можно много что предпосчитать. Можно для каждого префикса хранить множество, из которого и выискивать ответы. Но мы хотим ДО. Поэтому можно каждому числу записать, является ли оно первой встречей такого элемента. Отвечать на запросы можем только в оффлайне, нужно отсортировать все запросы по возрастанию левой границы, сначала ответить на все, у кого эта граница --- край, потом удалить нафиг самый левой элемент, найдём следующий такой же, ставим в его единичку (чтобы такой искать, сделаем \mintinline{c++}{std::unordered_map}). Хорошо, а зачем персистентность? А если запросы не даны заранее, то грустно. Но решается. Пришёл нам запрос с третьего отрезка. Мы не можем честно передвинуть левый край, но вообще можем с самого начала протащить эту границу по всем местам, запомнить всё и отвечать исходя из нужной версии ДО. Мем тут в том, что все эти версии вместе хранят $n\log n$ памяти.
+    \paragraph{\undercolorblack{orange}{Дерево Фенвика}.}
+    Какие задачи оно решает? Есть массив \pseudocode{a}. Первая операция --- добавить к \pseudocode{i}-тому элементу \pseudocode{v} (\pseudocode{inc(i, v)}), а вторая --- посчитать сумму на \pseudocode{[l..r)}. Обе операции за $\log n$. Вопрос: зачем, если мы это уже умеем? А вот дерево Фенвика чуть быстрее (в константу раз) работает, и ест меньше памяти. У нас дерево отрезков ело $4n$ памяти, потому что мы сначала расширяли массив (после чего в нём было $2n$ элементов), а потом строили над ним дерево за ещё столько же. Можно было не расширять массив, получилось бы менее красивое двоичное дерево, в котором было бы примерно $2n$ элементов. А вот меньше памяти на двоичном дереве сделать сложно. В свою очередь дерево Фенвика хранит порядка $n$ элементов.\\
+    У нас будет просто массив размера $n$ из целых чисел (новый, \pseudocode{f}, старый нам хранить не надо). Что мы делаем? Мы в каждом элемента массива \pseudocode{f} храним сумму на каком-то отрезке массива \pseudocode{a}. А точнее, сумму от некоторого \pseudocode{p(i)} до \pseudocode{i}, где \pseudocode{p} --- какая-то функция. Ещё давайте не знать сумму на \pseudocode{[l;r)}, а считать её, знаю сумму на \pseudocode{[0;r)}. Ну, понятно как это делать, как в префиксном массиве. Как будем считать \pseudocode{sum(r)}? Возьмём правую клетку, прибавим \pseudocode{f[r]} к ответу, останется кусочек от \pseudocode{0} до \pseudocode{p(i - 1)}, с которым делаем то же самое.
+    \begin{minted}{\pseudo}
+        i = r - 1
+        res = 0
+        while i >= 0
+            res += f[i]
+            i = p(i) - 1
+        return res
+    \end{minted}
+    Как делаем операцию увеличения? Надо найти все отрезки, которые покрывают эту клетку, и к каждому прибавить \pseudocode{v}. А значит надо подобрать такую функцию \pseudocode{p}, чтобы \pseudocode{while} (в коде выше) долго не работал, и чтобы мы могли быстро найти наши отрезки, (и чтобы было этиз отрезков примерно $\log n$).\\
+    Сюда подойдёт такая функция: рассмотрим битовую запись \pseudocode{i}. Тогда \pseudocode{p(i)} ищет самый младший ноль, и всё младше него также превращает в нули. То есть вот так выглядит \pseudocode{p(i)} для нескольких первых \pseudocode{i}:
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \pseudocode{i} & \pseudocode{i} в двоичной & \pseudocode{p(i)} в двоичной & \pseudocode{p(i)}\\
+            \hline
+            \pseudocode{0} & \verb|0000| & \verb|0000| & \pseudocode{0}\\
+            \pseudocode{1} & \verb|0001| & \verb|0000| & \pseudocode{0}\\
+            \pseudocode{2} & \verb|0010| & \verb|0010| & \pseudocode{2}\\
+            \pseudocode{3} & \verb|0011| & \verb|0000| & \pseudocode{0}\\
+            \pseudocode{4} & \verb|0100| & \verb|0100| & \pseudocode{4}\\
+            \pseudocode{5} & \verb|0101| & \verb|0100| & \pseudocode{4}\\
+            \pseudocode{6} & \verb|0110| & \verb|0110| & \pseudocode{6}\\
+            \pseudocode{7} & \verb|0111| & \verb|0000| & \pseudocode{0}\\
+            \pseudocode{8} & \verb|1000| & \verb|1000| & \pseudocode{8}\\
+            \pseudocode{9} & \verb|1001| & \verb|1000| & \pseudocode{8}\\
+            \pseudocode{10} & \verb|1010| & \verb|1010| & \pseudocode{10}\\
+            \pseudocode{11} & \verb|1011| & \verb|1000| & \pseudocode{8}\\
+            \pseudocode{12} & \verb|1100| & \verb|1100| & \pseudocode{12}\\
+            \pseudocode{13} & \verb|1101| & \verb|1100| & \pseudocode{12}\\
+            \pseudocode{14} & \verb|1110| & \verb|1110| & \pseudocode{14}\\
+            \pseudocode{15} & \verb|1111| & \verb|0000| & \pseudocode{0}\\
+            \hline
+        \end{tabular}
+    \end{center}
+    Тогда каждый чётный элемент хранит сумму самого себя. Где в конце числа стоит \verb|01|, получаются отрезки длины 2. Где в конце \verb|011| --- длины 4. То есть каждый второй из оставшихся. Уже понятно, что появляется что-то похожее на дерево. Хорошо, как эту функцию реализовать? Да легко, \pseudocode{p(i) = i & (i + 1)}.
+    \begin{center}
+        \begin{tikzpicture}
+            \draw[step=1] (0,0) grid (8,1);
+            \draw[darkgreen, thick] (0,0) arc (240:300:1);
+            \draw[darkgreen, thick] (0,0) arc (240:300:2);
+            \draw[darkgreen, thick] (2,0) arc (240:300:1);
+            \draw[darkgreen, thick] (0,0) arc (240:300:4);
+            \draw[darkgreen, thick] (4,0) arc (240:300:1);
+            \draw[darkgreen, thick] (4,0) arc (240:300:2);
+            \draw[darkgreen, thick] (6,0) arc (240:300:1);
+            \draw[darkgreen, thick] (0,0) arc (240:300:8);
+        \end{tikzpicture}
+    \end{center}
+    Проверим, что наш \pseudocode{while} работает не долго. Мы берём \pseudocode{r}. Оно имеет несколько единичек в конце. Они все превратятся в нули при \pseudocode{p(r)}. Потом мы вычитаем единицу из \pseudocode{p(r)} (т.к. \pseudocode{r = p(r) - 1}), превращая их обратно в единицы. То есть на каждой итерации цикла количество единиц увеличивается, а значит будет не больше $\log n$ итераций.\\
+    А что с поиском отрезков? У нас есть $\pseudocode{i}\in[\pseudocode{p(j)};\pseudocode{j}]$. Как тогда выглядят \pseudocode{j} и \pseudocode{p(j)}? Ну, они имеют общий префикс, потом ноль, а потом \pseudocode{j} имеет кучу единиц, а \pseudocode{p(j)} --- кучу нулей. То есть мы должны иметь тот же префикс, тот же ноль, а потом нечто произвольное.
+    \begin{center}
+        \begin{tabular}{|c|r:c:l|}
+            \hline
+            \pseudocode{j} & \verb|1101101| & \verb|0| & \verb|111111|\\
+            \pseudocode{i} & \verb|1101101| & \verb|0| & \verb|??????|\\
+            \pseudocode{p(j)} & \verb|1101101| & \verb|0| & \verb|000000|\\
+            \hline
+        \end{tabular}
+    \end{center}
+    Тогда как мы перебираем \pseudocode{j}? Самое маленькое \pseudocode{j} --- это \pseudocode{i}, а потом нужно заменять самый левый ноль на единичку. Как это делать? Легко: \pseudocode{j = j | (j + 1)}. То есть имеем
+    \begin{minted}{\pseudo}
+        j = i
+        while (j < n)
+            f[j] += v
+            j = j | (j + 1)
+    \end{minted}
+    Это, очевидно, также работает за логарифм, ведь мы заменяем один бит в числе за раз.\\
+    С деревом Фенвика не получается если, например, операция не обратима, ведь с обратимости мы начали (когда решили, что нам хватит \pseudocode{sum(0, r)} вместо \pseudocode{sum(l, r)}).
+    \paragraph{\undercolorblack{orange}{Разреженная таблица}.}
+    Пусть есть массив, и мы хотим считать минимум на отрезке. Массив не меняется. Когда массив не меняется, у нас есть два времени работы алгоритма: время на предподсчёт и время на запрос. Умеем ли мы предподсчитывать за $n$, а отвечать --- за $\log n$? Да, это дерево отрезков. Умеем ли предподсчитывать за $n^2$, а отвечать за константу? Да, простой динамикой посчитать все запросы. А разреженная таблица умеет предподсчитывать за $n\log n$, а отвечать за $1$.\\
+    Идея посчитать \pseudocode{m[i][k]}, равное сумме на отрезке \pseudocode{[i..i+2^k)}. Чему равно \pseudocode{m[i][0]}? \pseudocode{a[i]}. А как переходить от более маленького \pseudocode{k} в большому? Да легко, \pseudocode{m[i][k+1] = min(m[i][k], m[i + 2^k][k])}. Если мы за границы массива вылезаем, то можно за'\pseudocode{if}'ать, а можно забить. Заметим, что эту штуку мы считаем за такое время, за которое хотим --- $n\log n$.\\
+    Как отвечать на запрос? Возьмём отрезок длины \pseudocode{2^k} и приделаем его к левой границе. Потом возьмём отрезок такого же размера и приделаем к правой границе. Возьмём минимумы на каждом из них из массива, посчитаем минимум двух чисел. Проблема в поиске \pseudocode{k}. Его можно в теории предподсчитать, на практике можно извратиться битовыми операциями. А вообще в процессоре есть специальные команды под это, если вы их помните --- вы победили.\\
+    \subparagraph{\undercolorblack{orange}{Непересекающаяся разреженная таблица}.}
+    Хорошо, но предыдущая идея работает только для идемпотентных операций (для таких, для которых $a\star a=a$). А если это не верно, то как жить? Возьмём массив с длиной степенью двойки. Возьмём его середину. Посчитаем суммы на всех суффиксах первой половины и на всех префиксах второй.
+    \begin{center}
+        \begin{tikzpicture}
+            \draw[step=1] (0,0) grid (16,1);
+            \foreach\i in {0,...,7}
+            {
+                \draw[darkgreen, thick] (\i,0) arc (240:300:8-\i);
+                \draw[darkgreen, thick] (8,0) arc (240:300:1+\i);
+            }
+        \end{tikzpicture}
+    \end{center}
+    Теперь мы можем быстро ответить на любой запрос, который содержит середину. А на случай отрезков, которые не содержат, рекурсивно сделаем то же самое для половин массива: тоже попилим их пополам и предподсчитаем то же самое.
+    \begin{center}
+        \begin{tikzpicture}
+            \draw[step=1] (0,0) grid (16,1);
+            \foreach\i in {0,...,7}
+            {
+                \draw[darkgreen, thick] (\i,0) arc (240:300:8-\i);
+                \draw[darkgreen, thick] (8,0) arc (240:300:1+\i);
+            }
+            \draw[step=1, shift={(-.125,0)}] (0,-3) grid (8,-2);
+            \draw[step=1, shift={(.125,0)}] (8,-3) grid (16,-2);
+            \foreach\i in {0,...,3}
+            {
+                \draw[darkgreen, thick, shift={(-.125,0)}] (\i,-3) arc (240:300:4-\i);
+                \draw[darkgreen, thick, shift={(-.125,0)}] (4,-3) arc (240:300:1+\i);
+                \draw[darkgreen, thick, shift={(.125,0)}] (8+\i,-3) arc (240:300:4-\i);
+                \draw[darkgreen, thick, shift={(.125,0)}] (12,-3) arc (240:300:1+\i);
+            }
+            \draw[step=1, shift={(-.25,0)}] (0,-6) grid (4,-5);
+            \draw[step=1, shift={(-.125,0)}] (4,-6) grid (8,-5);
+            \draw[step=1, shift={(.125,0)}] (8,-6) grid (12,-5);
+            \draw[step=1, shift={(.25,0)}] (12,-6) grid (16,-5);
+            \foreach\i in {0,1}
+            {
+                \draw[darkgreen, thick, shift={(-.25,0)}] (\i,-6) arc (240:300:2-\i);
+                \draw[darkgreen, thick, shift={(-.25,0)}] (2,-6) arc (240:300:1+\i);
+                \draw[darkgreen, thick, shift={(-.125,0)}] (4+\i,-6) arc (240:300:2-\i);
+                \draw[darkgreen, thick, shift={(-.125,0)}] (6,-6) arc (240:300:1+\i);
+                \draw[darkgreen, thick, shift={(.125,0)}] (8+\i,-6) arc (240:300:2-\i);
+                \draw[darkgreen, thick, shift={(.125,0)}] (10,-6) arc (240:300:1+\i);
+                \draw[darkgreen, thick, shift={(.25,0)}] (12+\i,-6) arc (240:300:2-\i);
+                \draw[darkgreen, thick, shift={(.25,0)}] (14,-6) arc (240:300:1+\i);
+            }
+        \end{tikzpicture}
+    \end{center}
+    Начиная с какого-то момента будет лучше ручками пройти. Очевидно, что мы можем найти нужный нам слой за $\log n$, после чего быстро найти сумму. Хочется найти слой быстрее. Для этого найдём максимальный общий префикс левой и правой границ (например, все элементы, у которых номер начинается на \verb|01|, попадают во вторую четверть). Для этого можно их по \verb|xor|'ить и найти наибольший значащий бит.
+    \subparagraph{\undercolorblack{orange}{Нечто непонятное по теме}.}
+    Давайте разобьём наш массив не на 2, а на несколько кусков (длины \pseudocode{b} каждый), и также от каждой границы найдём префиксы и суффиксы
+    \begin{center}
+        \begin{tikzpicture}
+            \draw[step=1] (0,0) rectangle (15,1);
+            \foreach\i in {1,...,4}
+            {
+                \draw[thick] (\i*3,-.75) -- ++(0,2.25);
+            }
+            \draw[thick,darkgreen] (2,-.5) -- ++(0,-.5) node[below] {\pseudocode{l}} -- ++(9,0) node[below]{\pseudocode{r}} -- ++(0,.5);
+            \draw[thick,darkgreen] (2,0) arc (240:300:1);
+            \draw[thick,darkgreen] (3,0) arc (240:300:3);
+            \draw[thick,darkgreen] (6,0) arc (240:300:3);
+            \draw[thick,darkgreen] (9,0) arc (240:300:2);
+        \end{tikzpicture}
+    \end{center}
+    Если мы ищем сумму на отрезке, у нас будет несколько целых кусков и два нецелых. Два нецелых мы уже знаем, а по целым мы могли бы пробежаться, но не хотим, это увеличит асимптотику. Поэтому давайте на целых кусках построим ту же структуру. Ещё нам надо не забыть построить то же самое внутри каждого маленького отрезка (чтобы искать сумму на отрезке, который и целого куска не содержит). Тут у нас получится $T(n)=O(n)+\frac n{\log n}T(\log n)$. Итого $T(n)=n\log^*n$ (т.е. итерированный логарифм). Насколько эта ебота на практике работает быстрее, чем ДО --- вопрос открытый. Можете сами потестировать и решить.\\
+    Хорошо, а давайте заметим следующее: мы внутри этой еботы использовали непересекающуюся разреженную таблицу. А давайте использовать не её, а снова такую еботу (взяв $b\approx\log^*n$). Получим итерированный итерированный логарифм. Почему нельзя делать это же самое бесконечное количество раз? Потому что с каждым уровнем вложенности константа времени на запрос становится всё больше и больше. Чтобы подобрать правильный уровень вложенности, надо решить задачу о минимизации вот такой абобы: $n\log^{\overbrace{{*}{*}\cdots{*}}^k}n+mk$, где $m$ --- количество запросов. Решение этой задачи --- это, \textit{барабанная дробь}, обратная Аккермана. И на самом деле есть глубокие причины, почему быстрее, чем за обратную функцию Аккермана не получится.
+    \paragraph{\undercolorblack{orange}{Примеры задач с двумерными запросами}.}
+    Пускай есть прямоугольники. Надо найти точку, покрытую максимальным количеством прямоугольников. Идея в том, чтобы разбить плоскость на более понятные одномерные конструкции. Пересечём всю нашу фигуру горизонтальной прямой. Эту прямую будем двигать вверх, и будем следить за её состоянием. Состояние --- для каких кусков прямой сколько прямоугольников её покрывают. Выпишем все возможные границы этих самых кусков, то есть все вертикальные границы всех прямоугольников. Нашу прямую разобьём на эти самые куски. Они покрываются всегда одним и тем же количеством прямоугольников. Как состояние прямой меняется? Сначала у прямой везде нули. Оно поменяется, когда мы встретим нижнюю границу нижнего прямоугольника. Потом мы встречаем ещё одну верхнюю границу, и там увеличиваем либо уменьшаем наши числа.\\
+    Нужна структура данных, поддерживающая состояние нашей прямой. Нам нужно прибавлять на отрезке, вычитать на отрезке, и искать максимум. Можем ли мы сделать это в ДО? Да. Сначала разобьём всю ось $x$ на отрезки (пишем границы прямоугольников, сортируем, записываем в массив). Идём вверх --- встречаем прямоугольники. При встрече нового, увеличиваем на единицу значение на отрезке, при конце старого --- уменьшаем. В первом случае пересчитываем максимум, если он увеличился, обновляем ответ.\\
+    Таким образом можно свести двумерную задачу к одномерной структуре данных. Иногда можно также сводить трёхмерные задачи к двумерным структурам.\\
+    Хорошо, а если нам надо для заданной точки отвечать, в скольких отрезках она лежит. Для этого делаем то же самое, но ДО будет персистентно. Каждая версия будет отвечать за свою область $y$. И в этом массиве версий двоичным поиском ищем нужный, после чего берём ответ. Ну, как, чтобы взять ответ нужно тоже найти нужный отрезок по $x$. Итого имеем предподсчёт $O(n\log n)$ и запрос $O(\log n)$.\\
+    Теперь давайте искать площадь объединения всех прямоугольников. Тут уже трудно, потому что по сути нам нужно в ДО искать количество ненулевых элементов, а операции недистрибутивны получаются. Поэтому давайте искать число минимумов (т.к. у нас все элементы неотрицательны). Теперь давайте сожмём координаты.  Вместо количества минимумов можно возвращать сумму длин каждого отрезочка.\\
+    Пусть у нас есть несколько непересекающихся фигур, стороны которых параллельны осям координат. Мы хотим по точке понять, в какой она фигуре. То есть тут у нас то же самое, но имеем не прибавление и вычитание на отрезке, а присвоение.
+    \paragraph{\undercolorblack{orange}{Двумерные структуры}.}
+    Иногда хочется честно двумерные структуры. Чем был бы двумерный аналог ДО? Это были бы запросы на прямоугольниках двумерного массива. Давайте просто все техники перенесём с обычного ДО на двумерное. Начнём с суммы. У нас будет \pseudocode{sum(l, r, t, b)}. Если у нас массив не меняется, то можно делать префиксными суммами (суммами на прямоугольниках). Там уже нужно 4 прямоугольника, два их которых вы складываете, а два --- вычитаете. Чтобы посчитать этот самый массив, есть два метода. Первый --- как в самих суммах (\pseudocode{dp[i][j] = dp[i][j-1] + dp[i-1][j] - dp[i-1][j-1]}), второй --- сначала считаете одномерные префиксы, потом переводите их в двухмерные. Второй способ лучше, если случай уж очень многомерный (4\textsuperscript{х}, например).\\
+    Хорошо, а как с деревом отрезков. А точнее, с \pseudocode{set(i, j, v)}? Сначала сделаем ДО чисто по вертикали, а в каждом узле ДО храним ДО по горизонтали. Тогда при операции задания элемента нам нужно перестроить все деревья отрезков, содержащие его. Их есть $\log n$, каждое мы меняем за $\log^2n$. Как в ДО искать сумму? Да точно также, сначала ищем нужные нам отрезки по вертикали, в каждом них в ДО ищем отрезки по горизонтали.\\
+    Какие имеем ограничения на функцию? Хочется её коммутативности, потому что не ясно, как считается сумма в прямоугольнике.\\
+    С массовыми операциями (и массовыми поисками вместе) всё достаточно плохо, потому что возникают проблемы с проталкиванием. Во внутренних деревьях всё с проталкиванием не хорошо: изменения данной вершины плохо объединяются в одно изменение.\\
+    Как жить с деревом Фенвика? У нас хранилась сумма \pseudocode{a[p(i)..i]}. В двумерном случае имеем \pseudocode{a[p(i)..i][p(j)..j]}, ничего не меняется. Как с такой штукой работать? Да точно так же, вы просто берёте код дерева Фенвика, берёте его \pseudocode{while}, дублируете и вставляете один в другой.\\
+    Разреженные таблицы. Точно также храним суммы на прямоугольниках вида \pseudocode{[i..i+2^k1)[j..j+2^k2)}, точно также берём уже 4 прямоугольника, которые объединяем. Имеем предподсчёт $O(nm\log n\log m)$ и запрос за $O(1)$.
+    \paragraph{\undercolorblack{orange}{Задача}.}
+    Даны точки в прямоугольнике, запросом является прямоугольник, ответом на него --- количество точек внутри. При желании можно применить то, что у нас уже есть, но мы сделаем иначе. Пронумеруем наши точки по вертикали, и построим на них ДО по горизонтали, и в каждом узле будем хранить отсортированный массив точек. Размер этого дерева, очевидно, $n\log n$. Как с его помощью отвечать на запросы? Ну, мы начала идём в ДО, а потом двумя двоичными поисками ищем в массивах по вертикали границы наших массивов. Получаем $\log^2n$. Но на самом деле все двоичные поиски можно схлопнуть в один большой. В корне сначала ищем вертикальные границы, а потом передаём их внутрь. Только надо для каждой позиции в большом массиве нужно предподсчитать, где вы будете, когда дойдёте до детей.
+    \paragraph{\undercolorblack{orange}{Fractional cascading}.}
+    Хочется двоичным поиском найти элемент $x$ в каждом из $m$ отсортированных массивов. По-тупому можем за $m\log n$. Возьмём первый массив, поищем в нём двоичным поиском наш элемент. Можем ли мы по его позиции понять что-нибудь про позицию во втором массиве? А вот что можно. Если $x$ заключён между $y$ и $z$, то можно найти самый поздний элемент во втором массиве, который не больше $y$ и самый ранний, который меньше $z$. И теперь можно искать не во втором массиве целиком, а в его кусочке. Проблема в том, что этот кусочек может быть большим. Это случается потому, что в дырку первого массива влезает много элементов второго. Давайте решим это радикально: запихнём каждый второй элемент второго массива в первый. Если массивов у нас много, начинаем с последнего, половину элементов которого пихаем в предпоследний, а половину уже новых элементов предпоследнего засовываем в массив до него. Тогда найдя элемент в первом массиве, мы поймём, что у нас есть только 2 места, где он может лежать во втором. Ищем за константу нужное, идём дальше. Итого имеем $m+\log n$. А сколько времени занял предподсчёт? Мы перекладываем за линию, значит нам надо только понять, сколько в наших новых массивах суммарно элементов. А увеличилось количество уж точно не больше, чем вдвое.
+    \paragraph{\undercolorblack{orange}{Деревья поиска}.}
+    Дерево поиска нужно для поиска. Ауф. Подробнее --- \pseudocode{insert}, \pseudocode{remove} и \pseudocode{find}. Последний --- для того чтобы в \mintinline{c++}{std::set} можно было проверять на то, есть ли элемент, а в \mintinline{c++}{std::map} --- чтобы брать элемент по ключу и для много чего ещё. И вообще нам иногда хочется брать ключ и делать с ним что-то.\\
+    Хорошо, что нам надо для построения дерева? Нам надо уметь сравнивать ключи. Всё, больше ничего.
+    \subparagraph{\undercolorblack{orange}{Наивная реализация}.}
+    Стандартное дерево поиска --- это двоичное дерево, где дети пронумерованы (мы знаем, какой правый, а какой --- левый). Поддерживается простое свойство. Если в вершине лежит \pseudocode{x}, то в левом поддереве всё меньше \pseudocode{x}, а в правом --- больше.
+    \begin{center}
+        \begin{tikzpicture}[every node/.style=treenode]
+            \node {15}
+            child {
+                node {9}
+                child {
+                    node {3}
+                }
+                child {
+                    node {14}
+                    child {
+                        node {10}
+                    }
+                    child[missing] {}
+                }
+            }
+            child {
+                node {21}
+                child[missing] {}
+                child {
+                    node {34}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    Мы ищем \pseudocode{find(k)}. Как? Смотрим в корень. Если в нём ровно \pseudocode{k}, то нашли. Если там \pseudocode{x < k}, то нужный нам элемент может быть только в правом поддереве а иначе --- в левом. Если в какой-то момент нужного нам поддерева не существует, то ключа \pseudocode{k} нет. Время работы этой операции --- $O($высота дерева$)$. Какой может быть высота? От $\log_2n$ до $n$. Хочется, чтобы эта высота была поменьше. Поддерживать его постоянно в идеально сбалансированном состоянии сложно, когда мы добавим операции \pseudocode{insert} и \pseudocode{remove}, но можно иметь всё примерно сбалансированным, чтобы высота была $O(\log n)$. Как реализуется \pseudocode{insert}? Да точно также как \pseudocode{find}. Мы смотрим на то, где бы мог быть новый элемент, идём пока не найдём пустое поддерево, там новый элемент и создаём. Работает это за такое же время, что и \pseudocode{find}.
+    \begin{center}
+        \begin{tikzpicture}[every node/.style=treenode]
+            \node (15) {15}
+            child {
+                node (9) {9}
+                child {
+                    node (3) {3}
+                    child[red, anchor=west] {
+                        node[draw=red] {6}
+                    }
+                }
+                child {
+                    node {14}
+                    child [anchor=east] {
+                        node {10}
+                    }
+                }
+            }
+            child {
+                node {21}
+                child[missing] {}
+                child {
+                    node {34}
+                }
+            };
+            \draw[red, ->] (15) to[out=180,in=90,looseness=.5] (9);
+            \draw[red, ->] (9) to[out=180,in=90,looseness=.5] (3);
+        \end{tikzpicture}
+    \end{center}
+    А вот как делать \pseudocode{remove}, уже сложно. Сначала найдём наш ключ. Если у него нет детей, удаляем и всё. Если ребёнок один, то переподвешиваем его к родителю нашего удаляемого ключа. А если детей два, то сложно. Давайте сделаем вот что. Из нашей вершины пойдём вправо, оттуда пойдём влево до упора. Мы получим минимальный ключ, больший данного. Давайте удалим этот ключ (его удалять легко, у него нет левого ребёнка), и поставим его вместо найденного \pseudocode{k}.
+    \begin{center}
+        \begin{tikzpicture}[
+            level 2/.style={sibling distance=2.5cm},
+            level 3/.style={sibling distance=1cm}
+            ]
+            \node {}
+            child[missing] {}
+            child {
+                node[treenode, text=red] (x) {$k$}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north] {}
+                }
+                child {
+                    node[treenode] {}
+                    child {
+                        node[treenode] {}
+                        child {
+                            node[treenode, text=red] (y) {$y$}
+                        }
+                        child {
+                            node[coordinate] {}
+                            node[subtree, anchor=north] {}
+                        }
+                    }
+                    child {
+                        node[coordinate] {}
+                        node[subtree, anchor=north] {}
+                    }
+                }
+            };
+            \draw[->, red] (y) -- (x);
+        \end{tikzpicture}
+    \end{center}
+    Другой вариант --- вырезать одного ребёнка целиком, а потом искать во втором ребёнке то, куда его вставить (целиком, как поддерево). Оба варианта также работают за высоту дерева. Второй ещё и хреново масштабируется, но и для наивной реализации пофиг.
+    \subparagraph{\undercolorblack{orange}{Дополнительные операции}.}
+    Указанные операции мы можем делать хэш-таблицей. Поэтому давайте создадим операцию \pseudocode{lower_bound(k)}. Она даёт нам минимальный элемент больше либо равный \pseudocode{k}, который в дереве есть. Как её делать? Да также рекурсивно, если текущая вершина меньше \pseudocode{k}, идём вправо, ведь все элементы слева тоже меньше. Если текущая больше \pseudocode{k}, то все справа также больше, а значит текущая нам подходит (запоминает его, пока не найдём лучший), а правые --- хуже. Если мы нашли ровно \pseudocode{k}, это ответ.
+    \subparagraph{\undercolorblack{orange}{AVL-деревья}.}
+    Есть вагон и маленькая тележка балансировать двоичное дерево. Мы рассмотрим AVL (Adelson---Velsky and Landis). В дереве есть следующий инвариант: у каждого элемента есть левый и правый сын (возможно, пустые). Будем мерить высоту поддерева в вершинах. И хочется, чтобы разница высот левого и правого сына была по модулю не больше одного. Вот пример корректного AVL-дерева.
+    \begin{center}
+        \begin{tikzpicture}
+            \node[treenode] {15}
+            child {
+                node[treenode] {9}
+                child {
+                    node[treenode] {3}
+                    node[outer sep=1.2mm,below left,scale=.8,blue]{0}
+                    node[outer sep=1.2mm,below right,scale=.8,blue]{0}
+                }
+                child[missing] {}
+                node[outer sep=1.2mm,below left,scale=.8,blue]{1}
+                node[outer sep=1.2mm,below right,scale=.8,blue]{0}
+            }
+            child {
+                node[treenode] {21}
+                child {
+                    node[treenode] {19}
+                    child[missing] {}
+                    child {
+                        node[treenode] {20}
+                        node[outer sep=1.2mm,below left,scale=.8,blue]{0}
+                        node[outer sep=1.2mm,below right,scale=.8,blue]{0}
+                    }
+                    node[outer sep=1.2mm,below left,scale=.8,blue]{0}
+                    node[outer sep=1.2mm,below right,scale=.8,blue]{1}
+                }
+                child {
+                    node[treenode] {34}
+                    node[outer sep=1.2mm,below left,scale=.8,blue]{0}
+                    node[outer sep=1.2mm,below right,scale=.8,blue]{0}
+                }
+                node[outer sep=1.2mm,below left,scale=.8,blue]{2}
+                node[outer sep=1.2mm,below right,scale=.8,blue]{1}
+            }
+            node[outer sep=1.2mm,below left,scale=.8,blue]{2}
+            node[outer sep=1.2mm,below right,scale=.8,blue]{3};
+        \end{tikzpicture}
+    \end{center}
+    Теорема: высота AVL-дерева $H=O(\log n)$. Вместо этого докажем, что $n\geqslant\alpha^H$. Обозначим это как $n(H)$. Чему это равно? У дерева есть корень и дети. При этом дети --- это либо два дерева высоты $H-1$, либо одно $H-1$, другое --- $H-2$. Итого имеем $n(H)\geqslant1+n(H-1)+n(H-2)$. Это растёт быстрее чем числа Фиббоначи, а они уже точно растут как $\alpha^n$.\\
+    Хорошо, как инвариант поддерживать? Вот так. Мы будем добавлять детей как хотим, но когда мы выходим из рекурсии, мы чиним инвариант. Понятно, что инвариант ломается не больше чем на единицу (потому что из поддерева высоты $H$ мы получаем поддерево высоты $H+1$, а значит разница между детьми может в худшем случае стать двойкой). Пусть у нас в каком-то узле сломался инвариант. Посмотрим на него. Назовём его \pseudocode{x}. И в левом поддереве имеем высоту $H$, а в правом --- $H+2$. И назовём вершину правого поддерева за \pseudocode{y}. Заметим, что оба ребёнка \pseudocode{y} не могут одновременно быть высоты $H+1$. К тому же в них инвариант выполняется, потому что они ниже по рекурсии, а значит мы уже исправили. Значит картинку имеем одну из двух:
+    \begin{center}
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{x}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                node[above left] {$H$}
+            }
+            child {
+                node[treenode] {\pseudocode{y}}
+                child {
+                    node[coordinate] {}
+                    node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                    node[right] {$H$}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                    node[above right] {$H+1$}
+                }
+                node[above right] {$H+2$}
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{x}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                node[above left] {$H$}
+            }
+            child {
+                node[treenode] {\pseudocode{y}}
+                child {
+                    node[coordinate] {}
+                    node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                    node[right] {$H+1$}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                    node[above right] {$H$}
+                }
+                node[above right] {$H+2$}
+            };
+        \end{tikzpicture}
+    \end{center}
+    В первом случае изменим дерево так (правый поворот):
+    \begin{center}
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{y}}
+            child {
+                node[treenode] {\pseudocode{x}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                    node[above left] {$H$}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                    node[left] {$H$}
+                }
+                node[above left] {$H+1$}
+            }
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                node[above right] {$H+1$}
+            };
+        \end{tikzpicture}
+    \end{center}
+    Во втором случае --- чуть сложнее. Какие высоты у $B$ и $C$? У либо $H$, либо $H-1$. И тут нам уже не важно, что именно, преобразование в любом случае такое:
+    \begin{center}
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{x}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                node[above left] {$H$}
+            }
+            child {
+                node[treenode] {\pseudocode{y}}
+                child {
+                    node[treenode] {\pseudocode{z}}
+                    child {
+                        node[coordinate] {}
+                        node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                        node[left] {$\substack{H\\H-1}$}
+                    }
+                    child {
+                        node[coordinate] {}
+                        node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                        node[left] {$\substack{H\\H-1}$}
+                    }
+                    node[right] {$H+1$}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                    node[above right] {$H$}
+                }
+                node[above right] {$H+2$}
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1.2cm},
+            ]
+            \node[treenode] {\pseudocode{z}}
+            child {
+                node[treenode] {\pseudocode{x}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                    node[left] {$H$}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                    node[left] {$\substack{H\\H-1}$}
+                }
+                node[above left] {$H+1$}
+            }
+            child {
+                node[treenode] {\pseudocode{y}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                    node[right] {$\substack{H\\H-1}$}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                    node[right] {$H$}
+                }
+                node[above right] {$H+1$}
+            };
+        \end{tikzpicture}
+    \end{center}
+    Выглядит неприятно, но на самом деле она выражается через предыдущую операцию. Мы сначала поворачиваем $y$ налево, а потом $x$ направо.\\
+    Что происходит с удалением? Мы удаляем элемент из какого-то ребёнка. Ну так и пофиг, делаем то же самое. У нас могут немного изменится высоты на картинках, но повороты те же самые с теми же самыми условиями.\\
+    Теперь заметим, что повороты мы делаем $H$ раз, а значит асимптотику они не портят.
+    \subparagraph{\undercolorblack{orange}{Дерево поиска как дерево отрезков}.}
+    Возьмём все элементы. Они по факту являются порядком ключей. Давайте выпишем все элементы в отсортированном порядке и свяжем с ними массив (то есть теперь у нас массив индексируется элементами дерева поиска). На этих элементах можно делать операции на отрезке. Например, считать сумму. Как это делать? Храним сумму в каждом поддереве, также храним значение минимального и максимального ключа на отрезке. А дальше делаем также, как в дереве отрезков, если отрезок целиком внутри, то добавляем его, если целиком снаружи, то выходим, иначе рекурсивно запускаемся. Единственная разница --- когда мы рекурсивно запускаемся, иногда надо добавлять элемент по текущему ключу. Можно писать это аккуратно, не хранить настолько много памяти, но это не главное. Главное --- что так можно.
+    \subparagraph{\undercolorblack{orange}{2--3-дерево}.}
+    Это другой способ балансировать дерево поиска. Оно бывает либо двоичным, либо троичным. То есть существует два типа узлов --- 2 и 3. При это 2-узел стандартный (в нем хранится \pseudocode{x}, слева всё меньше, справа --- больше). А в 3-узле хранятся два ключа \pseudocode{x} и \pseudocode{y}, и в левом всё меньше \pseudocode{x}, в правом --- больше \pseudocode{y}, а в среднем --- больше \pseudocode{x}, но меньше \pseudocode{y}. Это вроде как нечестно, но на самом деле можно говорить, что 3-узел --- это на самом деле 2-узел, в котором мы храним \pseudocode{x}, а его правый ребёнок --- это другой 2-узел, в котором \pseudocode{y}.
+    \begin{center}
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{x}|\pseudocode{y}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\pseudocode{<x}}] {}
+            }
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\hspace{4px}\parbox{.5cm}{\pseudocode{>x} \pseudocode{<y}}}] {}
+            }
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\pseudocode{>y}}] {}
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{x}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\pseudocode{<x}}] {}
+            }
+            child {
+                node[treenode] {\pseudocode{y}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\hspace{4px}\parbox{.5cm}{\pseudocode{>x} \pseudocode{<y}}}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\pseudocode{>y}}] {}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    Это дерево имеет такой инвариант: все дети всех вершин (кроме листьев) существуют, а все листы находятся на одном уровне. Вообще тривиально, что тут высота --- логарифм.
+    \begin{center}
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {text width = 7.5mm, ellipse}]
+            \node {15}
+            child {
+                node[3node] {3|8}
+                child {
+                    node {1}
+                }
+                child {
+                    node[3node] {5|6}
+                }
+                child {
+                    node {10}
+                }
+            }
+            child {
+                node {28}
+                child {
+                    node {19}
+                }
+                child {
+                    node[3node] {31|42}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    Как добавлять в 2--3-дерево? Спускаемся до самого нижнего слоя. Если там 2-узел, то вообще чилл. Если там 3-узел, то не настолько чилл, ведь если в него добавить, получится 4-узел. Пусть у нас в этом узле есть \pseudocode{x}, \pseudocode{y} и то, что мы добавляем (\pseudocode{k}). Давайте возьмём родителя этого 4-узла, добавим к нему \pseudocode{y} и заменим наш 4-узел на два 2-узла (с \pseudocode{x} и с \pseudocode{k}).
+    \begin{center}
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {treenode, text width = 7.5mm, ellipse}
+            ]
+            \node[treenode] {??}
+            child[missing] {}
+            child {
+                node[3node] {\pseudocode{x}|\pseudocode{y}|\pseudocode{k}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                }
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {treenode, text width = 7.5mm, ellipse}
+            ]
+            \node[3node] {??|\pseudocode{y}}
+            child[missing] {}
+            child {
+                node[treenode] {\pseudocode{x}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+            }
+            child {
+                node[treenode] {\pseudocode{k}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    Если в родителе был 2-узел, то прекрасно, а если 3-узел, то мы получили такую же проблему, как у нас была (существование 4-узла), но на уровень выше. Решим её также. Рано или поздно мы либо найдём 2-узел-предка, либо дойдём до корня. Когда корень превращается в 4-узел, мы преобразуем его также, но у него с родителем проблем нет.
+    \begin{center}
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {text width = 7.5mm, ellipse}]
+            \node {15}
+            child {
+                node[3node] {3|8}
+                child {
+                    node {1}
+                }
+                child {
+                    node[3node] {5|6|7}
+                }
+                child {
+                    node {10}
+                }
+            }
+            child {
+                node {28}
+                child {
+                    node {19}
+                }
+                child {
+                    node[3node] {31|42}
+                }
+            };
+        \end{tikzpicture}
+        \qquad
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=.75cm},
+            3node/.style = {text width = 7.5mm, ellipse}]
+            \node {15}
+            child {
+                node[3node] {3|7|8}
+                child {
+                    node {1}
+                }
+                child {
+                    node {5}
+                }
+                child {
+                    node {6}
+                }
+                child {
+                    node {10}
+                }
+            }
+            child {
+                node {28}
+                child {
+                    node {19}
+                }
+                child {
+                    node[3node] {31|42}
+                }
+            };
+        \end{tikzpicture}
+        \quad
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 2/.style={sibling distance=.75cm},
+            3node/.style = {text width = 7.5mm, ellipse}]
+            \node[3node] {7|15}
+            child {
+                node {3}
+                child {
+                    node {1}
+                }
+                child {
+                    node {5}
+                }
+            }
+            child {
+                node {8}
+                child {
+                    node {6}
+                }
+                child {
+                    node {10}
+                }
+            }
+            child {
+                node {28}
+                child {
+                    node {19}
+                }
+                child {
+                    node[3node] {31|42}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    Как делать удаление? Во-первых, мы точно также как и в наивном дереве поиска удаляем только листья (то есть когда нам нужно удалить не-лист, мы ищем самого маленького его потомка справа и меняем с ним местами, после чего удаляем как лист). Во-вторых, удаление осуществляется идейно точно также, как и добавление --- мы временно разрешаем 1-узлы. Теперь что делаем. У всех кроме корня есть брат. Есть этот брат --- 3-узел, крадём у него одно (правое либо левое) поддерево и побеждаем.
+    \begin{center}
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {treenode, text width = 7.5mm, ellipse}
+            ]
+            \node[treenode] {\pseudocode{x}}
+            child {
+                node[treenode] {}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+            }
+            child {
+                node[3node] {\pseudocode{y}|\pseudocode{z}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                }
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {treenode, text width = 7.5mm, ellipse}
+            ]
+            \node[treenode] {\pseudocode{y}}
+            child {
+                node[treenode] {\pseudocode{x}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+            }
+            child {
+                node[treenode] {\pseudocode{z}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    Если этот брат --- это 2-узел, то объединимся с ним --- подвесим к нему наше одно дерево. При это у родителя уменьшится на один количество детей.
+    \begin{center}
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {treenode, text width = 7.5mm, ellipse}
+            ]
+            \node[treenode] {\pseudocode{x}}
+            child {
+                node[treenode] {}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+            }
+            child {
+                node[treenode] {\pseudocode{y}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm},
+            3node/.style = {treenode, text width = 7.5mm, ellipse}
+            ]
+            \node[treenode] {}
+            child {
+                node[treenode] {\pseudocode{x}|\pseudocode{y}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    И опять если родитель --- 3-узел, то чилл, а если 2-узел, то проводим ту же операцию. В итоге доходим до корня. Если корень стал 1-узлом, то удалим корень напрочь, лол.\\
+    Вообще 2--3-дерево --- это частный случай B-дерева, в котором разрешают от B до 2B ключей, где B обычно от 50 до 2000.
+    \subparagraph{\undercolorblack{orange}{Декартово дерево}.}
+    Ещё один способ балансировать дерево. По-английски это дерево называют \textbf{Treap} (дерамида).\\
+    Как это устроено? Помимо основного ключа \pseudocode{x} есть дополнительный ключ \pseudocode{y}, который нужен для балансировки. Он устроен так: все вторые ключи всех поддеревьев меньше данного.
+    \begin{center}
+        \begin{tikzpicture}
+            \node[treenode] {\pseudocode{x};\pseudocode{y}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\hspace{4px}\parbox{.5cm}{\pseudocode{<x} \pseudocode{<y}}}] {}
+            }
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north, label={[yscale=2/1.5,xscale=1.4]center:\hspace{4px}\parbox{.5cm}{\pseudocode{>x} \pseudocode{<y}}}] {}
+            };
+        \end{tikzpicture}
+    \end{center}
+    Почему это \textbf{декартово} дерево? Потому что его можно на плоскости нарисовать, и получится вот что.
+    \begin{center}
+        \begin{tikzpicture}
+            \draw[step=1,dashed] (-8,0) grid (8,8);
+            \node[circle,fill] (t) at (0,8) {};
+            \node[circle,fill] (l) at (-3,6) {};
+            \node[circle,fill] (ll) at (-5,3) {};
+            \node[circle,fill] (lr) at (-1,5) {};
+            \node[circle,fill] (lrl) at (-2,1) {};
+            \node[circle,fill] (r) at (3,4) {};
+            \node[circle,fill] (rl) at (1,0) {};
+            \node[circle,fill] (rr) at (7,2) {};
+            \draw[->] (t) -- (l);
+            \draw[->] (l) -- (ll);
+            \draw[->] (l) -- (lr);
+            \draw[->] (lr) -- (lrl);
+            \draw[->] (t) -- (r);
+            \draw[->] (r) -- (rl);
+            \draw[->] (r) -- (rr);
+        \end{tikzpicture}
+    \end{center}
+    Нарисуем пример дерева:
+    \begin{center}
+        \begin{tikzpicture}[scale=2,every node/.style={treenode, text width = 7.5mm, ellipse,scale=2},
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm}]
+            \node {20,37}
+            child {
+                node {13,25}
+                child {
+                    node {5,10}
+                }
+                child {
+                    node {17, 3}
+                }
+            }
+            child {
+                node {23,8}
+            };
+        \end{tikzpicture}
+    \end{center}
+    Как декартово дерева балансировать? В качестве \pseudocode{y} выбираем случайные значения. Давайте докажем вот что. Для любых ключей \pseudocode{y} существует корректный способ построить декартово дерево. Это просто посмотреть на плоскости. Корень --- элемент с максимальным \pseudocode{y}. Делим плоскость на правую и левую полуплоскости. Слева и справа имеем набор точек с меньшим количеством вершин, а значит по индукции строим. К тому же, дерево строится единственным образом. Теперь более сложное утверждение: мат. ожидание высоты дерева является $O(\log n)$. Ну, тут вообще всё то же самое, что в быстрой сортировке, а её мы уже доказывали.\\
+    Теперь какие операции можно с декартовым деревом делать? Ну, мы уже хотим делать \pseudocode{insert}, \pseudocode{remove} и \pseudocode{find}. А ещё тут есть две новые операции --- \pseudocode{merge} и \pseudocode{split}. Что делает \pseudocode{merge}? Принимает на вход два дерева и объединяет их в одно. При этом все значения первого дерева меньше, чем все значения второго. Операция \pseudocode{split} делает наоборот: берёт большое дерево, ключ \pseudocode{k} и делит дерево на два --- первое состоит из тех, которые меньше \pseudocode{k}, второе --- из тех, которые больше либо равны.\\
+    Как делать \pseudocode{merge}? Смотрим на наши два дерева. Кто будет корнем итогового дерева? Тот, у кого в корне \pseudocode{y} больше. Пусть это левое дерево. Тогда у нас есть левое и правое поддеревья. Куда надо подвесить правое дерево? Ну, вправо. Так давайте сделаем \pseudocode{merge} от правого поддерева корня левого дерева и правого дерева.
+    \begin{minted}{\pseudo}
+        merge(a, b):
+            if a == null
+                return b
+            if b == null
+                return a
+            if a.y > b.y
+                a.right = merge(a.right, b)
+                return a
+            else
+                b.left = merge(a, b.left)
+                return b
+    \end{minted}
+    Как делать \pseudocode{split}? Посмотрим, где находится \pseudocode{k}. Если он больше значения в корне, то нужно взять всё левое поддерево и нужный кусочек правого.
+    \begin{minted}{\pseudo}
+        split(a, k):
+            if a == null
+                return null, null
+            if a.x < k
+                l, r = split(a.right, k)
+                a.right = l
+                return a, r
+            else
+                l, r = split(a.left, k)
+                a.left = r
+                return l, a
+    \end{minted}
+    Очевидно, что это работает за логарифм. Как можно сделать \pseudocode{insert(k)}? Сначала делаем \pseudocode{split(k)}, потом делаем два раза \pseudocode{merge}. На самом деле можно аккуратнее, чтобы было меньше действий. Давайте спустимся до того места, куда надо вставить \pseudocode{k}. Если он выше чем корень дерева --- он новый корень. Делаем \pseudocode{split}, левое подвешиваем влево, правое --- вправо. Если \pseudocode{k} не выше, чем корень, то идём влево либо вправо, и делаем то же самое там.\\
+    Как делаем \pseudocode{remove(k)}? Можно точно также --- два \pseudocode{split}'а, один \pseudocode{merge}. И тоже можно по-умному --- ищем \pseudocode{k}, делаем \pseudocode{merge} его детей, подвешиваем на его место.
+    \subparagraph{\undercolorblack{orange}{Дерево по неявному ключу}.}
+    Хотим делать такую структуру данных: хранит какие-то массивы и делает с ними вот что:
+    \begin{enumerate}
+        \item Взять массив и его элемент по индексу (\pseudocode{get(a, i)}).
+        \item Объединить два массива как строчки (\pseudocode{merge(a, b)}).
+        \item Отрезать первые \pseudocode{k} элементов массива (\pseudocode{split(a, k)}).
+    \end{enumerate}
+    Все операции хочется за логарифм.\\
+    Каждый массив --- это дерево. Как обычно, генерируем \pseudocode{y} случайно, а вот \pseudocode{x} --- это индексы массива, и мы их не храним. Как делать \pseudocode{merge}, очевидно, берём и делаем.\\
+    $$a=[\underset5\Phi;\underset2N;\underset8\Pi;\underset4\Xi;\underset6\Theta;\underset1\Psi]\qquad b=[(\Omega;3);(\Lambda;9);(\Gamma;7)]$$
+    \begin{center}
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=1cm}]
+            \node {$\Pi$}
+            child {
+                node {$\Phi$}
+                child[missing]
+                child {
+                    node {N}
+                }
+            }
+            child {
+                node {$\Theta$}
+                child {
+                    node {$\Xi$}
+                }
+                child {
+                    node {$\Psi$}
+                }
+            };
+        \end{tikzpicture}
+        \qquad
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=1cm}]
+            \node {$\Lambda$}
+            child {
+                node {$\Omega$}
+            }
+            child {
+                node {$\Gamma$}
+            };
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2.2cm},
+            level 2/.style={sibling distance=2.2cm},
+            level 3/.style={sibling distance=1cm}]
+            \node {$\Lambda$}
+            child {
+                node {$\Pi$}
+                child {
+                    node {$\Phi$}
+                    child[missing]
+                    child {
+                        node {N}
+                    }
+                }
+                child {
+                    node {$\Theta$}
+                    child {
+                        node {$\Xi$}
+                    }
+                    child {
+                        node {$\Omega$}
+                        child {
+                            node {$\Psi$}
+                        }
+                        child[missing]
+                    }
+                }
+            }
+            child {
+                node {$\Gamma$}
+            };
+        \end{tikzpicture}
+    \end{center}
+    Как делать \pseudocode{split}? Придётся для каждого поддерева посчитать, сколько в нём элементов. А точнее, нам нужно знать количество элементов в левом поддереве. И мы просто берём и смотрим, в какое поддерево должен идти элемент, по которому мы отрезаем. Код \pseudocode{split} остаётся почти таким же, как и в прошлый раз, только мы меняем \pseudocode{k}.
+    Также заметим, что всё что мы делали в дереве поиска, мы можем делать и тут. А на дереве поиска мы могли делать то же самое, что и в дереве отрезков. Значит и тут мы это можем. А ещё всё это можно делать персистентно. Всё таким же образом --- вместо того, чтобы что-то поменять, создаём копию, меняем её.\\
+    Всё плохо получается, когда у нас много одинаковых ключей. Чтобы такое зарандомило, надо постараться, но в работе с персистентностью вы можете \pseudocode{merge}'ить разные версии одного и того же. Или даже одну версию одного и того же. Как это будет выглядеть?
+    $$a=[\underset1\alpha;\underset2\beta]$$
+    \begin{center}
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2cm}]
+            \node {$\beta$}
+            child {
+                node {$\alpha$}
+            }
+            child[missing];
+        \end{tikzpicture}
+        \qquad\qquad
+        \begin{tikzpicture}[every node/.style={treenode},
+            level 1/.style={sibling distance=2cm}]
+            \node (b) {$\beta$}
+            child {
+                node (a) {$\alpha$}
+            }
+            child[missing];
+            \node (b') at ($(b)+(1.5,0)$) {$\beta$};
+            \draw[->] (b') to[out=-135,in=45] (a);
+            \draw[->] (b') to[out=-45,in=-45] (b);
+        \end{tikzpicture}
+    \end{center}
+    Это плохо выглядит как дерево, но всё же работать с ним можно как с деревом. Если ещё раз смёржить это с самим собой, то получится что-то ещё более страшное. Всё потому что у нас \pseudocode{y} одинаковые. Непонятно, что делать в таком случае. А в таком случае можно генерировать ключи на лету. Пусть мы мёржим два дерева. Тогда что мы делали раньше? Мы брали дерево с большим \pseudocode{y} и говорили, что оно --- корень. Давайте посмотрим на два дерева --- в одном 2 элемента в другом --- 1. Когда вы генерите ключи случайно, в каждого элемента есть $\frac13$ вероятность стать корнем. А значит у нас вероятность того, что в первом дереве будет глобальный максимум --- $\frac23$, а во втором --- $\frac13$. Так давайте когда мы мержим два дерева с размерами $n$ и $m$ с вероятностью $\frac n{m+n}$ подвесим второе к первому, а с вероятностью $\frac m{n+m}$. То есть ключи \pseudocode{y} у нас не хранятся, а только вот так появляются.
+    \subparagraph{\undercolorblack{orange}{Splay-деревья}.}
+    Что это такое? Дерево поиска, которое может делать всё то же самое, что и декартач. Оно делает всё за логарифм, но иногда бывает, что быстрее, чем на логарифм. Но делает оно всё это амортизировано. Как это работает? Ключевая операция называется \pseudocode{splay(x)}. Она берём узел \pseudocode{x}, который в дереве есть, и вытаскивает её в корень дерева. Делает оно это при помощи поворотов. Что такое поворот? См. AVL-дерево. К сожалению, если мы будем втупую поворачивать рёбра, будет правильно, но не хорошо. Поэтому мы делаем вот что. Смотрим на родителя --- \pseudocode{p} и дедушку \pseudocode{g}.
+    \begin{enumerate}
+        \addtocounter{enumi}{-1}
+        \item Если \pseudocode{x} --- это корень, мы уже всё сделали.
+        \item Если \pseudocode{p} --- это корень, то делаем операцию, которую нельзя называть (но называется она zig). Это простой поворот в нужную сторону.
+        \item Если рёбра \pseudocode{x}---\pseudocode{p} и \pseudocode{p}---\pseudocode{g} направлены в разные стороны, то делаем операцию zigzag --- это просто RL либо LR поворот.
+        \item Если рёбра \pseudocode{x}---\pseudocode{p} и \pseudocode{p}---\pseudocode{g}, то делаем операцию zigzig. Она вот какая:
+        \begin{center}
+            \begin{tikzpicture}
+                \node[treenode] {\pseudocode{g}}
+                child {
+                    node[treenode] {\pseudocode{p}}
+                    child {
+                        node[treenode] {\pseudocode{x}}
+                        child {
+                            node[coordinate] {}
+                            node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                        }
+                        child {
+                            node[coordinate] {}
+                            node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                        }
+                    }
+                    child {
+                        node[coordinate] {}
+                        node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                    }
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                };
+            \end{tikzpicture}
+            \qquad\qquad
+            \begin{tikzpicture}
+                \node[treenode] {\pseudocode{x}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+                child {
+                    node[treenode] {\pseudocode{p}}
+                    child {
+                        node[coordinate] {}
+                        node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                    }
+                    child {
+                        node[treenode] {\pseudocode{g}}
+                        child {
+                            node[coordinate] {}
+                            node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                        }
+                        child {
+                            node[coordinate] {}
+                            node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:D}] {}
+                        }
+                    }
+                };
+            \end{tikzpicture}
+        \end{center}
+        Это также можно выразить через повороты --- сначала поворот верхнего ребра, а потом нижнего.
+    \end{enumerate}
+    Теперь хотим сделать основные операции.
+    \begin{itemize}
+        \item[\pseudocode{insert}] Вставляем элемент как в наивной реализации, после этого делаем ему \pseudocode{splay}.
+        \item[\pseudocode{remove}] Удаляем элемент как в наивной реализации, после этого делаем \pseudocode{splay} его родителю или тому, кто встал на его место.
+        \item[\pseudocode{find}] Ищем элемент, делаем ему (или тому, кто на его месте есть) \pseudocode{splay}.
+    \end{itemize}
+    Утверждение очень простое --- сколько мы прошли вниз, столько мы же и идём вниз во время \pseudocode{splay}. А значит время любой операции равно времени выполнения \pseudocode{splay}. Покажем, что \pseudocode{splay} амортизировано работает за $\log n$. Введём потенциал. Посчитаем для каждого узла размер поддерева (и назовём его $S(x)$). Дальше пусть $r(x)=\log_2S(x)$. И тогда потенциал $\Phi$ равен сумме всех рангов.
+    \begin{figure}[H]
+        \begin{tikzpicture}[level 1/.style={sibling distance=2cm}, level 2/.style={sibling distance=1cm}]
+            \node[treenode] {}
+            child {
+                node[treenode] {}
+                child {
+                    node[treenode] {}
+                    node[outer sep=2mm,left,scale=.8,red] {1}
+                    node[outer sep=2mm,right,scale=.8,blue] {0}
+                }
+                child {
+                    node[treenode] {}
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {0}
+                        node[outer sep=2mm,left,scale=.8,red] {1}
+                    }
+                    child[missing] {}
+                    node[outer sep=2mm,left,scale=.8,red] {2}
+                    node[outer sep=2mm,right,scale=.8,blue] {1}
+                }
+                node[outer sep=2mm,left,scale=.8,red] {4}
+                node[outer sep=2mm,right,scale=.8,blue] {2}
+            }
+            child {
+                node[treenode] {}
+                child {
+                    node[treenode] {}
+                    child[missing] {}
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,left,scale=.8,red] {1}
+                        node[outer sep=2mm,right,scale=.8,blue] {0}
+                    }
+                    node[outer sep=2mm,left,scale=.8,red] {2}
+                    node[outer sep=2mm,right,scale=.8,blue] {1}
+                }
+                child[missing] {}
+                node[outer sep=2mm,left,scale=.8,red] {3}
+                node[outer sep=2mm,right,scale=.8,blue] {$\log_23\approx1.585$}
+            }
+            node[outer sep=2mm,left,scale=.8,red] {8}
+            node[outer sep=2mm,right,scale=.8,blue] {3}
+            ;
+        \end{tikzpicture}
+        \caption*{$\Phi\approx8.585$}
+    \end{figure}\noindent
+    Как мы знаем, $T^*=T+\Delta\Phi$. И докажем, что $T^*\leqslant1+3(\Delta r(x))=O(\log n)$. Почему $O(\log n)$? Ну, потому что \pseudocode{x} стал корнем, его ранг тупо равен $\log n$, а тут мы ещё вычитаем что-то. Докажем, что время операции, \textit{которую нельзя называть} не больше $1+3(\Delta r(x))$, а время остальных двух --- $(3\Delta r(x))$. Этого нам хватит, потому что мы сделаем несколько операций zigzag и \textit{которых которых нельзя нельзя называть называть} и одну, \textit{которую нельзя называть}. У нас всё сократится и останутся первый и последний ранги. И одна $1+{}$. Ну, давайте доказывать. Время мы будем считать в поворотах.
+    \begin{enumerate}
+        \item $T^*=1+(\Delta r(x)+\Delta r(p))$. У \pseudocode{p} ранг явно уменьшился, поэтому это всё не больше $T^*=1+3(\Delta r(x))$.
+        \item $T^*=2+(\Delta r(x)+\Delta r(p)+\Delta r(g))=2+(r'(x)+r'(p)+r'(g)-r(x)-r(p)-r(g))$. Заметим, что $r'(x)=r(g)$, значит они сокращаются. Также скажем, что $r(p)\geqslant r(x)$. Итого имеем $T^*\leqslant2+(r'(p)+r'(g)-2r(x))$. Хочется доказать (более строгое утверждение)
+        \[
+        \begin{split}
+            2+r'(p)+r'(g)-2r(x)&\leqslant2r'(x)-2r(x)\Leftrightarrow\\
+            \Leftrightarrow r'(p)+r'(g)-2r'(x)&\leqslant-2
+        \end{split}
+        \]
+        Что такое $r'(p)$ и $r'(g)$? Это логарифм размеров левого ($\alpha$) и правого ($\beta$) поддеревьев нового \pseudocode{x}. А размер самого поддерева \pseudocode{x} точно больше $\alpha+\beta$ (на одну вершину больше, собственно). Итого, упрощая неравенство, получаем
+        \[
+        \begin{split}
+            \log\alpha+\log\beta-2\log(\alpha+\beta)&\leqslant-2\\
+            \log\left(\frac{\alpha}{\alpha+\beta}\frac{\beta}{\alpha+\beta}\right)&\leqslant-2\\
+            \frac{\alpha}{\alpha+\beta}\frac{\beta}{\alpha+\beta}&\leqslant-\frac14\\
+        \end{split}
+        \]
+        А это правда по неравенству о средних.
+        \item
+        \[\begin{split}
+            T^*=2+(\cancel{r'(x)}+\underbrace{r'(p)}_{\leqslant r'(x)}+r'(g)-r(x)\underbrace{-r(p)}_{\leqslant r(x)}-\cancel{r(g)})\leqslant\\
+            \leqslant2+(r'(x)+r'(g)-2r(x))
+        \end{split}\]
+        Хотим доказать, что это меньше $3(r'(x)-r(x))$.
+        \[\begin{split}
+            2+r'(x)+r'(g)-2r(x)&\leqslant3r'(x)-3r(x)\\
+            +r'(g)+r(x)-2r'(x)&\leqslant-2
+        \end{split}\]
+        И опять получаем то же самое неравенство $\log\alpha+\log\beta-2\log(\alpha+\beta)\leqslant-2$.
+    \end{enumerate}
+    Что ж. Теперь хотим делать \pseudocode{split} и \pseudocode{merge}. Как делать \pseudocode{merge}? Берём максимум левого дерева, делаем ему \pseudocode{splay}. После этого у него не будет правого ребёнка, к которому и подвешиваем правое дерево. Потенциал при этой операции увеличится не больше чем на логарифм, а тут пофиг, потому что логарифм мы уже потратили на \pseudocode{splay}.\\
+    Как делать \pseudocode{split}? Да вообще тривиально, \pseudocode{splay}'им \pseudocode{x}, теперь он в корне, дальше понятно.\\
+    Теперь поговорим о том, как структура данных работает не в худшем случае. У нас есть $T^*=O(1+\Delta r(x))$. Как вообще теоретически понять, как \textit{не в худшем случае} можно что-то оценить. На это есть целая теория. Давайте скажем, что дереву поиска дают какой-то тест (т.е. последовательность операций). Оно как-то эти операции обработало. Пусть у нас есть оптимальное время обработки операций --- время, за их обработает самое быстрое (на данном тесте) дерево (OPT). А ещё у нас есть то, за сколько наше дерево это обработает (ANS). И мы хотим сказать, что какие бы операции мы не взяли, $\mathrm{ANS}\leqslant c\mathrm{OPT}$, где $c$ --- некоторая общая для всех константа. То есть если последовательность операций теоретически может выполниться быстро, но наше дерево также выполняется достаточно не-медленно. Проблема в том, как считать OPT, тут нужно ещё развить теорию. Так вот к чему это всё. Есть гипотеза, что splay-дерево удовлетворяет этому свойству. Никто не знает, верна она или нет. Если что, такие свойства существуют --- например стратегия реализации кэша, когда мы выкидываем то, что не использовалось долго --- это оптимально. Поэтому, кстати, всё, что с кэшами взаимодействует, считает, что кэш магически идеален. А как вообще опровергать подобные утверждения? Ну, пусть у нас последовательность состоит только из \pseudocode{find}. И если $f(i)$ --- количество раз, которые мы запросили $i$-тый элемент дерева, а $\sum f(i)=k$, то $T\geqslant\sum f(i)\log_2\frac k{f(i)}$. Это почти энтропия Шеннона, и аргументы тут почти такие же как с сортировкой за $n\log n$. И при этом время, которое мы один раз делаем \pseudocode{splay(i)}, является $O(\log\frac k{f(i)})$. То есть тут мы своеобразно зажимаем оценку в нужных нам границах. Отсюда и вопрос гипотезы.
+    \subparagraph{\undercolorblack{orange}{Scapegoat-дерево}.}
+    Дерево-козёл отпущения.\\
+    Зачем? Потому что тут не используются повороты для балансировки. Поворот рёбер --- это не всегда хорошо. Пусть у нас есть точки, отсортированные по вертикали, и мы хотим для прямоугольника искать, какие точки в нём. Это мы уже делали при помощи ДО, но тогда мы не умели добавлять и удалять точки. Когда мы добавляем новую точку, нам нужно куда-то приделать новую вершину. Ну, мы раздваиваем какой-нибудь узел.
+    \begin{figure}[H]
+        \begin{tikzpicture}
+            \node at (2,0) {$1$};
+            \node at (5,1) {$2$};
+            \node at (3,2) {$3$};
+            \node at (8,3) {$4$};
+            \node at (0,4) {$5$};
+            \node at (7,5) {$6$};
+            \node at (4,6) {$7$};
+            \node at (1,7) {$8$};
+            \node[red] at (6,8) {$9$};
+            \draw (-.5,-.5) rectangle (8.5,8.5);
+        \end{tikzpicture}\\
+        \begin{tikzpicture}[yscale=-1,level 1/.style={sibling distance=4cm},level 2/.style={sibling distance=2cm},level 3/.style={sibling distance=1cm},xscale=1.2]
+            \node {12345678\color{red}9}
+            child {
+                node {1358}
+                child {
+                    node {58}
+                    child {node{5}}
+                    child {node{8}}
+                }
+                child {
+                    node {13}
+                    child {node{1}}
+                    child {node{3}}
+                }
+            }
+            child {
+                node {2567\color{red}9}
+                child {
+                    node {27}
+                    child {node{7}}
+                    child {node{2}}
+                }
+                child {
+                    node {46\color{red}9}
+                    child {
+                        node{6\color{red}9}
+                        child {node[red]{9}}
+                        child {node{6}}
+                    }
+                    child {node{4}}
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Если глубина полученного дерева --- логарифм, то всё хорошо, всё работает за $\log^2n$. Но полученное дерево надо балансировать. Если мы добавим много вершин, у нас вырастет веточка. Почему мы не можем балансировать его как, например, AVL-дерево? Потому что при повороте надо вообще всё пересчитать.
+    \begin{figure}[H]
+        \begin{tikzpicture}[node distance=.05cm]
+            \node[treenode] (p) {\pseudocode{p}}
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+            }
+            child {
+                node[treenode] (x) {\pseudocode{x}}
+                child {
+                    node[coordinate] {}
+                    node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+                }
+            };
+            \node[right=of p,rectangle,draw]{ABC};
+            \node[right=of x,rectangle,draw]{BC};
+        \end{tikzpicture}\qquad\qquad
+        \begin{tikzpicture}[node distance=.05cm]
+            \node[treenode] (x) {\pseudocode{x}}
+            child {
+                node[treenode] (p) {\pseudocode{p}}
+                child {
+                    node[coordinate] {}
+                    node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:A}] {}
+                }
+                child {
+                    node[coordinate] {}
+                    node[subtree,anchor=north,label={[yscale=2/1.5,xscale=1.4]center:B}] {}
+                }
+            }
+            child {
+                node[coordinate] {}
+                node[subtree, anchor=north,label={[yscale=2/1.5,xscale=1.4]center:C}] {}
+            };
+            \node[left=of x,rectangle,draw]{ABC};
+            \node[left=of p,rectangle,draw]{AB};
+        \end{tikzpicture}
+        \caption*{Структуру на вершинах надо \textbf{полностью} пересчитать, чтобы узнать AB.}
+    \end{figure}\noindent
+    Декартово дерево ещё страшнее, оно отрывает ветки и подвешивает ветку к другой, тут ещё более непонятно, как надо жить.\\
+    Scapegoat-дерево балансируется вот за счёт чего: пусть $s(x)$ --- размер поддерева $x$. Свойство вот такое: если $p$ --- предок $s$, то $s(x)\leqslant\alpha s(p)$. И константа $\alpha$ одна для всего дерево. При этом $\alpha\in(0.5;1)$ (при $<\frac12$ не сойдётся сумма, при $>1$ просто будет плохо).
+    \begin{figure}[H]
+        \begin{tikzpicture}[level 1/.style={sibling distance=2cm}]
+            \node[treenode] {}
+            child {
+                node[treenode] {}
+                child {
+                    node[treenode] {}
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant2.8$}
+                    }
+                    child {
+                        node[treenode] {}
+                        child[missing]
+                        child {
+                            node[treenode] {}
+                            node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant1.4$}
+                        }
+                        node[outer sep=2mm,right,scale=.8,blue] {$2\leqslant2.8$}
+                    }
+                    node[outer sep=2mm,right,scale=.8,blue] {$4\leqslant4.2$}
+                }
+                child {
+                    node[treenode] {}
+                    node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant4.2$}
+                }
+                node[outer sep=2mm,right,scale=.8,blue] {$6\leqslant6.3$}
+            }
+            child {
+                node[treenode] {}
+                child[missing] {}
+                child {
+                    node[treenode] {}
+                    node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant1.4$}
+                }
+                node[outer sep=2mm,right,scale=.8,blue] {$2\leqslant6.3$}
+            }
+            node[outer sep=2mm,right,scale=.8,blue] {$9$}
+            ;
+        \end{tikzpicture}
+        \caption*{Пример scapegoat-дерева для $\alpha=0.7$.}
+    \end{figure}\noindent
+    Докажем, что для такого инварианта будет хорошо. Если мы спустились к вершине $x$ на высоту $h$, то $1\leqslant s(x)\leqslant\alpha^hn$. Отсюда $h\leqslant\log_{\frac1\alpha}n$.\\
+    Осталось лишь понять, как инвариант поддерживать. Ну, сначала пересчитаем размеры. Свойства могли сломаться только на пути от добавленной вершины до корня. Найдём вершину, у которой сломался ребёнок. Давайте возьмём эту вершину (\textbf{самую высокую} из них) и перестроим поддерево заново (в максимально сбалансированное).
+    \begin{figure}[H]
+        \begin{tikzpicture}[level 1/.style={sibling distance=2cm}]
+            \node[treenode] {}
+            child {
+                node[treenode] {}
+                child {
+                    node[treenode,thick,draw=red] {}
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant3.5$}
+                    }
+                    child {
+                        node[treenode] {}
+                        child[missing]
+                        child {
+                            node[treenode] {}
+                            child[missing]
+                            child {
+                                node[treenode] {}
+                                node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant1.4$}
+                            }
+                            node[outer sep=2mm,right,scale=.8,blue] {$2\leqslant2.1$}
+                        }
+                        node[outer sep=2mm,right,scale=.8,blue] {$3\leqslant3.5$}
+                    }
+                    node[outer sep=2mm,right,scale=.8,blue] {$5\not\leqslant4.9$}
+                }
+                child {
+                    node[treenode] {}
+                    node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant4.9$}
+                }
+                node[outer sep=2mm,right,scale=.8,blue] {$7\leqslant7$}
+            }
+            child {
+                node[treenode] {}
+                child[missing] {}
+                child {
+                    node[treenode] {}
+                    node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant1.4$}
+                }
+                node[outer sep=2mm,right,scale=.8,blue] {$2\leqslant7$}
+            }
+            node[outer sep=2mm,right,scale=.8,blue] {$10$}
+            ;
+        \end{tikzpicture}
+        \begin{tikzpicture}[level 1/.style={sibling distance=4cm},level 3/.style={sibling distance=2cm}]
+            \node[treenode] {}
+            child {
+                node[treenode] {}
+                child {
+                    node[treenode] {}
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant2.1$}
+                    }
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant2.1$}
+                    }
+                    node[outer sep=2mm,right,scale=.8,blue] {$3\leqslant4.9$}
+                }
+                child {
+                    node[treenode] {}
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant2.1$}
+                    }
+                    child {
+                        node[treenode] {}
+                        node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant2.1$}
+                    }
+                    node[outer sep=2mm,right,scale=.8,blue] {$3\leqslant4.9$}
+                }
+                node[outer sep=2mm,right,scale=.8,blue] {$7\leqslant7$}
+            }
+            child {
+                node[treenode] {}
+                child[missing] {}
+                child {
+                    node[treenode] {}
+                    node[outer sep=2mm,right,scale=.8,blue] {$1\leqslant1.4$}
+                }
+                node[outer sep=2mm,right,scale=.8,blue] {$2\leqslant7$}
+            }
+            node[outer sep=2mm,right,scale=.8,blue] {$10$}
+            ;
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Как мы перестраиваем дерево? Пусть у нас есть дерево размера $s(v)=k$. Как перестроить его за линию? Обходим дерево в отсортированном порядке, перестраиваем. Это $O(k)$. Это долго, но считаем амортизированную оценку. Давайте посмотрим на вершину $v$, которую мы перестроили. У неё слева $\frac k2$ вершин, и справа $\frac k2$ вершин. Чтобы она снова испортилась, нам нужно добавить несколько вершин в одно из поддеревьев (или убрать из другого). Решим уравнение:
+    $$
+    \frac k2+x>\alpha(k+x)\Leftrightarrow x(2-2\alpha)>(2\alpha-1)k\Leftrightarrow x>\frac{2\alpha-1}{2-2\alpha}k=\beta k
+    $$
+    То есть следующие $\beta k=O(k)$ операций будут работать без перестроек.\\
+    Как это применяется к описанной у нас задаче? Ну, напрямую применяется. Надо только учесть, что перебалансировка занимает $O(\log^2n)$, потому что вы ещё и структуру в узлах пересчитываете.
+    \paragraph{\undercolorblack{orange}{List order maintenance}}
+    Задача: есть списочек. Мы имеем следующие операции:
+    \begin{itemize}
+        \item \pseudocode{add_after(x, y)} --- добавить \pseudocode{x} после \pseudocode{y}.
+        \item \pseudocode{compare(x, y)} --- проверить, что \pseudocode{x} левее \pseudocode{y} в списке.
+    \end{itemize}
+    Умеем ли мы делать обе операции за $\log n$? Да, декартово дерево по неявному ключу + LCA. Или декартово дерево по неявному ключу + поиск индекса в дереве. Хочется быстрее.\\
+    Решение первое: в каждую вершину пишем число, которые возрастают слева направо. Когда мы вставляем число между двумя вершинами, мы берём ему число между заданными двумя. Проблема в том, что числа кончатся. Пусть мы храним числа от 1 до $n$. Тогда в худшем случае мы можем добавить $\log n$ раз, если вставлять нам будут всегда после первого элемента. Так себе результат, но тем не менее.\\
+    Решение второе: положим наши элементы в дерево поиска. Утверждается, что можно сравнивать элементы так: у какого путь до корня лексикографически меньше, тот элемент и меньше. Верно? Не верно, у корня лексикографически путь меньше, чем его левого ребёнка, а надо, чтобы было больше. Есть тривиальный способ это поправить --- хранить ключи только в листьях. Это мы на практике обсуждали. Можно сделать троичную систему счисления. В корне пишем 1, в левом поддереве всё начинается с нуля, в правом --- с 2. Если дерево не надо балансировать, то вообще всё хорошо. А если надо, то мы уже придумали хорошее дерево --- scapegoat. Теперь хочется, чтобы добавления в дерево случались не часто. Берём элементы, разбиваем их на блоки. Каждому блоку сопоставляем вершину в scapegoat-дереве. Одну. Каждый элемент в блоке имеет ссылку на узел. Если нам нужно сравнить элементы разных блоков --- мы знаем, что делать. А если элементы одного блока, то возьмём блоки размера $\log n$ и используем первый способ. Как вставлять элемент? Берём тот же самый блок. Пытаемся в него вставить. Если он переполнился, то блок пилим пополам, и с нуля строим половины. Одну половину подвешиваем к тому узлу дерева, которое и было, а вторую --- добавляем в scapegoat. Это мы делаем за $\log n$ (и распил, и добавление работают за $\log n$). Да ещё и происходит это один раз в $O(\log n)$ операций. Чтобы честно доказать амортизированную оценку, надо ввести потенциал $\Phi=\sum\mathrm{size(block)}-\frac{\log n}2$.
+    \paragraph{\undercolorblack{orange}{Запросы на деревьях}.}
+    Говорить мы обычно будем не про связный граф без циклов, а про подвешенное дерево. С производным количеством детей. Зачем нам это? Ну, у нас может в жизни дерево возникнуть (в небольших компьютерных сетях, скажем). Но вообще можно взять что-нибудь вложенное (диаграмму классов, там, или ещё чего).
+    \subparagraph{\undercolorblack{orange}{Least commont ancestor}.}
+    Даны две вершины, надо найти их минимального общего предка. Терминологию мы знаем, предки --- те кто выше. Хотя бы один общий предок у вершин есть (корень), а вообще все предки образуют путь. И поэтому зная самого низкого предка, мы знаем всех.\\
+    Как делать это за $O(n)$? Как угодно. Например, посчитать для всех вершин глубину и подняться на один уровень. Но хочется быстрее.\\
+    Есть метод, называемый <<двоичные подъёмы>>. Вообще полезный алгоритм на дереве, не только для LCA. Идея вот в чём: для каждой вершины посчитаем её предков высоты $2^k$. То есть имеем массив \pseudocode{p[v,k]} такой что \pseudocode{p[v,0] = v.parent}, \pseudocode{p[v,k] = p[p[v,k-1],k-1]}. Вопрос: что делать, если мы идём выше корня? Проще и удобнее всего говорить, что подъём выше корня --- это сам корень.\\
+    Как тогда считать LCA? Ну, легко. Пусть у нас есть вершина \pseudocode{u} и вершина \pseudocode{v}. Сначала мы сделаем $\log n$ подъёмов, чтобы обе вершины были на одном уровне. А потом давайте делать двоичный поиск. Есть общие предки, а потом --- не общие предки. Как делать двоичный поиск без массива? Ну, легко. Сделаем большой двоичный подъём. Если мы попали в одну вершину, значит нам нужно ниже, уменьшаем \pseudocode{k} на единицу, ищем ниже. Если мы попали в разные вершины, то теперь мы можем начать поиск от этих двух разных вершин. В итоге прыжок на величину 1 даст нам одну вершину, и эта вершина и есть LCA.\\
+    Другая техника --- эйлеров обход.
+    \begin{figure}[H]
+        \begin{tikzpicture}[level 1/.style={sibling distance=2cm},level 2/.style={sibling distance=1cm}]
+            \node[treenode] {1}
+            child {
+                node[treenode] {2}
+                child {
+                    node[treenode] {3}
+                }
+                child {
+                    node[treenode] {4}
+                    child {
+                        node[treenode] {5}
+                    }
+                }
+            }
+            child {
+                node[treenode] {6}
+                child {
+                    node[treenode] {7}
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Что такое эйлеров обход? Выписываем себя, потом идём влево, потом вправо. В нашем случае этот обход вот такой:
+    $$
+    [1,2,3,2,4,5,4,2,1,6,7,6,1]
+    $$
+    Этой штукой тоже можно пользоваться для поиска LCA. Давайте к каждой вершине припишем глубину.
+    $$
+    [0,1,2,1,2,3,2,1,0,1,2,1,0]
+    $$
+    Давайте для каждой вершины хранить, где она в первом массиве (любое место). Заметим, что на пути от вершины \pseudocode{u} до \pseudocode{v} есть их наименьший общий предок. При этом никакого предка выше там нет, ведь если мы вышли из LCA, тогда мы обратно в него не зайдём. Поэтому мы можем просто пройти по массиву от одной вершины до другой и найти во втором массиве наименьшую глубину. Но зачем проходиться, если у нас есть разреженная таблица, которую мы строим за $O(n\log n)$ и отвечаем на запросы за $O(1)$. А хочется сделать $O(n)$ на предподсчёт (Алгоритм Фарака-Колтона и Бендера). Возьмём наш массив, разобьём его на куски размера $B\approx\log n$. На нём построим разреженную таблицу. Как будем на запросы отвечать? Если запрос большой, мы можем взять большие куски, их мало, и ответы на них мы знаем из разреженной таблицы. Осталось отвечать на запрос на маленьком кусочке.
+    \begin{figure}[H]
+        \begin{tikzpicture}
+            \draw[step=1] (0,0) grid (13,1);
+            \newcounter{tmp}
+            \setcounter{tmp}{0}
+            \foreach\l in {1,2,3,2,4,5,4,2,1,6,7,6,1}
+            {
+                \node[scale=1.5] at (\value{tmp}+.5,.5) {\l};
+                \addtocounter{tmp}{1}
+            }
+            \draw[darkgreen, thick] (0,0) arc (240:300:3);
+            \draw[darkgreen, thick] (3,0) arc (240:300:3);
+            \draw[darkgreen, thick] (6,0) arc (240:300:3);
+            \draw[darkgreen, thick] (9,0) arc (240:300:3);
+            \draw[darkgreen, thick] (12,0) arc (240:300:1);
+            \draw[red, thick] (1,1) -- ++(0,.5) -| (11,1);
+            \draw[red, thick, dashed] (1,1.5) arc (120:60:2);
+            \draw[red, thick] (3,1.5) arc (120:60:3);
+            \draw[red, thick] (6,1.5) arc (120:60:3);
+            \draw[red, thick, dashed] (9,1.5) arc (120:60:2);
+        \end{tikzpicture}
+    \end{figure}\noindent\deletecounter{tmp}
+    Идея в том, что маленькие кусочки бывают некоторых определённых типов. Тип --- класс эквивалентности с точностью до прибавления константы.
+    \begin{figure}[H]
+        \begin{tikzpicture}
+            \draw[step=1] (0,0) grid (13,1);
+            \newcounter{tmp}
+            \setcounter{tmp}{0}
+            \foreach\l in {1,2,3,2,4,5,4,2,1,6,7,6,1}
+            {
+                \node[scale=1.5] at (\value{tmp}+.5,.5) {\l};
+                \addtocounter{tmp}{1}
+            }
+            \draw[darkgreen, thick] (0,0) arc (240:300:3) node[midway,below] {$+$ $+$};
+            \draw[darkgreen, thick] (3,0) arc (240:300:3) node[midway,below] {$+$ $+$};
+            \draw[darkgreen, thick] (6,0) arc (240:300:3) node[midway,below] {$-$ $-$};
+            \draw[darkgreen, thick] (9,0) arc (240:300:3) node[midway,below] {$+$ $-$};
+            \draw[darkgreen, thick] (12,0) arc (240:300:3) node[midway,below] {что угодно};
+        \end{tikzpicture}\deletecounter{tmp}
+    \end{figure}\noindent
+    Сколько классов эквивалентности? Ну, $2^B$, где $B$ --- размер блока, потому что мы можем после вершины сделать $+1$ или $-1$. То есть типов блоков у нас $n$, мы можем посчитать для каждого блока тип его класса. А значит мы можем перебрать все блоки для каждого перебрать все запросы и сохранить их.
+    \subparagraph{\undercolorblack{orange}{Минимум за малую асимптотику}.}
+    Идейно можно делать то же самое, что мы уже делали, даже если у нас массив не построен специальным образом. Возьмём наш массив
+    $$
+    [2,5,1,6,8,3,7,4]
+    $$
+    И построим по нему декартово дерево (ключами являются индексы, приоритетами --- значения).
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+                level 1/.style={sibling distance=3cm},
+                level 2/.style={sibling distance=2cm},
+                level 3/.style={sibling distance=1cm}
+            ]
+            \node[treenode] {1}
+            child {
+                node[treenode] {2}
+                child[missing]
+                child {
+                    node[treenode] {5}
+                }
+            }
+            child {
+                node[treenode] {3}
+                child {
+                    node[treenode] {6}
+                    child[missing]
+                    child {
+                        node[treenode] {8}
+                    }
+                }
+                child {
+                    node[treenode] {4}
+                    child {
+                        node[treenode] {7}
+                    }
+                    child[missing]
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Что такое LCA? Это вершина, которая находится между данными двумя и минимальная. Значит можно взять LCA в этом дереве.
+    \subparagraph{\undercolorblack{orange}{Быстрый подъём в дереве}.}
+    Хочется быстро подняться на $d$ вверх по дереву. Первый --- двоичные подъёмы. Второй --- long-path decomposition. Разобьём дерево на максимально длинные пути до детей.
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+                level 1/.style={sibling distance=3cm},
+                level 2/.style={sibling distance=2cm},
+                level 3/.style={sibling distance=1cm},
+                every node/.style={treenode,text width=2mm,outer sep=0mm,ultra thick}
+            ]
+            \node {}
+            child {
+                node {}
+            }
+            child {
+                node {}
+                edge from parent[ultra thick]
+                child {
+                    node {}
+                    child {
+                        node {}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {}
+                        child {
+                            node {}
+                        }
+                        child {
+                            node {}
+                            edge from parent[thin]
+                        }
+                    }
+                }
+                child {
+                    node {}
+                    edge from parent[thin]
+                    child {
+                        node {}
+                        edge from parent[ultra thick]
+                    }
+                }
+            }
+            child {
+                node {}
+                child {
+                    node {}
+                }
+                child {
+                    node {}
+                    edge from parent[ultra thick]
+                    child {
+                        node {}
+                    }
+                    child {
+                        node {}
+                        edge from parent[thin]
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Потом для каждого пути запомним ещё столько предков сверху, чему равна длина пути. Это называется лестницей. С помощью всего этого можно делать то, что хотим. Как? Возьмём вершину. Она лежит на каком-то пути. Если нам нужен предок внутри пути или лестницы, мы победили. Иначе идём на вершину лестницы, которая лежит в чьём-то пути. И этот путь в два раза длиннее, чем был прошлый.\\
+    А как убрать логарифм из времени запроса? Ну, посчитаем тут двоичные подъёмы, будем ходить по ним. Но теперь будет предподсчёт за $O(n\log n)$, потому что мы считаем двоичные подъёмы.\\
+    А теперь давайте искать двоичные подъёмы только для листьев. Предподсчитаем для каждой вершины какой-то её лист-потомок. Спустимся в него, потом идём в двоичный подъём листа, поднимаемся по лестнице, делаем то же самое.\\
+    Однако листьев у нас тоже может быть $O(n)$. Хочется перестроить дерево так, чтобы листьев было меньше. Давайте отрежем каждое поддерева размера не больше $B$
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            level 4/.style={sibling distance=1.5cm},
+            level 5/.style={sibling distance=.75cm},
+            every node/.style={treenode,text width=1.5mm,outer sep=0mm}
+            ]
+            \node {}
+            child {
+                node {}
+                child {
+                    node[draw=red] {}
+                }
+                child {
+                    node {}
+                    child {
+                        node[draw=red] {}
+                    }
+                    child {
+                        node {}
+                        child {
+                            node[draw=red] {}
+                            [every child node/.style={draw=red}]
+                            child {
+                                node {}
+                                edge from parent[red]
+                            }
+                            child {
+                                node {}
+                                edge from parent[red]
+                            }
+                        }
+                        child {
+                            node {}
+                            child {
+                                node {}
+                                child {
+                                    node[draw=red] {}
+                                    [every child node/.style={draw=red}]
+                                    child {
+                                        node {}
+                                        edge from parent[red]
+                                    }
+                                    child {
+                                        node {}
+                                        edge from parent[red]
+                                    }
+                                    child {
+                                        node {}
+                                        edge from parent[red]
+                                    }
+                                }
+                            }
+                        }
+                        child {
+                            node[draw=red] {}
+                            [every child node/.style={draw=red}]
+                            child {
+                                node {}
+                                edge from parent[red]
+                                child {
+                                    node {}
+                                }
+                            }
+                        }
+                    }
+                }
+                child {
+                    node[draw=red] {}
+                }
+            }
+            child {
+                node[draw=red] {}
+                [every child node/.style={draw=red}]
+                child {
+                    node {}
+                    edge from parent[red]
+                }
+                child {
+                    node {}
+                    edge from parent[red]
+                    child {
+                        node {}
+                    }
+                }
+            }
+            child {
+                node[draw=red] {}
+            }
+            child {
+                node {}
+                child {
+                    node[draw=red] {}
+                    [every child node/.style={draw=red}]
+                    child {
+                        node {}
+                        edge from parent[red]
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                        edge from parent[red]
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                        edge from parent[red]
+                    }
+                }
+                child {
+                    node[draw=red] {}
+                }
+            };
+        \end{tikzpicture}
+        \caption*{$B=4$}
+    \end{figure}\noindent
+    При поиске делаем вот что: если наша вершина не удалена, делаем всё как раньше. Если она удалена, но ответ не удалён, то поднимаемся в корень удалённого дерева, идём выше, дальше всё как раньше (спускаемся в лист и идём оттуда). А если наш ответ тоже в удалённом дереве, то типов деревьев довольно мало (примерно $4^B$). А значит снова запомним все запросы для всех типов за $4^BB^2$. И всё, нам надо взять $B=\frac{\log n}3$, и всё хорошо.
+    \subparagraph{\undercolorblack{orange}{Heavy-light-декомпозиция}.}
+    Рассмотрим дерево:
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=1.75cm},
+            level 2/.style={sibling distance=1cm},
+            level 3/.style={sibling distance=.5cm},
+            every node/.style={treenode,text width=1.5mm,outer sep=0mm}
+            ]
+            \node {}
+            child {
+                node {}
+                child {
+                    node {}
+                    child {
+                        node {}
+                    }
+                }
+                child {
+                    node {}
+                    child {
+                        node {}
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                    }
+                }
+            }
+            child {
+                node {}
+                child {
+                    node {}
+                    child {
+                        node {}
+                        child {
+                            node {}
+                        }
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                    }
+                }
+            }
+            child {
+                node {}
+                child {
+                    node {}
+                }
+                child {
+                    node {}
+                    child {
+                        node {}
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Хочется два типа запросов: \pseudocode{set(v, val)} --- присвоить значение вершине --- и \pseudocode{calc(u, v)} --- взять путь от вершины \pseudocode{u} до \pseudocode{v} и посчитать на нём некоторую ассоциативную функцию. Ну, любой путь --- это путь из первой вершины в LCA, а потом от LCA до второй вершины. То есть мы можем считать, что все запросы от предка к потомку или наоборот. Это делается при помощи heavy-light-декомпозиции. Хочется красиво разбить дерево на пути, чтобы потом считать на каждом пути значение при помощи ДО. Делать это будем так. Возьмём вершину и посчитаем количество вершин в каждом поддереве ребёнка. Пусть тот ребёнок, у которого поддерево самое большое --- \pseudocode{u}. Тогда ребро от предка до \pseudocode{u} считается <<тяжёлым>>, а до остальных детей --- <<лёгкими>>.
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=1.75cm},
+            level 2/.style={sibling distance=1cm},
+            level 3/.style={sibling distance=.5cm},
+            every node/.style={treenode,text width=1.5mm,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {}
+            child {
+                node {}
+                child {
+                    node {}
+                    child {
+                        node {}
+                        edge from parent[heavy]
+                    }
+                }
+                child {
+                    node {}
+                    edge from parent[heavy]
+                    child {
+                        node {}
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                        edge from parent[thin]
+                    }
+                }
+            }
+            child {
+                node {}
+                edge from parent[heavy]
+                child {
+                    node {}
+                    child {
+                        node {}
+                        child {
+                            node {}
+                            edge from parent[thin]
+                        }
+                        child {
+                            node {}
+                        }
+                    }
+                    child {
+                        node {}
+                        edge from parent[thin]
+                        child {
+                            node {}
+                            edge from parent[heavy]
+                        }
+                    }
+                    child {
+                        node {}
+                        edge from parent[thin]
+                    }
+                }
+            }
+            child {
+                node {}
+                child {
+                    node {}
+                }
+                child {
+                    node {}
+                    edge from parent[heavy]
+                    child {
+                        node {}
+                    }
+                }
+            };
+        \end{tikzpicture}
+        \caption*{Тяжёлые рёбра выделены.}
+    \end{figure}\noindent
+    Считается, что пути из тяжёлых рёбер --- то что нам нужно. То есть берём путь от \pseudocode{v} до \pseudocode{u}, смотрим, на каком тяжёлом пути лежит \pseudocode{v} и идём по нему вверх. На фрагменте тяжёлого пути считаем значение функции, потом идём вверх. Там имеем следующий тяжёлый путь. Так делаем, пока не дойдём до \pseudocode{u}. Утверждается, что лёгких рёбер мало. Почему так? Потому что рассмотрим путь от \pseudocode{u} до \pseudocode{v}. Где там есть лёгкое ребро, там у вершины есть более тяжёлый потомок. А значит количество вершин в поддереве увеличивается минимум в 2 раза. А значит лёгких рёбер не больше $\log n$. Итого \pseudocode{calc} работает за $\log^2n$, потому что у нас $\log n$ путей, на каждом за $\log n$ делаем запрос в ДО. Hint: если это писать, то проще делать не много деревьев отрезков, а одно на все пути. Для этого возьмём наше дерево, занумеруем его вершины при помощи DFS, но всегда сначала идём в тяжёлое поддерево. Тогда все тяжёлые пути будут фрагментами этой нумерации, а значит спокойно можно жить. Итого для каждой вершины храним ссылку на верх тяжёлого пути и номер. Тут всё.
+    \subparagraph{\undercolorblack{orange}{Link-cut-дерево}.}
+    Хочется поддерживать изменение структуры дерева. Если мы что-то переподвесим, у нас поедут все пути. По сути мы хотим добавить к предыдущим двум операциям ещё две: \pseudocode{link} и \pseudocode{cut}. Первая берёт два дерева (первое с корнем \pseudocode{u}, второе с вершиной \pseudocode{v} где-то внутри) и подвешивает \pseudocode{u} к \pseudocode{v}. \pseudocode{cut} принимает вершину \pseudocode{v} и отрезает её от предка \pseudocode{u}. Но это не единственное, что мы хотим. Мы ещё и хотим, чтобы \pseudocode{calc} работал за $\log n$, а не за $\log^2n$.
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm}
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                child {
+                    node {7}
+                    child {
+                        node {9}
+                    }
+                    child {
+                        node {10}
+                    }
+                }
+                child {
+                    node {8}
+                }
+            }
+            child {
+                node {4}
+                child {
+                    node {11}
+                    child {
+                        node {12}
+                    }
+                }
+                child {
+                    node {13}
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Хочется сделать другую декомпозицию. Давайте выделять те рёбра, которые недавно были нужны в функции \pseudocode{calc}. Например, сделаем запрос от 10 до корня.
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                edge from parent[heavy]
+                child {
+                    node {7}
+                    child {
+                        node {9}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {10}
+                    }
+                }
+                child {
+                    node {8}
+                    edge from parent[thin]
+                }
+            }
+            child {
+                node {4}
+                child {
+                    node {11}
+                    child {
+                        node {12}
+                    }
+                }
+                child {
+                    node {13}
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Потом когда выделяем следующее, мы убираем ненужные рёбра. Например, посмотрим на 11.
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                child {
+                    node {7}
+                    edge from parent[heavy]
+                    child {
+                        node {9}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {10}
+                    }
+                }
+                child {
+                    node {8}
+                    edge from parent[thin]
+                }
+            }
+            child {
+                node {4}
+                edge from parent[heavy]
+                child {
+                    node {11}
+                    child {
+                        node {12}
+                        edge from parent[thin]
+                    }
+                }
+                child {
+                    node {13}
+                    edge from parent[thin]
+                }
+            };
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Операция, которая выделяет всё рёбра на пути от \pseudocode{v} до корня, называется \pseudocode{expose(v)}. Для выделенных путей хочется построить что-то по типу ДО. Но они должны модифицироваться. Когда мы делаем \pseudocode{expose}, мы идём вверх до ближайшего невыделенного ребра. Когда мы находим такое, мы пытаемся его выделить. Но если вершина сверху была в каком-то пути, мы обязаны разрезать его на два, а потом верхний слить с нашим текущим. То есть нам нужно ДО, которое мы можем резать и сливать. Так мы знаем, что это, это декартово дерево по неявному ключу. Тогда одно изменение в \pseudocode{expose} занимает $\log n$ времени. Сколько таких изменений будет? Ну, много, вплоть до $n$. Но на самом деле амортизированно их $\log n$, а значит амортизированное время работы \pseudocode{expose} --- $O(\log^2n)$. Это мы покажем с помощью потенциалов. $\Phi$ --- это число не выделенных <<тяжёлых>> рёбер. Тогда на все переключения мы тратим $k\log n$ времени, а ещё изменяем потенциал. Осталось понять, как потенциал меняется. Ну, среди $k$ изменённых рёбер есть $x$ тяжёлых и $y$ лёгких. Тогда $T\leqslant(x+y)\log n+(y-x)\log n=2y\log n=O(\log^2n)$, потому что лёгких рёбер мало. А если мы хотим заменить $\log^2n$ на $\log n$, надо заменить декартовы деревья на splay-деревья. Но с ним надо ещё как-то хитро жить. К корню каждого splay-дерева прицепить ссылку на вершину, которая выше этого дерева. Например, рассмотрим уже нарисованное выше дерево после ещё нескольких операций, и нарисуем, как оно может выглядеть в терминологии splay-деревьев:
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    edge from parent[heavy]
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                edge from parent[heavy]
+                child {
+                    node {7}
+                    child {
+                        node {9}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {10}
+                    }
+                }
+                child {
+                    node {8}
+                    edge from parent[thin]
+                }
+            }
+            child {
+                node {4}
+                child {
+                    node {11}
+                    edge from parent[heavy]
+                    child {
+                        node {12}
+                        edge from parent[thin]
+                    }
+                }
+                child {
+                    node {13}
+                    edge from parent[thin]
+                }
+            };
+        \end{tikzpicture}\qquad\qquad
+        \begin{tikzpicture}[
+            node distance=1.5cm,
+            every node/.style={treenode,outer sep=0mm},
+            plink/.style={->,dashed,darkgreen,thick},
+            ]
+            \node (3) {3}
+            child {
+                node (1) {1}
+            }
+            child {
+                node {10}
+                child {
+                    node (7) {7}
+                }
+                child[missing]
+            };
+            \node[left=of 1] (5) {5}
+            child {
+                node {2}
+            }
+            child {
+                node {6}
+            };
+            \node[right=of 3] (8) {8};
+            \node[below=of 1] (4) {4}
+            child[missing]
+            child {
+                node (11) {11}
+            };
+            \node[right=of 7] (9) {9};
+            \node[right=of 11] (12) {12};
+            \node[below left=of 4] (13) {13};
+            \draw[plink] (5) -- (1);
+            \draw[plink] (8) -- (3);
+            \draw[plink] (4) -- (1);
+            \draw[plink] (9) -- (7);
+            \draw[plink] (12) -- (11);
+            \draw[plink] (13) -- (4);
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Рассмотрим вершину 12 и сделаем ей \pseudocode{expose}. В самой вершине 12 мы делаем ничего интересного. Потом идём выше. В вершину 11 по зелёной стрелке. Делаем splay вершине 11. После этого обрубаем её правое поддерево, а наше дерево приделываем к ней как правое поддерево.
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    edge from parent[heavy]
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                edge from parent[heavy]
+                child {
+                    node {7}
+                    child {
+                        node {9}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {10}
+                    }
+                }
+                child {
+                    node {8}
+                    edge from parent[thin]
+                }
+            }
+            child {
+                node {4}
+                child {
+                    node {11}
+                    edge from parent[heavy]
+                    child {
+                        node {12}
+                    }
+                }
+                child {
+                    node {13}
+                    edge from parent[thin]
+                }
+            };
+        \end{tikzpicture}\qquad\qquad
+        \begin{tikzpicture}[
+            node distance=1.5cm,
+            every node/.style={treenode,outer sep=0mm},
+            plink/.style={->,dashed,darkgreen,thick},
+            ]
+            \node (3) {3}
+            child {
+                node (1) {1}
+            }
+            child {
+                node {10}
+                child {
+                    node (7) {7}
+                }
+                child[missing]
+            };
+            \node[left=of 1] (5) {5}
+            child {
+                node {2}
+            }
+            child {
+                node {6}
+            };
+            \node[right=of 3] (8) {8};
+            \node[below=of 1] (11) {11}
+            child {
+                node (4) {4}
+            }
+            child {
+                node {12}
+            };
+            \node[right=of 7] (9) {9};
+            \node[left=of 4] (13) {13};
+            \draw[plink] (5) -- (1);
+            \draw[plink] (8) -- (3);
+            \draw[plink] (11) -- (1);
+            \draw[plink] (9) -- (7);
+            \draw[plink] (13) -- (4);
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Потом идём выше (сразу в 1) и там делаем то же самое:
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    edge from parent[heavy]
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                child {
+                    node {7}
+                    edge from parent[heavy]
+                    child {
+                        node {9}
+                        edge from parent[thin]
+                    }
+                    child {
+                        node {10}
+                    }
+                }
+                child {
+                    node {8}
+                    edge from parent[thin]
+                }
+            }
+            child {
+                node {4}
+                edge from parent[heavy]
+                child {
+                    node {11}
+                    child {
+                        node {12}
+                    }
+                }
+                child {
+                    node {13}
+                    edge from parent[thin]
+                }
+            };
+        \end{tikzpicture}\qquad\qquad
+        \begin{tikzpicture}[
+            node distance=1.5cm,
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            plink/.style={->,dashed,darkgreen,thick},
+            ]
+            \node (1) {1}
+            child[missing]
+            child {
+                node (11) {11}
+                child {
+                    node (4) {4}
+                }
+                child {
+                    node {12}
+                }
+            };
+            \node[right=of 1] (3) {3}
+            child[missing]
+            child {
+                node {10}
+                child {
+                    node (7) {7}
+                }
+                child[missing]
+            };
+            \node[left=of 1] (5) {5}
+            child {
+                node {2}
+            }
+            child {
+                node {6}
+            };
+            \node[right=of 3] (8) {8};
+            \node[right=of 7] (9) {9};
+            \node[left=of 4] (13) {13};
+            \draw[plink] (5) -- (1);
+            \draw[plink] (8) -- (3);
+            \draw[plink] (3) -- (1);
+            \draw[plink] (9) -- (7);
+            \draw[plink] (13) -- (4);
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Давайте ещё сделаем \pseudocode{expose(9)}. Результат будет таким:
+    \begin{figure}[H]
+        \begin{tikzpicture}[
+            level 1/.style={sibling distance=2cm},
+            level 2/.style={sibling distance=1cm},
+            every node/.style={treenode,outer sep=0mm},
+            heavy/.style={ultra thick},
+            ]
+            \node {1}
+            child {
+                node {2}
+                child {
+                    node {5}
+                    edge from parent[heavy]
+                    child {
+                        node {6}
+                    }
+                }
+            }
+            child {
+                node {3}
+                edge from parent[heavy]
+                child {
+                    node {7}
+                    child {
+                        node {9}
+                    }
+                    child {
+                        node {10}
+                        edge from parent[thin]
+                    }
+                }
+                child {
+                    node {8}
+                    edge from parent[thin]
+                }
+            }
+            child {
+                node {4}
+                child {
+                    node {11}
+                    edge from parent[heavy]
+                    child {
+                        node {12}
+                    }
+                }
+                child {
+                    node {13}
+                    edge from parent[thin]
+                }
+            };
+        \end{tikzpicture}\qquad\qquad
+        \begin{tikzpicture}[
+            node distance=1.5cm,
+            every node/.style={treenode,outer sep=0mm},
+            plink/.style={->,dashed,darkgreen,thick},
+            ]
+            \node (1) {1}
+            child[missing]
+            child {
+                node (7) {7}
+                child {
+                    node (3) {3}
+                }
+                child {
+                    node (9) {9}
+                }
+            };
+            \draw[level 1/.style={sibling distance=1cm}] node[right=of 1] (11) {11}
+            child {
+                node (4) {4}
+            }
+            child {
+                node {12}
+            };
+            \node[left=of 1] (5) {5}
+            child {
+                node {2}
+            }
+            child {
+                node {6}
+            };
+            \node[left=of 3] (8) {8};
+            \node[below=of 7] (10) {10};
+            \node[below right=of 4] (13) {13};
+            \draw[plink] (5) -- (1);
+            \draw[plink] (8) -- (3);
+            \draw[plink] (11) -- (1);
+            \draw[plink] (10) -- (7);
+            \draw[plink] (13) -- (4);
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Вау, код:
+    \begin{minted}{\pseudo}
+        expose(v):
+            splay(v)
+            while v.plink != null
+                u = v.plink
+                splay(u)
+                u->right->plink = u
+                u->right = v
+                v = u
+    \end{minted}
+    Весь страшный код спрятан в \pseudocode{splay}, где вам нужно умудриться корректно написать splay-дерево, да ещё и \pseudocode{plink} поддерживать.\\
+    Утверждается, что это чудо работает за $O(\log n)$. Это из-за того, что \pseudocode{splay} работает за $1+r'(x)-r(x)$. Посмотрим, каком вершины мы \pseudocode{splay}'им. Давайте обозначим вершины, которые мы \pseudocode{splay}'им за $v_1,v_2,\ldots,v_k$. Время --- сумма всех \pseudocode{splay}'ев. То есть время работы --- $k+r'(v_1)-r(v_1)+\cdots+r'(v_k)-r(v_k)$. Утверждается что и $k$, и сумма всего остального схлопнется в логарифм. Про $k$ --- понятно, про всё остальное --- хочется корректно подобрать ранги. Утверждается, что $r(v_{i+1})\geqslant r'(v_i)$. Тогда если ранги порядка логарифм, то мы победили. Утверждается, что ранг можно ввести так: $w(x)$ --- это сумма всего, что к вершине $x$ подвешено (в том числе и по \pseudocode{plink}'ам), $r(x)=\log w(x)$. Ранги, очевидно, все логарифм. Теперь докажем $r(v_{i+1})\geqslant r'(v_i)$. Ну, когда мы перетащим $v_i$ в корень, всё что к ней подвешено, всё равно будет подвешено к $v_{i+1}$. То есть правда. Есть один нюанс --- мы при переключении \pseudocode{u->right->plink = u}, \pseudocode{u->right = v} можем испортить ранг. Но не можем, потому что ранг не меняется ни у одной вершины. Ни у одной, кроме \pseudocode{u} --- точно, у самой \pseudocode{u} --- тоже, к ней подвешивается всё то же самое, но по-другому.
+    \subparagraph{\undercolorblack{orange}{Центроиды}.}
+    Первый типа задач такой --- дано дерево, хочется что-то узнать про все пути одновременно. Например, количество пар вершин $(u,v)$, между которыми расстояние не больше $D$. Конкретно это можно решить намного проще, но более сложные задачи --- нельзя, а нам нужен пример.\\
+    Давайте рассмотрим корень дерева, и посчитаем все пути, которые проходят через корень. Сначала посчитаем расстояние до каждой вершины (за $O(n)$). Теперь хочется найти количество пар $(u,v)$, где $\pseudocode{d[u]+d[v] <= D}$. Ну, достаточно посортировать и двумя указателями. Проблема в том, что путь от $u$ до $v$ может не проходить через корень, а хочется, чтобы проходил. Как это исправить? Нужно, чтобы \pseudocode{u} было в одном ребёнке корня, в \pseudocode{v} --- в другом. Можно посчитать количество пар всего, а потом вычесть количество пар в каждом ребёнке корня. Или можно так. Взять первого ребёнка корня. Добавить его целиком. Потом взять второго. Перебрать все пары оттуда и из уже рассмотренного. Поле этого добавить второго к первому. Рассмотреть третьего --- берём вершину $v$ из третьего, $u$ --- из рассмотренного (т.е. объединения первого и второго). И так далее. Что делать дальше? Посчитать пути, не проходящие через корень. Чтобы их посчитать, делаем то же самое для поддеревьев корня. Если мы можем считать количество путей через корень за $O(n)$, то работать будет в худшем случае $O(n^2)$, потому что мы можем разбить дерево на 1 вершину и $n-2$ вершины. Поэтому хочется как-то более хорошо начинать с корня. Хочется найти такую вершину, что все её поддеревья имеют размер $\leqslant\frac n2$. Такая называется \textbf{центроидом}. Тогда асимптотика будет $O(n\log n)$. Как такую искать? Возьмём производную вершину, подвесим за неё. Узнаем, не центроид ли она. Если да, мы победили. Если нет, возьмём единственного ребёнка, размер которого $>\frac n2$. Когда закончим, так сложится, что вершина будет центроидом (проверьте сами). Центроид ищется за линейное время.
+    \begin{minted}{\pseudo}
+        dfs(v, p):
+            s = 1
+            res = True
+            for u in graph[v]
+                if u == p || removed[u]
+                    continue
+                s2 = dfs(u, v)
+                s += s2
+                if s2 * 2 > nc
+                    res = False
+            if s * 2 < nc
+                res = False
+            if res:
+                centroid = v
+
+        find_centroid(v):
+            nc = dfs(v, -1) // Считаем количество вершин в компоненте
+            dfs(v, -1) // Ищем центроид.
+
+        calc(v):
+            c = find_centroid(v)
+            calc_stat(c) // Тут нужно сделать что-то интеллектуальное
+            removed[c] = True
+            for u in graph[c]
+                if !removed[u]
+                    calc(u)
+    \end{minted}
+    Второй тип задач, где нужны центроиды --- упоротые запросы на куски дерева. Например, такие. Пусть есть дерево.
+    \begin{figure}[H]
+        \includesvg{Центроиды/orig.svg}
+    \end{figure}\noindent
+    В каждой вершине есть киоск с мороженым. Есть мальчик Петя, который периодически оказывается в какой-то вершине и желанием съесть мороженое. Он хочет купить мороженое по дешёвке, но не хочет далеко ходить. А точнее, хочется найти мороженое минимальной стоимости на расстоянии не дальше $D$. Давайте найдём центроид на дереве. У нас для этого даже алгоритм есть, его можно проиллюстрировать. Подвесим граф за жирную (выше) вершину и посчитаем размеры поддеревьев.
+    \begin{figure}[H]
+        \begin{tikzpicture}[node distance=1mm]
+            \graph[tree layout,node distance=1.5cm,node sep=0mm,nodes={treenode,outer sep=0mm,text width=1.5mm,as=}]{
+                5B'[ultra thick] -- 5B,
+                1 -- 2 -- 3 -- 4 -- 5 -- 6 -- 7 -- 8 -- 9 -- 10 -- 11 -- 12,
+                2A -- 2 -- 2B,
+                3A -- 3 -- 3B -- 3C -- 3D -- 3E,
+                3B' -- 3B,
+                3D' -- 3D -- 3D'',
+                5A -- 5B -- 5 -- 5C -- 5D,
+                5C' -- 5C -- 5C'',
+                6 -- 6A -- 6B -- 6C,
+                6A' -- 6A -- 6A'',
+                7A -- 7 -- 7B -- 7C,
+                7B' -- 7B -- 7B'',
+                11 -- 11A,
+            };
+            \foreach\n in {1,2A,2B,3A,3E,3D',3D'',5A,3B',12,11A,7C,7A,7B',7B'',6C,6A',6A'',5D,5C',5C''}
+            {
+                \node[left=of \n] {1};
+            }
+            \node[left=of 6B] {2};
+            \node[left=of 11] {3};
+            \foreach\n in {2,3D,10,7B,5C}
+            {
+                \node[left=of \n] {4};
+            }
+            \foreach\n in {3C,9,6A}
+            {
+                \node[left=of \n] {5};
+            }
+            \node[left=of 8] {6};
+            \node[left=of 3B] {7};
+            \node[left=of 7] {12};
+            \node[left=of 3] {13};
+            \node[left=of 4] {14};
+            \node[left=of 6] {18};
+            \node[left=of 5] {37};
+            \node[left=of 5B] {39};
+            \node[left=of 5B'] {40};
+        \end{tikzpicture}
+    \end{figure}\noindent
+    Несложно заметить, что центроидом является вершина с числом 37. Посмотрим на неё (в оригинальном графе) и разобьём оставшиеся на компоненты:
+    \begin{figure}[H]
+        \includesvg{Центроиды/first.svg}
+    \end{figure}\noindent
+    Найдём центроиды в каждом поддереве.
+    \begin{figure}[H]
+        \includesvg{Центроиды/second.svg}
+    \end{figure}\noindent
+    И в каждом поддереве каждого поддерева. Короче, то же самое, что и в прошлый раз, делаем, но не считаем ничего на путях.
+    \begin{figure}[H]
+        \includesvg{Центроиды/full.svg}
+    \end{figure}\noindent
+    Строим всё это за $n\log n$. Построим всё вот это вот и как-нибудь сохраним. Как --- сейчас подумаем.\\
+    Что с этой структурой будем делать? Что мы хотим посчитать? Мы для вершины $v$ хотим посчитать вершины $u$ на расстоянии не больше $D$. Как устроен путь от \pseudocode{v} до \pseudocode{u}? Если они лежат в разных синих компонентах, путь проходит через синий центроид. Если в одинаковых синих компонентах, но разных красных --- то проходит через красный центроид. То есть идём вглубь, пока вершины не окажутся в разных компонентах, либо пока одна из вершин сама не станет центроидом. В этот момент путь из $v$ до $u$ идёт через центроид (назовём его $c$).\\
+    К чему это всё? Давайте вместо того, чтобы перебирать $u$, будем перебирать $c$. Это все такие центроиды, что $v$ лежит в компоненте этого центрода. Например, какие вершины нам понадобятся для вершины $v$ (на картинке выделена стрелкой)?
+    \begin{figure}[H]
+        \includesvg{Центроиды/v.svg}
+    \end{figure}\noindent
+    Ну, все квадратные (включая её саму). Определённо, их будет логарифм штук. Какую задачу мы хотим решить в этом центроиде? Хочется найти такую вершину $u$, что, во-первых, $\operatorname{dist}(v;u)\leqslant d$, а, во-вторых, $w(u)$ (цена мороженого) минимально. При этом $\operatorname{dist}(v;u)=\operatorname{dist}(v;c)+\operatorname{dist}(c;u)$. То есть надо перебирать такие $u$, что $\operatorname{dist}(c;u)\leqslant d-\operatorname{dist}(v;u)$. Расстояния можно предподсчитать заранее (т.е. для каждой вершины будем знать расстояние до всех её центроидов). Справимся всё за тот же $n\log n$. Тогда мы хотим быстро находить вершину с минимальной стоимостью на расстоянии не больше заданного. Возьмём все вершины, отсортируем по расстоянию до центроида. Тогда наш ответ --- какой-то префиксный минимум стоимостей. Ну, все префиксные минимумы стоимостей мы можем предподсчитать за $n\log^2n$, ведь их нужно сортировать. И по сути мы решили задачу. Разве что в том случае, когда дерево взвешенное, придётся использовать двоичный поиск вместо того, чтобы тыкаться в массиве.\\
+    Что у нас в итоге с асимптотикой? Ну, мы перебираем $c$, их $\log n$ штук, для каждого делаем $O(1)$ действий в случае невзвешенного дерева или $O(\log n)$ в случае взвешенного. Итого получаем $O(\log n)$ в первом случае и $O(\log^2n)$ во втором. Если каскадировать двоичные поиски в случае взвешенного дерева, то можно обойтись и одним логарифмом, но если Вы так сделаете, то Вы извращенец или Владимир Рябчун (что, в принципе, одно и то же).\\
+    Так, ладно, как хранить эту ебанину? Ну, нам нужно знать следующее:
+    \begin{itemize}
+        \item Для каждой вершины список центроидов, в компоненте с которыми она лежит.
+        \item Для каждой вершины расстояние до всех центроидов предыдущего пункта.
+        \item Для каждого центроида отсортированный список $w$ и $\operatorname{dist}$.
+    \end{itemize}
+    Это всё мы построим за $n\log^2n$, если надо сортировать. Как отвечаем на запрос? Перебираем центроиды, берём нужный префикс либо делаем двоичный поиск.\\
+    Есть тут проблема с неидемпотентными операциями. Ведь мы нигде не указываем условие, что $u$ должно находится в другой компоненте от $c$, нежели $v$. Те есть те $u$, которые близко к $v$, мы посчитаем несколько раз (для каждого центроида выше их). В случае минимума нам совершенно индифферентен подсчёт чего-то несколько раз. Но если бы мы не минимум, а что-то другое, мы бы проиграли. А ещё мы проиграли, если на рёбрах отрицательные расстояния, потому что по сути мы вот что имеем. Мы считаем, что $\operatorname{dist}(v;u)=\operatorname{dist}(v;c)+\operatorname{dist}(c;u)$, но в описанной ситуации $\operatorname{dist}(v;u)<\operatorname{dist}(v;c)+\operatorname{dist}(c;u)$. Это неравенство треугольника и оно, во-первых, не ломает нам минимум, а, во-вторых, ломается само, когда расстояния отрицательные.\\
+    Хорошо, Петя теперь хочет скупить всё мороженое на расстоянии $d$. Сколько денег он потратит? Тут, как уже обсудилось, мы посчитали некоторые вершины более одного раза. Ну, давайте вычтем лишнее, лол! Окей. То есть берём центроид. В нём всё ещё храним отсортированные $d$ и $w$. Всё также для вершины $v$ находим теперь уже префиксную сумму из массива $w$. Правильные вершины находятся только не в той компоненте, что $v$. А те вершины, которые в той же, надо вычесть. Давайте просто для всех компонент посчитаем то же самое (т.е. $d$ и $w$). И вычтем префиксную сумму нужной компоненты.\\
+    Вопрос: что делать, если операция не обратима? Ну, в основном страдать. Впрочем, операция должна быть коммутативной (знаете ли вы, в каком порядке некоммутативную операцию считать на дереве), а много ли вы знаете коммутативных неидемпотентных необратимых операций? Такие есть, конечно, но у вас какая-то очень экзотическая задача, если у вас такая появилась.\\
+    Более общая задача: мы, как уже выяснилось, хотим делать запросы на всём, кроме одного поддерева. Как это сделать? <<Всё кроме одного поддерева>> --- это какой-то префикс + какой-то суффикс. Значит нам нужна структура данных на первое и на второе.\\
+    Как это лучше писать, чтобы не сойти с ума? Отсортированные массивы проще всего приделывать с центроидам. Центроид отвечает за компоненту, и всю информацию о компоненте проще всего класть прямо в центроид. А это значит, что массивы для ребёнка центроида (см. выше для суммы) хранятся в центроиде-ребёнке. То есть в каждом центроитде хранится список, отсортированный по расстоянию до него, и список расстояний, отсортированный по расстоянию до его родителя. И дальше мы расстояние до себя берём с плюсом, расстояние до родителя --- с минусом.\\
+    Это всё, если задача статическая. А что если задача немного динамическая? Например, немного меняются стоимости мороженого. Искать будем минимум простоты ради. Тогда нам нужна структура данных, которая умеет искать минимум на префиксе и изменять элемент. Что это за структура? Дерево отрезков. В каждом центроиде вместо массива делаем дерево отрезков. Хорошо, как обновлять значение в вершине? Ну, нужно найти все центроиды, в которых лежит вершина $v$. Их $\log n$ штук, в каждом всё обновим.
+    \paragraph{\undercolorblack{orange}{Алгоритмы во внешней памяти}.}
+    Мы работали в RAM-модели, где мы за $O(1)$ достать данные из любого места. Это похоже на реальный мир, как уже обсуждалось, но это не работает, когда данных много. Если мы лезем в кэш, то всё это правда, если в оперативной памяти, то уже очень долго, а на жёстких дисках вы просто не можете взять и пойти в произвольное место. В незапамятные времена люди пользовались HDD. Что это такое, можете почитать подробнее в АрхЭВМ, краткий ликбез такой: есть магнитный диск, и он крутится с частотой примерно сотня оборотов в секунду. К этому диску была впиндюрена считывающая головка, которая считывала данные. Проблема, понятно, в том, что иногда, чтобы считать данные, надо ждать почти полный оборот диска, а это примерно 10 мс. Если вы хотите ткнуться в случайное место, в среднем вы ждёте 5 мс. Так что если мы читаем байты из случайных мест памяти, мы будем читать в худшем случае 100 байт в секунду. А если мы считываем данные последовательно, скорость получается в миллион раз быстрее. Это не очень похоже на RAM-модель, поэтому придумали другую.\\
+    Давайте считать, что время считывания состоит из двух вещей: времени, пока данные до на доедут, и, собственно, времени считывания. Второе --- $\frac BS$, где $B$ --- размер данных, $S$ --- упрощённо, 100Мб/с. А хочется нам, чтобы эти два времени были равны. В таком случае $B\approx$1Мб, то есть читаем мы большими блоками фиксированного размера. Меньше брать смысла нет, мы и так уже $T_{\mathrm{seek}}$ времени потратили, да и больше тоже, потому что если мы читаем блок размера $2B$, то асимптотика не зависит от того, потратили ли мы $T_{\mathrm{seek}}$ или $2T_{\mathrm{seek}}$. Поэтому в нашей простой модели мы будем читать только блоками размера $B$. Как работает модель? Есть процессор с оперативной памятью (размера $M$) и есть HDD. Они общаются блоками размера $B$. Это параметры нашей системы, асимптотики будут зависеть от $M$ и $B$. Оптимизировать надо количество пересылок байт, время работы с оперативной памятью можно смело игнорировать, оно сильно меньше, чем пересылка данных. Поэтому всё что мы считаем --- пересылка размера данных.\\
+    Перед оценкой асимптотики сначала посмотрим, имеет ли это всё отношение к SSD или облачным хранилищам. Да, имеет. Чтобы читать с SSD, надо открыть строку, прочитать данные столбца, закрыть строку (всё ещё см. АрхЭВМ). А читая последовательные данные, вы не переоткрываете строку заново, получается быстрее. В облачными хранилищами другая ситуация немного, но там суть в том, что отвечает на запрос ваш удалённый сервер очень долго, поэтому просто глупо спрашивать у него 1 байт, лучше сразу спрашивать пару десятков метров. Так что сюда модель тоже применима.\\
+    Рассмотрим алгоритм: сумма в массиве. Массив лежит в жёстком диске подряд. За какое время мы умеем его искать? Разобьём массив на блоки размера $B$, каждый читаем, суммируем. Работает это за $\left\lceil\frac NB\right\rceil$, где $N$ --- размер массива. Округление вверх существенно, потому что иначе мы получим, что можно посчитать сумму \textbf{случайных} $N$ байт в массиве за $\sum\limits_{i=1}^N\frac1B$, что, разумеется, неправда. Если не хочется жить с округлением вверх, пишите $\frac NB+1$.\\
+    Вторая задача: отсортируем массив. Какую сортировку использовать, чтобы она хорошо с блоками работала? Ну, например, сортировка слиянием. Как работает слияние отсортированных массива? У нас будет текущий блок в первом массиве, во втором массиве и в результате, и мы будем, как обычно, сливать их. Когда какой-то блок кончается, забываем про него, считываем новый. Когда кончается блок в результирующем массиве, пишем его в память. Как долго это работает? За $\frac NB\log\frac NM$. Почему $\frac NM$ --- потому что можно делить пополам, пока не получится блок размера $M$, который мы легко отсортируем в оперативке. Можно ли это улучшить? Немного можно. Если у нас $M=3B$, то никак не улучшить, потому что нам на слияние как раз 3 блока и нужно. Но если оперативной памяти много, можно за одну процедуру слияния слить много блоков. Например, $k$ блоков. Нам нужно $k+1$ блок на это, то есть примерно $kB$ оперативной памяти. То есть $k=\frac MB$. И тогда имеем время работы $\frac NB\log_{M/B}\frac NM$. Более каноничный вид этого --- $\frac NB\log_{M/B}\frac NB$. Утверждается, что это время оптимально. То есть если мы умеем только сравнивать элементы, то нельзя оптимальнее. В прошлом у нас было $N!$ перестановок, $\log N!$ сравнений, а $\log N!$ примерно равен $N\log N$. Что же будет тут? Мы получаем отсортированный блок размера $B$ и сравниваем его элементы с уже отсортированной остальной частью оперативной памяти. Сколько будет разных случаев? $B$ элмементов влезуют в отсортированный порядок, значит есть $\Cnk MB$ случаев. А значит надо нам $\log\Cnk MB$ сравнений. Чему это равно? Можно помахать руками и проверим, что $B\log\frac MB$. Нам нужно получить $N\log\frac NB$ информации, а мы за одно действие получаем $B\log\frac MB$. Сколько нужно действий? Ну, получится как раз то, что нужно.\\
+    Как выглядит структура данных во внешней памяти? Горячие данные хранятся в оперативной памяти, холодные --- на диске. Как, например, работает стек? Ну, голова стека --- два блока размера $B$ у нас, а всё остальное на диске. Почему два? Потому что если только один, но мы можем удалять и добавлять элементы на его границе, что всё нам сломает. За сколько это работает? $O\left(\frac1B\right)$ --- делаем 1 запрос к диску на $B$ операций. Как делать очередь и дек, разберитесь сами. Как делать какую-нибудь кучу? Вы не хотите этого знать. Во внешней памяти можно сделать кучу с асимптотикой $\frac1B\log_{M/B}\frac NB$, но для этого надо знать буферное дерево, что это такое, мы не знаем, короче, не будет у нас кучи во внешней памяти. Лучше сделаем дерево поиска. В качестве дерева поиска используется B-дерево. Это такая штука: есть дерево, в каждом узле хранится $B$ ключей, а значит у каждого узла $B+1$ ребёнок. С ключом \pseudocode{x} заходим в узел, ищем между какими ключами он лежит, идём в нужное поддерево. За сколько работает поиск? $\log_BN$. Поверхностно посмотрим, как это балансируется. Давайте хранить не $B$, а от $\frac B2$ до $B$ ключей. И пусть все листья на одном уровне. Тогда это балансируется как 2--3-дерево, добавляем ключ вниз, если там слишком много детей, пилим на 2 ребёнка. В оперативной памяти B-дерево так и хранится --- каждая вершина отдельно, в своём блоке. Можно ли быстрее, чем $\log_BN$? На самом деле нет, потому что дерево поиска на запрос выдаёт вам любой элемент. Стек всегда выдаёт один конкретный, а тут не получится всё держать в оперативной памяти. Всегда есть запрос, который заставит дерево что-то подгрузить.\\
+    Задачи. Пускай есть перестановка \pseudocode{P}, хочется получить обратную к ней. Как жить, если всё в оперативной памяти, понятно: в цикле \pseudocode{r[p[i]] = i}. Но это обращение в произвольное место, во внешней памяти не прокатит. Вместо этого создадим массив пар \pseudocode{(i; p[i])} и отсортируем его по второму элементу. На самом деле это даст нам ответ, а сортировать мы умеем.\\
+    Вторая задача: есть два массива \pseudocode{a} и \pseudocode{b} из целых чисел не больше \pseudocode{N}. Хочется посчитать такой массив \pseudocode{c}, что \pseudocode{c[i] = b[a[i]]}. Точно также преобразуем \pseudocode{a} и \pseudocode{b} в массив пар. Тогда в каком случае мы сможет легко найти \pseudocode{b[a[i]]}? Ну, если мы массив \pseudocode{a} отсортируем по второму элементу, а \pseudocode{b} --- по первому. Тогда мы можем двумя указателями всё легко сделать.\\
+    Третья задача. Есть массив \pseudocode{next}, там написано, какой элемент следующий у данного. Это даёт нам односвязный список, который нужно вывести. Без внешней памяти берём и выводим. А с внешней памятью не понятно. Давайте немного переформулируем задачу. Возьмём наши элементы и рассмотрим их как граф из одного пути. Если мы для каждого элемента узнаем расстояние до конца, можно будет по расстоянию отсортировать, и всё будет хорошо. Как узнаем? Давайте построим на этой штуке двоичные подъёмы. Давайте кроме рёбер длины 1 нарисуем рёбра длины 2, которые соединяют \pseudocode{i} и \pseudocode{next[next[i]]}. Потом то же самое с длиной 4. Потом с 8 и так далее. Как это делать? Ну, теперь новый \pseudocode{next[i]} равен \pseudocode{next[next[i]]} (это мы делать умеем, вторая задача), а новый \pseudocode{w[i]} --- это \pseudocode{w[i] + w[next[i]]}. Это мы тоже умеем. Теперь зачем нам это? А вот зачем, теперь за логарифм действий мы построили двоичные подъёмы. Своеобразные, поскольку они позволяют подниматься только в корень (у нас не хранятся предыдущие \pseudocode{w} и \pseudocode{next}), но как раз они нам и нужны. При этом для элементов, у которых нет перехода на 4 вперёд, переход на 4 считать и не надо, а надо на 3. Это позволит нам быстро искать длину пути, что нам и надо. Работает за $O\left(\log N\cdot\frac NB\log_{M/B}\frac NB\right)$.\\
+    Можно чуть быстрее. Давайте преобразуем структуру так:
+    \begin{figure}[H]
+        \begin{tikzpicture}[node distance=1cm]
+            \node[treenode] (1) {};
+            \node[treenode,right=of 1] (2) {};
+            \node[treenode,right=of 2] (3) {};
+            \node[treenode,right=of 3] (4) {};
+            \node[treenode,right=of 4] (5) {};
+            \node[treenode,right=of 5] (6) {};
+            \node[treenode,right=of 6] (7) {};
+            \draw[->] (1) -- (2) node[midway,above] {1};
+            \draw[->] (2) -- (3) node[midway,above] {1};
+            \draw[->] (3) -- (4) node[midway,above] {1};
+            \draw[->] (4) -- (5) node[midway,above] {1};
+            \draw[->] (5) -- (6) node[midway,above] {1};
+            \draw[->] (6) -- (7) node[midway,above] {1};
+        \end{tikzpicture}
+        \begin{tikzpicture}[node distance=1.5cm]
+            \node[treenode] (1) {};
+            \node[treenode,right=of 1] (3) {};
+            \node[treenode,right=of 3] (5) {};
+            \node[treenode,right=of 5] (7) {};
+            \node[treenode,above left=of 3] (2) {};
+            \node[treenode,above left=of 5] (4) {};
+            \node[treenode,above left=of 7] (6) {};
+            \draw[->] (1) -- (3) node[midway,above] {2};
+            \draw[->] (2) -- (3) node[midway,above right] {1};
+            \draw[->] (3) -- (5) node[midway,above] {2};
+            \draw[->] (4) -- (5) node[midway,above right] {1};
+            \draw[->] (5) -- (7) node[midway,above] {2};
+            \draw[->] (6) -- (7) node[midway,above right] {1};
+        \end{tikzpicture}
+    \end{figure}\noindent
+    После чего для нижнего списочка делаем то же самое рекурсивно. Дальше понятно, что делать. У нас в конце останутся 2 элемента, которым мы посчитаем длину $2^k$, потом мы вернёмся из рекурсии и посчитаем длину у элементов, которые $2^{k-1}$ и $2^k+2^{k-1}$, потом добавим ещё 4 элемента, потом 8 и так далее. Это пересчитывать понятно, как: \pseudocode{d[i] = d[next[i]] + w[i]}. Утверждается, что это быстрее работает. Это действительно так, потому что рекурсия каждый раз вдвое меньше, а значит $O\left(\frac NB\log_{M/B}\frac NB\right)$. Есть одна лишь проблема --- никто нам не разрешал размечать каждый второй элемент, это мы не умеем. Есть детерминированный алгоритм, он очень сложный, есть рандомизированный, он очень простой. Возьмём элементы, запишем в них случайные биты. Для этого нам не надо проходиться по списку в правильном порядке, можно просто по массиву пройтись. Теперь давайте пометим <<на удаление>> (как хочется пометить каждый второй) те элементы, у которых у нём самом единица, а в следующем (по списку) ноль. Очевидно, что пометится примерно четверть, и очевидно, что мы не пометили 2 подряд. Тогда мы удваиваем длины тех рёбер, у которых мы удалили следующий, и всё.
+    \paragraph{\undercolorblack{orange}{Введение в теорию сложности}.}
+    Про некоторые задачи мы знаем, что их можно быстро решать. А про некоторые --- нет. Что такое быстро? У нас были $O(n)$, $O(n^2)$, $O(n\log n)$ и подобное. В теории сложности все такие задачи объединяются в класс P --- $\exists k\in\mathbb N~O(n^k)$. Почему так? Потому что в разных моделях время разное, а свойство <<работать за полином>> сохраняется. Вне зависимости, RAM-модель у вам, pointer machine или что-то ещё. И обычно из всех них выбирается машина Тьюринга, в которой асимптотика и оценивается.\\
+    Машина Тьюринга --- это кто? Машина Тьюринга --- это набор из ленты и конечного автомата. На ленте лежат символы алфавита $\Sigma$. А автомат по состоянию и символу на ленте может что-то записать, сменить состояние и переместить позицию на ленте. Штука мерзейшая, но есть теорема, согласно которой любая программа в RAM-модели, которая работала за полином, можно переписать на машину Тьюринга, чтобы она тоже работала за полином. И самое крутое, что чем проще вычислитель, тем проще его анализировать.\\
+    Помимо задач, которые за полином решаются, существуют, которые за полином не решаются. Доказать, что какой-то за полином не решается, сложно и больно, и не входит наш курс. Самая простая задача, которая решается за экспоненту, но не решается за полином --- есть шахматная доска $n\times n$, спрашивается, кто выиграет. Это класс задач EXP, $O(e^{\mathrm{polynom}(n)})$.\\
+    Есть ли задачи, которые и за экспоненту не решаются? Есть. Самый большой класс --- R, задачи которые в принципе решаются, хоть как-то. Есть ли задачи, которые в принципе не решаются? Товарищ Тьюринг доказал, что есть. Давайте такую задачу построим. Дана машина Тьюринга $M$. И есть какой-то ввод. Тогда задача $\mathrm{HALT}(M, \mathrm{input})$. Хочется узнать, будет ли данная машина работать бесконечно. Ну, докажем от противного что это неразрешимо. Пусть разрешимо. Тогда построим машину Тьюринга $\mathrm{HALT}$, которая как раз решает эту задачу. Тогда рассмотрим вот что:
+    \begin{minted}{\pseudo}
+        f(x):
+            if HALT(x, x)
+                while True
+                    // pass
+            else
+                return
+    \end{minted}
+    Это программа. Из неё можно сделать машину Тьюринга $\mathrm{F}$. Тогда что такое $\mathrm{F}(\mathrm{F})$? Это не может быть ни зацикливание, ни прерывание, в обоих случаях получим противоречие. Идейно это значит, что почти любой анализ программного кода неразрешим. Нельзя проверить, что программа завершится, а значит ничего про неё сказать нельзя.\\
+    А почему неразрешимых задач много? А потому что есть много чего, что эквивалентно программе. Очень много из чего можно сделать вычислитель.\\
+    Следующий интересующий нас класс --- NP. Это класс недетерминированно-полиномиальных задач. Что это такое? Есть недетерминированная машина Тьюринга --- она, как недетерминированный конечный автомат, может иметь несколько переходов из одного состояния. И идти в одно из них при помощи Мерлина. И при помощи Мерлина, машина пытается найти ответ <<да>>. Если у неё получилось (т.е. хоть в какой-то последовательности недетерминированных переходов мы получили ответ <<да>>), то считаем ответ позитивным. Если она никак не может это сделать, считаем, что ответ <<нет>>. Примером такой задачи является Гамильтонов путь (путь в графе, проходящий по каждой вершины ровно 1 раз). Недетерминированно начинаем из любой вершины. Запоминаем нашу вершину. Недетерминированно идём в любую вершину из ещё не посещённых. Если не посещённых не осталось, мы нашли путь. Поскольку переходов у нас $n$, работает за полином. Все задачи подобного толка --- NP. Про класс NP можно ещё думать немного по-другому. Давайте сначала сделаем все недетерминированные выборы, а потом пойдём по программе. Набор выборов называется сертификатом. И тогда программа в NP проверяет корректность сертификата. А частности, в задаче Гамильтонова пути сертификатом является сам путь. Разумеется, мы можем проверить, является ли Гамильтонов путь корректным, если нам его дали.\\
+    И никто до сих пор не знает, равны ли классы P и NP или нет. Если равны, у нас полетит вся криптография, потому что основана она на трудно-обратимых функциях.\\
+    Ещё существуют некоторые задачи, находящиеся, в некотором смысле, на границе класса NP. Есть два термина: NP-трудная и NP-полная. NP-трудная (NP-hard) --- задача, которая не проще, чем все задачи из NP. NP-полная (NP-complete) --- задача NP-hard, которая сама NP. Такие задачи, как ни странно, существуют (например, Гамильтонов путь таковой является). Что значит фраза <<одна задача не проще другой>>? $A$ не проще, чем $B$ в том и только том случае, когда решив задачу $A$ за полином, мы решим $B$ за полином. Более формально мы сводим задачи друг к другу. То есть берём ввод задачи $B$, как-то за полином конвертируем его в ввод задачи $A$, решаем $A$, конвертируем ответ $A$ в ответ $B$. А точнее, поскольку ответ в нашем случае --- <<да>>/<<нет>>, ответы $A$ и $B$ должны быть тупо равны (без отрицания, потому что у нас несимметричность в структуре детерминированных автоматов). Тогда тот факт, что гамильтонов путь NP-полный, значит, что мы можем взять рандомную NP-полную задачу и вместо того чтобы решать её, решить гамильтонов путь. Звучит бредово. А суть тут в следующем. Есть тривиальная NP-полная задача --- даётся недетерминированная машина Тьюринга, ввод и ограничение времени работы. И мы проверяем, что будет с машиной Тьюринга за это время на этом вводе. И тут тривиально, сама эта задача в классе NP (напишем на недетерминированной машине Тьюринга эмулятор недетерминированной машины Тьюринга), и решает любую задачу класса NP. Далее эту штуку эмулируют на булевых формулах, потом формулы эмулируют на 3-SAT'е. А дальше к заданной нам задаче сводится 3-SAT. Например, как к 3-SAT'у ввести рюкзак? Есть набор чисел $x_1,x_2,\ldots,x_n$. Узнать, существует ли подмножество с суммой, равной $S$. Что тогда будет нашими переменными? Давайте возьмём и под каждую переменную сгенерируем 2 предмета, первый имеет стоимость $10^i$, второй --- тоже. А $S$ у нас будет $\underbrace{111\cdots1}_{n}$. Тогда из этих двух предметов нужно взять ровно один. После этого возьмём наш 3-SAT и для пронумеруем его скобки и допишем в конец новые разряды --- ноль, если соответствующая скобка не содержит текущего предмета, единица, если содержит. И что-то надо дописать в $S$. Чтобы мы решили 3-SAT, надо, чтобы в конце $S$ каждая цифра была единицей, двойкой или тройкой. А нам нужно, чтобы точно было равно. Так давайте добавим два новых предмета к каждому разряду --- каждый имеет единичку в соответствующем разряде. Тогда для скобки из 3-SAT'а мы берём нужные нам переменные и, возможно, дополняем их этими новыми предметами. Так и решается 3-SAT. Давайте нарисуем пример для вот такого 3-SAT'а:
+    $$
+    (x_1\lor\overline{x_2}\lor x_3)\land(\overline{x_1}\lor\overline{x_2}\lor\overline{x_4})\land(x_2\lor\overline{x_3}\lor x_4)
+    $$
+    Генерируем предметы-переменные:
+    $$
+    \begin{matrix}
+        x_1 & 1000\\
+        \overline{x_1} & 1000\\
+        x_2 & 0100\\
+        \overline{x_2} & 0100\\
+        x_3 & 0010\\
+        \overline{x_3} & 0010\\
+        x_4 & 0001\\
+        \overline{x_4} & 0001\\
+        S & 1111
+    \end{matrix}
+    $$
+    Каждому предмету приписываем, в каких скобках он есть:
+    $$
+    \begin{matrix}
+        x_1 & 1000 & 100\\
+        \overline{x_1} & 1000 & 010\\
+        x_2 & 0100 & 001\\
+        \overline{x_2} & 0100 & 110\\
+        x_3 & 0010 & 100\\
+        \overline{x_3} & 0010 & 001\\
+        x_4 & 0001 & 001\\
+        \overline{x_4} & 0001 & 010\\
+        S & 1111 & ???
+    \end{matrix}
+    $$
+    Создаём несколько фиктивных предметов:
+    $$
+    \begin{matrix}
+        x_1 & 1000 & 100\\
+        \overline{x_1} & 1000 & 010\\
+        x_2 & 0100 & 001\\
+        \overline{x_2} & 0100 & 110\\
+        x_3 & 0010 & 100\\
+        \overline{x_3} & 0010 & 001\\
+        x_4 & 0001 & 001\\
+        \overline{x_4} & 0001 & 010\\
+        & 0000 & 100\\
+        & 0000 & 100\\
+        & 0000 & 010\\
+        & 0000 & 010\\
+        & 0000 & 001\\
+        & 0000 & 001\\
+        S & 1111 & 333
+    \end{matrix}
+    $$
+    Тогда решив задачу о рюкзаке на этом наборе, получим решение 3-SAT'а.\\
+    К чему всё это? К тому что если вы что-то решаете, и видите, что там возникает что-то похожее на рюкзак, с большой вероятностью, ваша программа NP. А если что-то похожее на программу, то с большой вероятностью неразрешима вообще.
+\end{document}

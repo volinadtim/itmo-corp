@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.24...4.2)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(ConfigureCompiler)
+include(CompilerWarnings)
+
+project(repl LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+ct_configure_compiler()
+
+add_subdirectory(third-party)
+
+add_subdirectory(lib)
+add_subdirectory(app)
+add_subdirectory(unit-tests)
