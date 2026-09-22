@@ -81,7 +81,7 @@ def _generator_block(law) -> dict:
     if name == "экспоненциальный":
         return {
             "description": "Метод обратной функции для экспоненциального закона:",
-            "formula": f"x = -t ln(U), quad t = {law.t:.4f}",
+            "formula": "x = -t ln(U)",
             "note": "На каждое значение требуется одна равномерная величина.",
         }
     if name == "нормированный Эрланга":
@@ -90,10 +90,7 @@ def _generator_block(law) -> dict:
                 f"Сумма {law.k} экспоненциальных фаз со средним "
                 f"{law.phase_mean:.4f} каждая:"
             ),
-            "formula": (
-                f"x = -(t/k) sum_(i=1)^k ln(U_i), quad k = {law.k}, "
-                f"quad t/k = {law.phase_mean:.4f}"
-            ),
+            "formula": "x = -(t\\/k) sum_(i=1)^k ln(U_i)",
             "note": (
                 "Логарифмы складываются по одному, а не берётся логарифм "
                 "произведения: произведение k чисел меньше единицы обнуляется "
@@ -110,7 +107,7 @@ def _generator_block(law) -> dict:
                 f"Последовательные экспоненциальные фазы: {law.k - 1} со средним "
                 f"{law.t_a:.4f} и одна со средним {law.t_b:.4f}."
             ),
-            "formula": f"x = - {terms}, quad {means}",
+            "formula": f"x = - {terms}",
             "note": (
                 f"На каждое значение требуется {law.k} независимых значений "
                 "равномерно распределённой величины."
@@ -123,9 +120,7 @@ def _generator_block(law) -> dict:
                 f"{law.t1:.4f}, иначе — со средним {law.t2:.4f}."
             ),
             "formula": (
-                f'x = cases(-t_1 ln(U_2) "при" U_1 < q, '
-                f'-t_2 ln(U_2) "иначе"), quad '
-                f"q = {law.q:.4f}, quad t_1 = {law.t1:.4f}, t_2 = {law.t2:.4f}"
+                'x = cases(-t_1 ln(U_2) "при" U_1 < q, -t_2 ln(U_2) "иначе")'
             ),
             "note": (
                 "Используются две независимые равномерные величины: U₁ выбирает "
@@ -136,23 +131,32 @@ def _generator_block(law) -> dict:
     if name == "равномерный":
         return {
             "description": "Метод обратной функции для равномерного закона:",
-            "formula": f"x = a + (b - a) U, quad a = {law.a:.4f}, b = {law.b:.4f}",
+            "formula": "x = a + (b - a) U",
             "note": "",
         }
     return {"description": "", "formula": "x = F^(-1)(U)", "note": ""}
 
 
 def _law_rationale(cv: float) -> str:
+    """Обоснование выбора закона.
+
+    Только обычный текст, без typst-разметки: строки из data.json попадают
+    в документ через `#d....` и вставляются буквально, поэтому «$nu < 1$»
+    напечаталось бы как есть, а не превратилось в формулу.
+    """
     if cv > 1.05:
         return (
-            "при $nu > 1$ распределение аппроксимируется гиперэкспоненциальным "
-            "законом"
+            "это больше единицы, поэтому распределение аппроксимируется "
+            "гиперэкспоненциальным законом"
         )
     if cv >= 0.95:
-        return "при $nu approx 1$ распределение аппроксимируется экспоненциальным законом"
+        return (
+            "это близко к единице, поэтому распределение аппроксимируется "
+            "экспоненциальным законом"
+        )
     return (
-        "при $nu < 1$ распределение аппроксимируется нормированным законом Эрланга "
-        "либо гипоэкспоненциальным законом"
+        "это меньше единицы, поэтому распределение аппроксимируется "
+        "нормированным законом Эрланга либо гипоэкспоненциальным законом"
     )
 
 
@@ -211,7 +215,11 @@ def export(
         "histogram": {
             "bins": len(hist.counts),
             "rows": [
-                [f"{lo:.2f} … {hi:.2f}", str(count), _num(count / n)]
+                [
+                    f"{_num(lo, 2)} … {_num(hi, 2)}",
+                    str(count),
+                    _num(count / n),
+                ]
                 for (lo, hi), count in zip(
                     zip(hist.edges, hist.edges[1:]), hist.counts
                 )
@@ -221,7 +229,11 @@ def export(
             "name": law.name,
             "cv": _num(full.cv),
             "rationale": _law_rationale(full.cv),
-            "params": [[k, f"{v:.6g}"] for k, v in law.params.items()],
+            "params": [
+                # целые (число фаз, порядок Эрланга) — без дробной части
+                [k, str(v) if isinstance(v, int) else _num(v, 4)]
+                for k, v in law.params.items()
+            ],
             "fit": [
                 [
                     "M[X]",

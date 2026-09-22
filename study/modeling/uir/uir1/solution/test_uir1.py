@@ -268,5 +268,49 @@ class TestReportRendering(unittest.TestCase):
                 for plot in ("plot1_series", "plot2_histogram", "plot3_fit"):
                     self.assertTrue((Path(tmp) / "plots" / f"{plot}.png").exists())
 
+class TestTypstExport(unittest.TestCase):
+    """Данные для typst-отчёта."""
+
+    @unittest.skipUnless(XLSX.exists(), "файл вариантов недоступен")
+    def test_no_typst_markup_in_data(self):
+        """В строках data.json не должно быть разметки typst.
+
+        Строки попадают в документ через `#d....` и вставляются буквально,
+        поэтому «$nu < 1$» напечаталось бы как есть. Исключение — поле
+        generator.formula, которое отчёт намеренно пропускает через eval.
+        """
+        import json
+        import tempfile
+
+        from uir1.typst_export import export
+        from uir1.analysis import render
+        from uir1.variants import load_variant
+
+        markup = ("$", "#", "*", "_")
+        for variant in (26, 60, 141):
+            with self.subTest(variant=variant), tempfile.TemporaryDirectory() as tmp:
+                result = analyse(load_variant(XLSX, variant), variant)
+                out = Path(tmp) / "calc"
+                render(result, out)
+                path = export(
+                    result, Path(tmp) / "typst", out / "plots",
+                    student="Тест", group="P0000", teacher="Тест",
+                )
+                data = json.loads(path.read_text(encoding="utf-8"))
+
+                def walk(node, where=""):
+                    if isinstance(node, dict):
+                        for key, value in node.items():
+                            walk(value, f"{where}/{key}")
+                    elif isinstance(node, list):
+                        for i, value in enumerate(node):
+                            walk(value, f"{where}[{i}]")
+                    elif isinstance(node, str) and where != "/generator/formula":
+                        for symbol in markup:
+                            self.assertNotIn(symbol, node, msg=f"{where}: {node!r}")
+
+                walk(data)
+
+
 if __name__ == "__main__":
     unittest.main()

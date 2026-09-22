@@ -204,7 +204,11 @@ class Hypoexponential(Distribution):
         self.means = [self.t_a] * m + [self.t_b]
         super().__init__(
             "гипоэкспоненциальный",
-            {"k": self.k, "t_a (×%d)" % m: self.t_a, "t_b": self.t_b},
+            {
+                "Число фаз k": self.k,
+                "Средняя длительность каждой из первых %d фаз" % m: self.t_a,
+                "Средняя длительность последней фазы": self.t_b,
+            },
         )
         if math.isclose(self.t_a, self.t_b, rel_tol=1e-9):
             self.notes.append(
