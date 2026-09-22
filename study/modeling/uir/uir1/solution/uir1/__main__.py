@@ -13,7 +13,7 @@ from .variants import load_variant, load_variants
 # Подпись на титульном листе — из shared/profile.yaml.
 STUDENT = "Данилов Тимофей Николаевич"
 GROUP = "P3331"
-TEACHER = "Бессмертный Игорь Александрович"
+TEACHER = "Авксентьева Елена Юрьевна"
 
 # .../study/modeling/uir/uir1/solution/uir1/__main__.py → parents[4] = study/modeling
 DEFAULT_XLSX = (
