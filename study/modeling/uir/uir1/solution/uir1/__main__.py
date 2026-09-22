@@ -10,6 +10,11 @@ from .analysis import DEFAULT_SEED, analyse, render
 from .approx import LAWS
 from .variants import load_variant, load_variants
 
+# Подпись на титульном листе — из shared/profile.yaml.
+STUDENT = "Данилов Тимофей Николаевич"
+GROUP = "P3331"
+TEACHER = "Бессмертный Игорь Александрович"
+
 # .../study/modeling/uir/uir1/solution/uir1/__main__.py → parents[4] = study/modeling
 DEFAULT_XLSX = (
     Path(__file__).resolve().parents[4]
@@ -34,6 +39,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="параметр q гиперэкспоненциального закона")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED,
                         help="seed генератора для воспроизводимости")
+    parser.add_argument("--typst", type=Path, default=None,
+                        help="каталог typst-отчёта: выгрузить туда data.json "
+                             "и графики (обычно ../../../reports/uir1)")
     parser.add_argument("--list", action="store_true",
                         help="показать сводку по всем вариантам и выйти")
     args = parser.parse_args(argv)
@@ -59,6 +67,19 @@ def main(argv: list[str] | None = None) -> int:
     result = analyse(sample, args.variant, law_name=args.law, q=args.q, seed=args.seed)
     out_dir = args.out / f"variant-{args.variant:03d}"
     path = render(result, out_dir)
+
+    if args.typst is not None:
+        from .typst_export import export
+
+        data = export(
+            result,
+            args.typst,
+            out_dir / "plots",
+            student=STUDENT,
+            group=GROUP,
+            teacher=TEACHER,
+        )
+        print(f"Данные для typst: {data}")
 
     full = result.full
     print(f"Вариант {args.variant}: n={len(sample)}, m̃={full.mean:.4f}, "
