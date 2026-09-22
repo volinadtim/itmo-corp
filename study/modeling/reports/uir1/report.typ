@@ -134,9 +134,7 @@ $ r_k approx (sum_i (x_i - tilde(m)) (x_(i+k) - tilde(m)))
 
 = Гистограмма распределения частот
 
-Число интервалов определено по формуле Стёрджеса
-$L = 1 + 3 comma 322 dot lg n$, что для #d.n значений даёт
-#d.histogram.bins интервалов.
+Число интервалов принято равным #d.histogram.bins.
 
 #figure(
   image("plots/plot2_histogram.png", width: 80%),
