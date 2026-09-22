@@ -421,7 +421,9 @@ def render(result: Result, out_dir: Path) -> Path:
                                 generated=result.generated_autocorr)
 
     report.write_csv(out_dir / "form1.csv", result.given_by_size)
-    report.write_csv(out_dir / "form2.csv", result.generated_by_size)
+    report.write_csv(
+        out_dir / "form2.csv", result.generated_by_size, result.given_by_size
+    )
 
     path = out_dir / "report.md"
     path.write_text(build_report(result, plots), encoding="utf-8")

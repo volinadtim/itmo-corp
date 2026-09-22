@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import shutil
 from pathlib import Path
@@ -52,6 +53,99 @@ def _pct(value: float, reference: float) -> str:
     if reference == 0:
         return "—"
     return _num((value - reference) / reference * 100.0, 2)
+
+
+def _law_derivation(law, mean: float, cv: float) -> list[list[str]]:
+    """Вывод параметров выбранного закона: шаг — формула — результат.
+
+    Отчёт должен показывать, откуда взялись числа в таблице параметров,
+    а не только сами числа. Для каждого закона выкладка своя.
+    """
+    from .approx import (
+        Exponential,
+        Hyperexponential,
+        Hypoexponential,
+        NormalizedErlang,
+        Uniform,
+    )
+
+    sd = cv * mean
+    rows: list[list[str]] = []
+
+    if isinstance(law, Uniform):
+        rows.append(["Полуразмах", "σ·√3", _num(sd * math.sqrt(3.0))])
+        rows.append(["Левая граница a", "t − σ·√3", _num(law.a)])
+        rows.append(["Правая граница b", "t + σ·√3", _num(law.b)])
+
+    elif isinstance(law, Exponential):
+        rows.append(["Интенсивность α", "1 / t", _num(law.alpha, 6)])
+
+    elif isinstance(law, NormalizedErlang):
+        exact = 1.0 / (cv * cv)
+        rows.append(["Порядок (точный)", "1 / ν²", _num(exact)])
+        rows.append(["Порядок k", "округление до целого", str(law.k)])
+        rows.append(["Длительность фазы", "t / k", _num(law.phase_mean)])
+        rows.append(["Интенсивность α", "k / t", _num(law.alpha, 6)])
+
+    elif isinstance(law, Hypoexponential):
+        m = law.k - 1
+        exact = 1.0 / (cv * cv)
+        a = m * (1 + m)
+        b = -2.0 * mean * m
+        c = mean * mean * (1.0 - cv * cv)
+        disc = b * b - 4 * a * c
+        equation = (
+            f"{a:.0f}·t₁² − {_num(abs(b))}·t₁ + {_num(abs(c))} = 0"
+            if b < 0 and c > 0
+            else f"{a:.0f}·t₁² + {_num(b)}·t₁ + {_num(c)} = 0"
+        )
+        rows.append(["Минимум фаз", "1 / ν²", _num(exact)])
+        rows.append(["Число фаз k", "1 / ν², округление вверх", str(law.k)])
+        rows.append([
+            "Условие существования",
+            f"ν ≥ 1/√k = {_num(1 / math.sqrt(law.k))}",
+            f"{_num(cv)} ≥ {_num(1 / math.sqrt(law.k))} — выполнено",
+        ])
+        rows.append([
+            "Уравнение для t₁",
+            "m(1+m)·t₁² − 2·t·m·t₁ + t²(1−ν²) = 0,  m = k−1",
+            equation,
+        ])
+        rows.append(["Дискриминант", "B² − 4AC", _num(disc, 2)])
+        rows.append([
+            f"Длительность первых {m} фаз t₁",
+            "(−B + √D) / (2A)",
+            _num(law.t_a),
+        ])
+        rows.append([
+            "Длительность последней фазы t₂",
+            "t − m·t₁",
+            _num(law.t_b),
+        ])
+
+    elif isinstance(law, Hyperexponential):
+        rows.append([
+            "Верхняя граница q",
+            "2 / (1 + ν²)",
+            _num(law.q_max),
+        ])
+        rows.append([
+            "Выбранное q",
+            "1 / (1 + ν²) — половина границы",
+            _num(law.q),
+        ])
+        rows.append([
+            "Средняя длительность t₁",
+            "[1 + √((1−q)/(2q)·(ν²−1))]·t",
+            _num(law.t1),
+        ])
+        rows.append([
+            "Средняя длительность t₂",
+            "[1 − √(q/(2(1−q))·(ν²−1))]·t",
+            _num(law.t2),
+        ])
+
+    return rows
 
 
 def _form_rows(by_size, reference=None) -> list[dict]:
@@ -248,6 +342,7 @@ def export(
                     _pct(law.theoretical_cv, full.cv) + " %",
                 ],
             ],
+            "derivation": _law_derivation(law, full.mean, full.cv),
             "notes": [_clean_note(n) for n in law.notes],
         },
         "generator": {

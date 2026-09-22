@@ -156,6 +156,19 @@ $ r_k approx (sum_i (x_i - tilde(m)) (x_(i+k) - tilde(m)))
 Коэффициент вариации заданной ЧП составляет $nu = #d.law.cv$;
 #d.law.rationale. Выбран *#d.law.name* закон.
 
+Параметры подбираются по двум моментам заданной ЧП: $t = m$ и $nu$.
+Ниже приведён их расчёт.
+
+#figure(
+  caption: [Расчёт параметров закона],
+  table(
+    columns: 3,
+    align: (left, left, right),
+    table.header([Величина], [Формула], [Значение]),
+    ..d.law.derivation.flatten().map(v => [#v])
+  ),
+)
+
 #figure(
   caption: [Параметры аппроксимирующего закона],
   table(

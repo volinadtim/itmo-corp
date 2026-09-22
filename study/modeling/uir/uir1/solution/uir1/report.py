@@ -118,18 +118,33 @@ def autocorr_table(
     return "\n".join(out)
 
 
-def write_csv(path: Path, by_size: dict[int, Moments]) -> None:
-    """Формы в CSV — чтобы вставить в Excel при оформлении отчёта."""
+def write_csv(
+    path: Path,
+    by_size: dict[int, Moments],
+    reference: dict[int, Moments] | None = None,
+) -> None:
+    """Формы в CSV — чтобы вставить в Excel при оформлении отчёта.
+
+    Эталон для строки «%» разный у двух форм (см. бланки в задании):
+    форма 1 (reference=None) — значения этой же ЧП при n = 300;
+    форма 2 (reference — заданная ЧП) — одноимённые значения заданной ЧП
+    при том же объёме выборки.
+    """
     sizes = sorted(by_size)
+    rows = _rows(by_size)
+    ref_rows = _rows(reference) if reference else None
     with path.open("w", newline="", encoding="utf-8-sig") as fh:
         writer = csv.writer(fh, delimiter=";")
         writer.writerow(["Характеристика", ""] + sizes)
-        for row in _rows(by_size):
+        for index, row in enumerate(rows):
             writer.writerow([row.label, "Знач."] + [f"{v:.6f}" for v in row.values])
-            writer.writerow(
-                ["", "%"]
-                + [f"{(v - row.reference) / row.reference * 100:.4f}" for v in row.values]
-            )
+            if ref_rows is None:
+                percents = [_pct(v, row.reference) for v in row.values]
+            else:
+                percents = [
+                    _pct(v, r) for v, r in zip(row.values, ref_rows[index].values)
+                ]
+            writer.writerow(["", "%"] + percents)
 
 
 # ---------------------------------------------------------------- графики

@@ -22,3 +22,4 @@ video-recovery/**/*.mpa
 video-recovery/**/*.wav
 study/os/os-course/
 study/os/xv6-riscv/
+study/os/course-video/
