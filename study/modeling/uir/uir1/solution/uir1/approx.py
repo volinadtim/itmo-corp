@@ -253,16 +253,6 @@ class Hypoexponential(Distribution):
         return math.sqrt(sum(t * t for t in self.means)) / mean
 
 
-class Erlang2Fallback:
-    """Вырожденный случай t₁ = t₂ — это Эрланг 2-го порядка."""
-
-    def __init__(self, t: float):
-        self.t = t
-
-    def pdf(self, x: float) -> float:
-        return x * math.exp(-x / self.t) / (self.t**2)
-
-
 class Hyperexponential(Distribution):
     """Двухфазный гиперэкспоненциальный (ν > 1).
 
@@ -341,8 +331,8 @@ def choose(mean: float, cv: float, q: float | None = None) -> Distribution:
 
     erlang = NormalizedErlang(mean, cv)
     # Задание требует аппроксимации по двум моментам, а округление k искажает
-    # второй момент. Если искажение заметно и двухфазная гипоэкспонента
-    # существует (ν ≥ 1/√2) — она подгоняет оба момента точно, берём её.
+    # второй. Если искажение заметно, берём гипоэкспоненту: она подгоняет оба
+    # момента точно при любом ν < 1, подбирая нужное число фаз.
     if erlang.notes:
         law = Hypoexponential(mean, cv)
         law.notes.append(

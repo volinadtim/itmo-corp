@@ -235,9 +235,6 @@ class TestAllVariants(unittest.TestCase):
                 self.assertLess(abs(result.cross_correlation), 0.2)
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 
 class TestReportRendering(unittest.TestCase):
     """Отчёт должен собираться для каждого закона.
@@ -270,3 +267,6 @@ class TestReportRendering(unittest.TestCase):
                 self.assertNotIn("{", text)
                 for plot in ("plot1_series", "plot2_histogram", "plot3_fit"):
                     self.assertTrue((Path(tmp) / "plots" / f"{plot}.png").exists())
+
+if __name__ == "__main__":
+    unittest.main()
