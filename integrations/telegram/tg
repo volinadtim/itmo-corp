@@ -1,0 +1,137 @@
+#!/usr/bin/env -S python3 -I
+"""ITMO Telegram chats from atlas (space `itmo`), read-only.
+
+The key lives in ~/.config/atlas/itmo-corp.env (client `itmo-corp`,
+scope `comms:read space=itmo`): it cannot see any other space.
+"""
+import argparse
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ENV_FILE = Path.home() / ".config/atlas/itmo-corp.env"
+
+
+def env():
+    if not ENV_FILE.exists():
+        sys.exit(f"нет {ENV_FILE}: выпусти ключ `atlas clients key <id itmo-corp>` (см. integrations/telegram/README.md)")
+    e = dict(os.environ)
+    for line in ENV_FILE.read_text().splitlines():
+        if "=" in line and not line.lstrip().startswith("#"):
+            k, v = line.split("=", 1)
+            e[k.strip()] = v.strip()
+    e["ATLAS_SPACE"] = "itmo"
+    return e
+
+
+def atlas(*args):
+    r = subprocess.run(["atlas", *args, "--json"], env=env(), capture_output=True, text=True)
+    if r.returncode:
+        sys.exit(r.stderr.strip())
+    return json.loads(r.stdout or "[]")
+
+
+def find(kind, query=None, since=None, until=None, limit=50):
+    args = ["find", "--kind", kind, "--limit", str(limit)]
+    if since:
+        args += ["--since", since]
+    if until:
+        args += ["--until", until]
+    if query:
+        args.append(query)
+    return atlas(*args)
+
+
+def find_all(kind, since=None, until=None):
+    # the server returns at most 1000 records, newest first: page back by --until
+    seen, out = set(), []
+    while True:
+        page = [r for r in find(kind, None, since, until, 1000) if r["id"] not in seen]
+        if not page:
+            return out
+        seen.update(r["id"] for r in page)
+        out += page
+        until = min(r["occurred_at"] for r in page)
+
+
+def sender(d):
+    return d.get("sender_name") or d.get("sender_username") or d.get("sender_id") or "?"
+
+
+def short(text, n=120):
+    text = " ".join((text or "").split())
+    return text if len(text) <= n else text[: n - 1] + "…"
+
+
+def reply(d, parents):
+    """What the message answers: the quoted part, else the start of the target if it was loaded."""
+    if d.get("reply_to_story"):
+        return "[↪ на историю] "
+    target = d.get("reply_to_message_id")
+    if not target:
+        return ""
+    elsewhere = d.get("reply_to_chat_id")
+    where = f" из чата {elsewhere}" if elsewhere and elsewhere != d.get("chat_id") else ""
+    parent = None if where else parents.get((d.get("chat_id"), target))
+    head = f"↪ #{target}{where}"
+    if parent:
+        head += f" {sender(parent)}"
+    if d.get("reply_quote"):
+        return f"[{head} цитата «{short(d['reply_quote'])}»] "
+    if parent:
+        return f"[{head}: «{short(parent.get('text'), 80)}»] "
+    return f"[{head}] "
+
+
+def line(m, parents=None):
+    d = m["data"]
+    text = (d.get("text") or "").replace("\n", " ⏎ ")
+    media = d.get("media") or {}
+    if media:
+        text += f" [{media.get('type', 'файл')}{': ' + media['file_name'] if media.get('file_name') else ''}]"
+    at = m["occurred_at"][:16].replace("T", " ")
+    num = f"#{d['message_id']} " if d.get("message_id") else ""
+    return f"{at}  {d.get('chat_title', '')} | {num}{sender(d)}: {reply(d, parents or {})}{text}  ({m['id']})"
+
+
+def matches(m, chat):
+    return chat is None or chat.lower() in (m["data"].get("chat_title") or "").lower()
+
+
+def main():
+    p = argparse.ArgumentParser(prog="tg", description=__doc__)
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("chats", help="разрешённые чаты пространства itmo")
+    s = sub.add_parser("search", help="полнотекстовый поиск по сообщениям")
+    s.add_argument("query")
+    c = sub.add_parser("chat", help="лента одного чата (часть названия), от старых к новым")
+    c.add_argument("title")
+    for x in (s, c):
+        x.add_argument("--since", help="YYYY-MM-DD")
+        x.add_argument("--until", help="YYYY-MM-DD")
+        x.add_argument("--limit", type=int, default=200)
+    g = sub.add_parser("get", help="одна запись целиком (с raw Telegram)")
+    g.add_argument("id")
+    a = p.parse_args()
+
+    if a.cmd == "chats":
+        for r in find("comms.chat", limit=500):
+            d = r["data"]
+            print(f"{d.get('title') or d.get('chat_title')}  [{d.get('type') or d.get('chat_type', '')}]  ({r['id']})")
+    elif a.cmd == "search":
+        for m in find("comms.message", a.query, a.since, a.until, a.limit):
+            print(line(m))
+    elif a.cmd == "chat":
+        # atlas find has no chat filter: read the period and keep this chat's messages
+        msgs = [m for m in find_all("comms.message", a.since, a.until) if matches(m, a.title)]
+        parents = {(m["data"].get("chat_id"), m["data"].get("message_id")): m["data"] for m in msgs}
+        for m in sorted(msgs, key=lambda m: m["occurred_at"])[-a.limit:]:
+            print(line(m, parents))
+    elif a.cmd == "get":
+        print(json.dumps(atlas("get", a.id), ensure_ascii=False, indent=1))
+
+
+if __name__ == "__main__":
+    main()
