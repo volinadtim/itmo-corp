@@ -66,14 +66,15 @@ npx agent-browser --session my-itmo find text "Переводы и восста�
 AGENT_BROWSER_HEADED=1 bash integrations/my-itmo/scripts/login.sh
 ```
 
-## MCP tools (if enabled)
+## MCP tools (preferred)
 
-When MCP server `my-itmo` is active in Cursor, prefer MCP tools over raw shell:
+Servers `my-itmo` (read-only) and `my-itmo-write` (read + write) call the portal API directly with ITMO ID login handled automatically — no manual login, no browser. Full docs: [integrations/my-itmo/README.md](../../integrations/my-itmo/README.md); site map: [integrations/my-itmo/references/sitemap.md](../../integrations/my-itmo/references/sitemap.md).
 
-- `my_itmo_login` — authenticate
-- `my_itmo_status` — session check
-- `my_itmo_snapshot` — page tree
-- `my_itmo_open` — open URL
+Start with `itmo_whoami` / `itmo_sitemap`; find unknown endpoints with `itmo_api_catalog`. Main tools: `itmo_schedule`, `itmo_record_book`, `itmo_requests`, `itmo_request_form`, `itmo_finances`, `itmo_student_info`, `itmo_public_schedule(_search)` (teacher/group/room timetables from itmo.ru, no login).
+
+Write tools (`itmo_request_submit`, `itmo_request_cancel`, `itmo_booking_cancel`, `itmo_sport_unsubscribe`, `itmo_api_write`) are dry-run unless `confirm: true`. Show the user the dry-run preview and set `confirm: true` only after they approve that exact action. Payments, e-signing, housing settlement and approvals are blocked by design.
+
+Browser automation below is the fallback for pages that have no API.
 
 ## Key applications for restoration (ИСУ 368086)
 

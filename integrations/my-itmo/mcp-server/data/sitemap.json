@@ -1,0 +1,522 @@
+{
+ "generatedAt": "2026-10-01T11:36:01.435Z",
+ "origin": "https://my.itmo.ru",
+ "publicSites": [
+  {
+   "host": "my.itmo.ru",
+   "purpose": "Student personal cabinet (Nuxt SPA + /api JSON, ITMO ID Bearer auth)"
+  },
+  {
+   "host": "id.itmo.ru",
+   "purpose": "ITMO ID — Keycloak realm 'itmo' (OIDC provider)"
+  },
+  {
+   "host": "itmo.ru/ru/schedule",
+   "purpose": "Public timetable by teacher / group / room (server-rendered HTML, no login)"
+  },
+  {
+   "host": "isu.ifmo.ru",
+   "purpose": "Legacy ISU portal (not covered by the MCP)"
+  },
+  {
+   "host": "abit.itmo.ru",
+   "purpose": "Admissions portal (not covered by the MCP)"
+  },
+  {
+   "host": "helpdesk.itmo.ru",
+   "purpose": "Support desk (Jira Service Management)"
+  }
+ ],
+ "routes": [
+  {
+   "path": "/",
+   "name": "index"
+  },
+  {
+   "path": "/assistant",
+   "name": "assistant"
+  },
+  {
+   "path": "/certifications/admin/chairmans",
+   "name": "certifications-admin-chairmans"
+  },
+  {
+   "path": "/certifications/admin/chairmans/composition/:composition?",
+   "name": "certifications-admin-chairmans-composition-composition"
+  },
+  {
+   "path": "/certifications/admin/chairmans/schedule/:schedule",
+   "name": "certifications-admin-chairmans-schedule-schedule"
+  },
+  {
+   "path": "/certifications/admin/chairmans/schedule/:schedule?/students/:student?",
+   "name": "certifications-admin-chairmans-schedule-schedule-students-student"
+  },
+  {
+   "path": "/certifications/admin/diploma",
+   "name": "certifications-admin-diploma"
+  },
+  {
+   "path": "/certifications/admin/diploma/:certification",
+   "name": "certifications-admin-diploma-certification"
+  },
+  {
+   "path": "/certifications/admin/diploma/:certification/history",
+   "name": "certifications-admin-diploma-certification-history"
+  },
+  {
+   "path": "/certifications/admin/experts",
+   "name": "certifications-admin-experts"
+  },
+  {
+   "path": "/certifications/admin/orders",
+   "name": "certifications-admin-orders"
+  },
+  {
+   "path": "/certifications/admin/orders/:order",
+   "name": "certifications-admin-orders-order"
+  },
+  {
+   "path": "/certifications/admin/print",
+   "name": "certifications-admin-print"
+  },
+  {
+   "path": "/certifications/admin/reviewers",
+   "name": "certifications-admin-reviewers"
+  },
+  {
+   "path": "/certifications/admin/secretaries",
+   "name": "certifications-admin-secretaries"
+  },
+  {
+   "path": "/certifications/admin/supplement",
+   "name": "certifications-admin-supplement"
+  },
+  {
+   "path": "/certifications/admin/supplement/:supplement",
+   "name": "certifications-admin-supplement-supplement"
+  },
+  {
+   "path": "/certifications/admin/supplement/:supplement/history",
+   "name": "certifications-admin-supplement-supplement-history"
+  },
+  {
+   "path": "/certifications/admin/supplement/eu",
+   "name": "certifications-admin-supplement-eu"
+  },
+  {
+   "path": "/certifications/admin/supplement/eu/:supplement",
+   "name": "certifications-admin-supplement-eu-supplement"
+  },
+  {
+   "path": "/certifications/diploma",
+   "name": "certifications-diploma"
+  },
+  {
+   "path": "/certifications/diploma/:diploma",
+   "name": "certifications-diploma-diploma"
+  },
+  {
+   "path": "/constructor/kug",
+   "name": "constructor-kug"
+  },
+  {
+   "path": "/constructor/kug/:kug",
+   "name": "constructor-kug-kug"
+  },
+  {
+   "path": "/constructor/modules",
+   "name": "constructor-modules"
+  },
+  {
+   "path": "/constructor/modules/:module",
+   "name": "constructor-modules-module"
+  },
+  {
+   "path": "/constructor/programs",
+   "name": "constructor-programs"
+  },
+  {
+   "path": "/constructor/programs/:program",
+   "name": "constructor-programs-program"
+  },
+  {
+   "path": "/election",
+   "name": "election"
+  },
+  {
+   "path": "/election/facultative",
+   "name": "election-facultative"
+  },
+  {
+   "path": "/employment",
+   "name": "employment"
+  },
+  {
+   "path": "/employment/:id",
+   "name": "employment-id"
+  },
+  {
+   "path": "/employment/archive",
+   "name": "employment-archive"
+  },
+  {
+   "path": "/finances",
+   "name": "finances"
+  },
+  {
+   "path": "/intro",
+   "name": "intro"
+  },
+  {
+   "path": "/login",
+   "name": "login"
+  },
+  {
+   "path": "/login/callback",
+   "name": "login-callback"
+  },
+  {
+   "path": "/persons",
+   "name": "persons"
+  },
+  {
+   "path": "/persons/:person?",
+   "name": "persons-person"
+  },
+  {
+   "path": "/plan",
+   "name": "plan"
+  },
+  {
+   "path": "/plans",
+   "name": "plans"
+  },
+  {
+   "path": "/plans/:id",
+   "name": "plans-id"
+  },
+  {
+   "path": "/points",
+   "name": "points"
+  },
+  {
+   "path": "/practices",
+   "name": "practices"
+  },
+  {
+   "path": "/practices/:practice",
+   "name": "practices-practice"
+  },
+  {
+   "path": "/programs",
+   "name": "programs"
+  },
+  {
+   "path": "/programs/:program",
+   "name": "programs-program"
+  },
+  {
+   "path": "/readyz",
+   "name": "readyz"
+  },
+  {
+   "path": "/requests",
+   "name": "requests-index"
+  },
+  {
+   "path": "/requests/v2",
+   "name": "requests-v2"
+  },
+  {
+   "path": "/schedule",
+   "name": "schedule"
+  },
+  {
+   "path": "/search",
+   "name": "search"
+  },
+  {
+   "path": "/services",
+   "name": "services"
+  },
+  {
+   "path": "/services/adviser",
+   "name": "services-adviser"
+  },
+  {
+   "path": "/services/adviser/:person",
+   "name": "services-adviser-person"
+  },
+  {
+   "path": "/services/agreements",
+   "name": "services-agreements"
+  },
+  {
+   "path": "/services/booking",
+   "name": "services-booking"
+  },
+  {
+   "path": "/services/booking/group/:group?",
+   "name": "services-booking-group-group"
+  },
+  {
+   "path": "/services/booking/my",
+   "name": "services-booking-my"
+  },
+  {
+   "path": "/services/checklist",
+   "name": "services-checklist"
+  },
+  {
+   "path": "/services/dormitories",
+   "name": "services-dormitories"
+  },
+  {
+   "path": "/services/health",
+   "name": "services-health"
+  },
+  {
+   "path": "/services/navigator",
+   "name": "services-navigator"
+  },
+  {
+   "path": "/sport",
+   "name": "sport"
+  },
+  {
+   "path": "/sport/sign",
+   "name": "sport-sign"
+  },
+  {
+   "path": "/vacation",
+   "name": "vacation"
+  },
+  {
+   "path": "/vacation/management",
+   "name": "vacation-management"
+  }
+ ],
+ "menu": {
+  "items": [
+   {
+    "to": "/",
+    "icon": "menu-home",
+    "title": "menu.home",
+    "name": "menu.home",
+    "exact": true,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/schedule",
+    "icon": "menu-schedule",
+    "title": "menu.schedule",
+    "name": "menu.schedule",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/points",
+    "icon": "menu-notebook",
+    "title": "modules.record_book.title",
+    "name": "modules.record_book.title",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/plan",
+    "icon": "adviser",
+    "title": "modules.eduPlan.page.menu",
+    "name": "modules.eduPlan.page.menu",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/election",
+    "icon": "menu-file",
+    "title": "menu.election",
+    "name": "menu.election",
+    "exact": true,
+    "description": "",
+    "multicolor_icon": "",
+    "children": [
+     {
+      "to": "/election",
+      "icon": "",
+      "title": "modules.election.name",
+      "name": "modules.election.name",
+      "exact": true,
+      "description": "",
+      "multicolor_icon": ""
+     },
+     {
+      "to": "/election/facultative",
+      "icon": "",
+      "title": "modules.electionFacultative.menu",
+      "name": "modules.electionFacultative.menu",
+      "exact": true,
+      "description": "",
+      "multicolor_icon": ""
+     }
+    ]
+   },
+   {
+    "to": "/sport",
+    "icon": "menu-kronbars",
+    "title": "Спорт",
+    "name": "Спорт",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": "",
+    "children": [
+     {
+      "to": "/sport",
+      "icon": "icon icon-kronbars-shield",
+      "title": "Мой спорт",
+      "name": "Мой спорт",
+      "exact": true,
+      "description": "",
+      "multicolor_icon": ""
+     },
+     {
+      "to": "/sport/sign",
+      "icon": "icon icon-kronbars-shield",
+      "title": "Запись на секции",
+      "name": "Запись на секции",
+      "exact": true,
+      "description": "",
+      "multicolor_icon": ""
+     }
+    ]
+   },
+   {
+    "to": "/practices",
+    "icon": "work",
+    "title": "modules.practices.title",
+    "name": "modules.practices.title",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/finances",
+    "icon": "menu-wallet",
+    "title": "menu.finances",
+    "name": "menu.finances",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/persons",
+    "icon": "users",
+    "title": "modules.personalities.title",
+    "name": "modules.personalities.title",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/requests",
+    "icon": "menu-note",
+    "title": "modules.requests.requestsAndQueues",
+    "name": "modules.requests.requestsAndQueues",
+    "exact": false,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/services",
+    "icon": "menu-services",
+    "title": "menu.services",
+    "name": "menu.services",
+    "exact": true,
+    "description": "",
+    "multicolor_icon": ""
+   }
+  ],
+  "services": [
+   {
+    "to": "/services/navigator",
+    "icon": "navigation",
+    "title": "modules.services.navigator.title",
+    "name": "modules.services.navigator.title",
+    "exact": true,
+    "color": "green",
+    "description": "Карта корпусов и построение маршрутов",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/services/dormitories",
+    "icon": "menu-home",
+    "title": "Общежитие",
+    "name": "Общежитие",
+    "exact": true,
+    "color": "yellow",
+    "description": "Заселение и проживание",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/services/agreements",
+    "icon": "list",
+    "title": "Соглашения",
+    "name": "Соглашения",
+    "exact": true,
+    "color": "orange",
+    "description": "Подписание соглашений",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/services/booking",
+    "icon": "booking",
+    "title": "Бронирование помещений",
+    "name": "Бронирование помещений",
+    "exact": false,
+    "color": "blue",
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/plans",
+    "icon": "user-list",
+    "title": "Индивидуальные учебные планы",
+    "name": "Индивидуальные учебные планы",
+    "exact": true,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/programs",
+    "icon": "pencil-ruler",
+    "title": "Рабочие программы",
+    "name": "Рабочие программы",
+    "exact": true,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/constructor/programs",
+    "icon": "docs",
+    "title": "Образовательные программы",
+    "name": "Образовательные программы",
+    "exact": true,
+    "description": "",
+    "multicolor_icon": ""
+   },
+   {
+    "to": "/certifications/admin/diploma",
+    "icon": "graduation",
+    "title": "Отзыв рецензента",
+    "name": "Отзыв рецензента",
+    "exact": false,
+    "color": "purple",
+    "description": "",
+    "multicolor_icon": ""
+   }
+  ]
+ }
+}

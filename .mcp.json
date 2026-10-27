@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "my-itmo": {
+      "command": "node",
+      "args": [
+        "integrations/my-itmo/mcp-server/index.js"
+      ]
+    },
+    "my-itmo-write": {
+      "command": "node",
+      "args": [
+        "integrations/my-itmo/mcp-server/write.js"
+      ]
+    },
+    "browser-itmo": {
+      "command": "/home/volin/projects/atlas/tools/browser/bin/atlas-browser-mcp",
+      "args": [
+        "itmo"
+      ]
+    }
+  }
+}

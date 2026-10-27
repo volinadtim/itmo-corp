@@ -1,15 +1,26 @@
 {
   "name": "my-itmo-mcp",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "MCP server for my.itmo.ru via agent-browser",
+  "description": "MCP servers for my.itmo.ru (read-only and write) over the portal's own API with ITMO ID OIDC login",
   "main": "index.js",
+  "bin": {
+    "my-itmo-mcp": "index.js",
+    "my-itmo-mcp-write": "write.js"
+  },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "start:write": "node write.js",
+    "crawl": "node scripts/crawl-sitemap.mjs",
+    "crawl:probe": "node scripts/crawl-sitemap.mjs --probe",
+    "test": "node --test \"test/*.test.js\""
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.0",
-    "dotenv": "^16.4.7"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0"
   }
 }

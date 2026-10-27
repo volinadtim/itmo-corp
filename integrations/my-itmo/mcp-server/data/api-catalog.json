@@ -1,0 +1,7156 @@
+{
+ "generatedAt": "2026-10-01T11:36:01.436Z",
+ "endpoints": [
+  {
+   "method": "GET",
+   "path": "/api/agreements/agreements",
+   "module": "agreements",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "title": "string",
+      "code": "string",
+      "is_bilateral": "boolean",
+      "versions": [
+       "object"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/agreements/agreements/{id}/{id}/download",
+   "module": "agreements",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/agreements/agreements/{id}/sign",
+   "module": "agreements",
+   "audience": "student",
+   "mutating": true,
+   "risk": "legal"
+  },
+  {
+   "method": "POST",
+   "path": "/api/agreements/agreements/sign-batch",
+   "module": "agreements",
+   "audience": "student",
+   "mutating": true,
+   "risk": "legal"
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/booking/bookings/",
+   "module": "booking",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/booking/bookings/",
+   "module": "booking",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/booking/bookings/{booking_id}",
+   "module": "booking",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/bookings/my",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 500
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/bookings/statuses",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 500
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/dictionary/rooms/categories",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "category_id": "number",
+      "category_name": "string",
+      "min_days": "number",
+      "max_days": "null"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/dictionary/rooms/categories?groupId={id}",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/dictionary/rooms/groups",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 500
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/rooms/byName",
+   "query": [
+    "search"
+   ],
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/rooms/roomBookings",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 500
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/rooms/roomsInCategory",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 422
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/users/event/mostPopular",
+   "query": [
+    "counts"
+   ],
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/booking/users/status",
+   "module": "booking",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "phone_number": "string"
+    }
+   }
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/bank/modules/{id}/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/{id}/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/bank/modules/{id}/accessible_programs",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/bank/modules/{id}/description",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/bank/modules/{id}/info",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/bank/modules/{id}/tree",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/bank/modules/{module}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/{module}/approve",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/{module}/archive",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/{module}/revert",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/{module}/tree/module",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/bank/modules/{module}/tree/module/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/bank/modules/{module}/tree/module/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/bank/modules/{module}/tree/module/{id}/discipline/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/bank/modules/{module}/tree/module/{module_id}/discipline/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/{module}/tree/module/{parentId}/discipline",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/bank/modules/create",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/bank/modules/list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/companies",
+   "query": [
+    "query"
+   ],
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/companies/{id}/file",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/companies/{id}/file",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/companies/{id}/file",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/disciplines/list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/it_types",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/{currentId}/comments/create",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/{id}/activities",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/{id}/comments",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/{kugId}/to_expertise",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/{kugId}/to_revision",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/{kugId}/to_signing",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/{program}/{id}/generate",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/activities/create",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/activities/kug_semesters_dates/{kugId}/{year}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/activities/replace",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/add_to_ep/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/add_to_ep/{kug}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/by_ep/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/kug/comments/{id}/delete",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/kug/comments/{id}/update",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/hours_by_year/{id}/{year}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/order/{id}/pdf/generate",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/production_calendar/create/for_year",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/production_calendar/list/by_year/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/production_calendar/years/list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/semesters/add",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/semesters/by_year/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/semesters/list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/kug/semesters/update",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/{id}/activities",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/templates/activities/create",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/templates/activities/replace",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/kug/templates/create",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/hours_by_year/{id}/{year}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/semesters_dates/{id}/{year}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/kug/templates/update_name/{kug}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/using/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/templates/validate/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/kug/validate/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/people/search/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/{id}/comments",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{id}/comments",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/programs/{id}/comments/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{id}/comments/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/{id}/info",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/{id}/plan",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/{id}/plan/capacity_sum/by_semesters",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/{id}/status",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/annotation",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/archive",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/kcp",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/managers",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/programs/{program}/managers/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/managers/{isu}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/mobility",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/note",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/plan/module",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/programs/{program}/plan/module/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/plan/module/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/programs/{program}/plan/module/{id}/disciplines/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor-ep/programs/{program}/plan/module/{module_id}/disciplines/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/plan/module/{parentId}/bank_module",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/plan/module/{parentId}/discipline",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/plan/to_expertise",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/plan/to_revision",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/plan/to_signing",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{program}/to_isu",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/{programId}/companies",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor-ep/programs/{programId}/companies/{id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor-ep/programs/create",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/simple_list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/programs/tasks_list",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/activity_types",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/attributes",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/countries",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/directions",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/directions?education_level_id={id}",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/enrollment_years",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/forms",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/implementers",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/languages",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/levels",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/partner_universities",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/positions",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/rule_types",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/standards",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/standards/blocks",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/references/statuses",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor-ep/users/is_admin",
+   "module": "constructor-ep",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/certifications/{id}/assessments/types/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/certifications/{id}/info",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/certifications/{program}/assessments/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/certifications/{program}/info",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/certifications/{program}/main_stages",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/certifications/{program}/main_stages",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/certifications/{program}/preparation_stages",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/certifications/{program}/preparation_stages",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/certifications/create",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/companies",
+   "query": [
+    "query"
+   ],
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/companies/{id}/file",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/companies/{id}/file",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/companies/{id}/file",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/disciplines/{fromProgramId}/{toProgramId}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/disciplines/{id}/create_dpo",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/disciplines/{id}/description",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/disciplines/{id}/info",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/disciplines/{program}/capacity",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/disciplines/{program}/info",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/disciplines/{program}/use",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/disciplines/create",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/it_types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/people/roles",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/people/search/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/practices/{id}/about",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/practices/{id}/assessments",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/practices/{id}/content",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/practices/{id}/description",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/practices/{id}/info",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/practices/{id}/types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/practices/{program}/capacity",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/practices/{program}/content",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/practices/{program}/grades",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/practices/{program}/report",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/practices/create",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{id}/authors",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{id}/authors/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{id}/changes",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{id}/comments",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{id}/comments",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{id}/comments/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{id}/comments/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{id}/contents/{id}/chapters",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{id}/contents/{id}/work_types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{id}/copy",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{id}/developers",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{id}/developers/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{id}/experts",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{id}/experts/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{id}/json",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{id}/status",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{id}/status{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/assessments/current/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/assessments/current/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/assessments/current/create",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/capacity",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/capacity/split",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/chapters/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/chapters/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/chapters/create",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/work_types/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/work_types/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/contents/{selectedContent}/work_types/extra",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/files",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/incoming_tags",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{program}/outcoming_tags",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/{program}/sources",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/sources",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{program}/sources/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/sources/other",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{program}/sources/other/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{program}/status/archive",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/programs/{programId}/companies",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/constructor/programs/{programId}/companies/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/constructor/programs/{programId}/experts",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/changes",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/expertise/list",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/list",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/programs/tasks_list",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/certification_assessment_types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/current_assessments",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/education_levels",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/fin_attrs",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/fin_attrs/{id}/implementers",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/formats",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/implementers",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/intermediate_assessments",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/languages",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/max_contents",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/practice_formats",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/practice_forms",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/practice_pass_types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/program_types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/statuses",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/references/work_types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/sources/library/search/{id}",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/static/image",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/constructor/tags/create",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/tags/search",
+   "query": [
+    "query"
+   ],
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/constructor/tags/types",
+   "module": "constructor",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/citizenships",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/filters/statuses",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/me/access",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": "boolean"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/dms/me/corp_mail",
+   "module": "dms",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/me/request",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "error_code": "number",
+     "error_message": "null",
+     "result": "null"
+    }
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/dms/me/request/{request_id}",
+   "module": "dms",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/dms/me/request/{request_id}/reject",
+   "module": "dms",
+   "audience": "student",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/dms/me/request/{request_id}/sign",
+   "module": "dms",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/me/request/contacts",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "university_support": {
+      "contact_link": "string",
+      "contact_support_email": "string",
+      "contact_phone_number": "string"
+     },
+     "DMS_support": {
+      "contact_link": "string",
+      "contact_email": "string"
+     },
+     "insurance_support": {
+      "insurance_company": "string",
+      "contact_support_email": "string",
+      "insurance_company_contact_number": "string"
+     },
+     "information_link": "string",
+     "insurance_data": {
+      "program_name": "string",
+      "insurance_company": "string",
+      "insurance_company_link": "string"
+     }
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/request/{request_id}/files/{user_file_name}",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/request/list",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dms/request/list/{id}",
+   "module": "dms",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/dms/request/me/{request_id}/decision",
+   "module": "dms",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/dormitory/apartments",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "address": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dormitory/documents",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "documentType": "number",
+      "documentTypeName": "string",
+      "status": "number",
+      "status_name": "string",
+      "requestId": "number",
+      "templateId": "number"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dormitory/payments/contracts?from={dateFrom}&to={dateTo}",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/dormitory/payments/contracts/periods",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/dormitory/payments/pay",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": true,
+   "risk": "financial"
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/dormitory/settlement/cancel",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": true,
+   "risk": "housing"
+  },
+  {
+   "method": "POST",
+   "path": "/api/dormitory/settlement/change_category",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": true,
+   "risk": "housing"
+  },
+  {
+   "method": "POST",
+   "path": "/api/dormitory/settlement/register",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": true,
+   "risk": "housing"
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/dormitory/settlement/remove",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": true,
+   "risk": "housing"
+  },
+  {
+   "method": "GET",
+   "path": "/api/dormitory/settlement/slots",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": false,
+   "risk": "housing",
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/dormitory/status/full",
+   "module": "dormitory",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "error_code": "number",
+     "error_message": "null",
+     "result": "null"
+    }
+   }
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/eduPlan/{id}/modules/{moduleId}/disciplines/{disciplineId}/sign",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/eduPlan/{id}/modules/{moduleId}/disciplines/{disciplineId}/sign",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/eduPlan/{id}/modules/{moduleId}/disciplines/{id}/sign",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/eduPlan/{planId}/modules/{moduleId}/disciplines/{discId}/replace/{id}",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/eduPlan/{planId}/modules/{moduleId}/disciplines/{id}/replaceable",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/eduPlan/{planId}/replace/{id}",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/eduPlan/{planId}/replaceable_discs",
+   "module": "eduPlan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/availability",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "id": "number",
+     "status": "string",
+     "semesterStart": "string",
+     "semesterEnd": "string",
+     "dateStart": "string",
+     "dateEnd": "string",
+     "timeStart": "string",
+     "timeEnd": "string",
+     "studyYear": "string",
+     "semesterId": "number",
+     "semester": "number"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/available_disciplines",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/chosen_flows",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/election/students/group_flow_available_disciplines",
+   "module": "election",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/limits/flow_groups",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/limits/flows",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/election/students/order/",
+   "module": "election",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/election/students/order/change",
+   "module": "election",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/election/students/order/clear",
+   "module": "election",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/ordered_flow_chains",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/schedule/base/timeline",
+   "query": [
+    "date_start",
+    "date_end"
+   ],
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/election/students/schedule/combined?date_start={dateStart}&date_end={dateEnd}",
+   "module": "election",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/schedule/flows/{id}/timeline",
+   "query": [
+    "date_start",
+    "date_end"
+   ],
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/election/students/schedule/flows/intersections",
+   "module": "election",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/election/students/selected_flow_chains",
+   "module": "election",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "selectedBy": "number",
+     "flowChains": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/approve",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}/briefing",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/briefing/approve",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/contract",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/contract/file",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}/documents",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/documents/{id}/approve",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/documents/{id}/reject",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/documents/approve",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/documents/reject",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/documents/send",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}/documents/signed",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/employments/employments/{id}/documents/signed/{id}",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/documents/signed/upload",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}/paper_work_book",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/paper_work_book/approve",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/reject",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}/rights",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/employments/{id}/signers",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/employments/employments/{id}/stop",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/references/departments",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/references/employment_stop_reasons",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/references/fixed_term_reasons",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/employments/references/staff_units",
+   "module": "employments",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/facultative/booking/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/facultative/commit/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/current/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/current/{isu}",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/description/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "isu": "number",
+     "description": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/description/start/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "isu": "number",
+     "description": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/json/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/json/{isu}",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/limits/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/limits/{id}",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/schedule/flow/{flowId}/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/schedule/flow/{id}/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/schedule/user/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/facultative/status/",
+   "module": "facultative",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "semester": {
+      "choice_status": "number",
+      "date_end": "string",
+      "date_start": "string",
+      "semester": "number",
+      "study_year": "string"
+     }
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/edupayments/availability",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": "boolean"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/edupayments/contracts",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "contractId": "string",
+      "number": "string",
+      "dateStart": "string",
+      "dateEnd": "string",
+      "name": "string",
+      "active": "boolean",
+      "period": "string",
+      "sum": "number",
+      "op": "string",
+      "dep": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/edupayments/payments",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/finances/edupayments/payments/pay",
+   "module": "finances",
+   "audience": "student",
+   "mutating": true,
+   "risk": "financial"
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/current",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/payouts",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/payouts/last",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/payouts/month",
+   "query": [
+    "month",
+    "year"
+   ],
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/payouts/total",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/payouts/total?dateFrom={id}&dateTo={id}",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/salary/year",
+   "query": [
+    "year"
+   ],
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/scholarship/account",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/scholarship/income",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "payment_date": "string",
+      "payment": "object"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/scholarship/total",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "category_id": "number",
+      "category_name": "string",
+      "sum": "number"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/finances/scholarship/total?dateFrom={id}&dateTo={id}",
+   "module": "finances",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia-students/attachment/{diplomaId}/eu",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/attachment/{diplomaId}/eu/init_payment",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/attachment/{id}",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/attachment/{id}/eu",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/attachment/{id}/eu",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/attachment/{id}/eu/approve",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/attachment/{id}/eu/rollback",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/attachment/approve/{id}/{id}",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/diplomas/{diploma}/agreement",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia-students/diplomas/{diploma}/annotation",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia-students/diplomas/{diploma}/application",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia-students/diplomas/{diploma}/file",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{diploma}/file/antiplagiat/report",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{diploma}/file/download/{key}",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{diploma}/file/download/{result_file_key}",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/diplomas/{diploma}/presentation/extra-files",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia-students/diplomas/{diploma}/presentation/extra-files/{file_key}",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia-students/diplomas/{diploma}/presentation/file",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia-students/diplomas/{diploma}/presentations/{presentation_id}/signup",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia-students/diplomas/{diploma}/presentations/{presentation_id}/signup",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia-students/diplomas/{diploma}/revoke",
+   "query": [
+    "stage"
+   ],
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia-students/diplomas/{diploma}/task",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/annotation",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/application",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/file",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/info",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/presentation",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/presentations/possible",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/{id}/task",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/diplomas/my",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/me/grants",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "error_code": "number",
+     "error_message": "null",
+     "result": "null"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/me/publications",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "error_code": "number",
+     "error_message": "null",
+     "result": "null"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/me/speeches",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "error_code": "number",
+     "error_message": "null",
+     "result": "null"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/people",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "isu": "number",
+      "surname": "string",
+      "name": "string",
+      "second_name": "string",
+      "job_title": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/people/",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 404
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/references/academic-titles",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name_ru": "string",
+      "name_en": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/references/agreement",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 500
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/references/degree-types",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name_ru": "string",
+      "name_en": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/references/diploma-types",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "diploma_type_id": "number",
+      "diploma_type_name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/references/organization-statuses",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 404
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/references/statuses",
+   "query": [
+    "entity"
+   ],
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia-students/users/status",
+   "module": "gia-students",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 404
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/attachment/eu/{diploma_id}/file",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/attachment/eu/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/attachment/rollback/{id}/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/attachment/students/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/attachment/students/{supplement}/sync_confirmed_discs",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/attachment/students/file",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/attachment/students/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/chairman",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia/chairman/{chairman_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/chairman/{chairman_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/chairman/{chairman_id}/approve",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/chairman/{chairman_id}/represent",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/chairman/{personIds}/decline",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/chairman/ep_missing",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/chairman/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/chairman/list/simple",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/chairman/order",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/committees",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/committees/{committee_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/committees/{composition}/revoke",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/committees/{composition}/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/chairmen",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/edu-directions",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/edu-programs",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/experts",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/general-state-committees",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/committees/general-state-committees/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/{diploma_id}/annotation/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/diplomas/{diploma_id}/antiplagiat/send",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{diploma_id}/antiplagiat/verification-report",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/{diploma_id}/application/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{diploma_id}/download/{result_file_key}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/{diploma_id}/file/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{diploma_id}/review/{role}/file",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/{diploma_id}/task/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/{diploma}/{stage}/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/{diploma}/antiplagiat/info",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{diploma}/antiplagiat/verification-report",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{id}/antiplagiat/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{id}/history",
+   "query": [
+    "stage"
+   ],
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/{id}/student",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/monitoring",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/monitoring/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/monitoring/stage",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/monitoring/stage/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/diplomas/print/{diploma_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/diplomas/print/{diploma_id}/number",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/diplomas/print/{diploma_id}/scan",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/print/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/review/supervisor/count",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/diplomas/stage/onApproval/count",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/gia/diplomas/statuses",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/ep/{id}/groups",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/ep/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/ep/students?ep_id={id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/experts",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia/experts/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/experts/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/experts/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts/approve/{expert_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts/approve/{expertId}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts/approve/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/experts/exists",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/experts/organization",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia/experts/reject/{expertId}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/experts/simple",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts/under-approval/{expert_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts/under-approval/{expertId}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/experts/under-approval/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/attachment/credits",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/chairman/dir",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/chairman/ep",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/chairman/faculties",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/directions",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/edu-levels",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/employed",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/ep",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/experts",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/faculties",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/groups",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/order-types",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/secretaries",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/statuses",
+   "query": [
+    "entity"
+   ],
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/filters/years",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia/general_state_coordinator",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/general_state_coordinator",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/general_state_coordinator/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/orders/",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/orders/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/orders/students/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/people/search",
+   "query": [
+    "query"
+   ],
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/people/snils",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/presentations",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{dayId}/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/presentations/{id}/committees",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/presentations/{id}/links",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{id}/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/{presentation_id}/students/{student_id}/questions",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/presentations/{schedule}/marks/approve",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/presentations/{schedule}/revoke",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{schedule}/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{schedule}/students/{id}/approve",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{schedule}/students/{id}/reject",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{schedule}/students/{studentId}/questions",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{schedule}/students/marks",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/presentations/{schedule}/students/order",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/committees",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/defense-types",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/edu-programs",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/general-state",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/general-state/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/secretary",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/presentations/students/{id}/main-info",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/references/academic-titles",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/references/degree-types",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/references/edu-levels",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/references/grades",
+   "query": [
+    "assessment"
+   ],
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/references/organization-registries",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/references/organization-statuses",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/reviewers",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/{id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/gia/reviewers/{reviewer_id}",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/{reviewer_id}/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/reviewers/appoint/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/appointments",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/appointments/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/diplomas/{id}/student",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/reviewers/edit-restriction",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/reviewers/notify",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/reviewers/register",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/reviewers",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/students/filters",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/reviewers/students/search",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/secretaries",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/gia/secretaries/approve",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/gia/secretaries/decline",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/secretaries/list",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/secretaries/list_ogek",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/secretaries/my_students",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/secretaries/students/unassigned",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/gia/users/status",
+   "module": "gia",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/flags",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "key": "string",
+      "enabled": "boolean"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/availableDisciplines",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/changes",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/discipline/{id}/use",
+   "query": [
+    "draft"
+   ],
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/individual-plan/plan/{id}/draft",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/draft",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/draft",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/draft/save",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/lowerModules",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/module",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/individual-plan/plan/{id}/module/{id}",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/individual-plan/plan/{id}/module/{id}",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}/choice",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}/choice",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}/choice",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}/flowChoice",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/individual-plan/plan/{id}/module/{id}/discipline/{id}/move",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/plan",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/plan/validate/personal-plan-content",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/plan/validate/plan-content",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/individual-plan/plan/{id}/plan/validate/selection",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/semesters",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/{id}/upperModules",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/directions",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "code": "string",
+      "name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/implementers",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "short_name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/programs",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "enrollment_year": "number"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/role",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "is_admin": "boolean",
+     "can_create": "boolean",
+     "edu_levels": "null",
+     "forbidden": "boolean"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/plan/statuses",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "short_name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/individual-plan/semesters/current",
+   "module": "individual-plan",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "sem_id": "number"
+    }
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/intro/booking/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/intro/commit/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/current/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/current/{isu}",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/description/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 404
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/description/start/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 404
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/json/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/json/{isu}",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/limits/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/limits/{id}",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/schedule/flow/{flowId}/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/schedule/flow/{id}/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/schedule/user/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 403
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/intro/status/",
+   "module": "intro",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "semester": {
+      "choice_status": "number",
+      "date_end": "string",
+      "date_start": "string",
+      "semester": "number",
+      "study_year": "string"
+     }
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/personalities/persons",
+   "query": [
+    "offset",
+    "limit",
+    "q"
+   ],
+   "module": "personalities",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/personalities/persons/{id}",
+   "module": "personalities",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/personalities/persons/{id}/activities",
+   "module": "personalities",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/feedback/head?id={id}",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/ind_task?id={id}",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/practices/ind_task/approve",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/practices/ind_task/cancel",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/practices/ind_task/create",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/practices/ind_task/create",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/practices/ind_task/stage/add",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/practices/ind_task/stage/delete",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/practices/ind_task/stage/update",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/practices?id={id}",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/practices/practices/{id}/application",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/practices/all",
+   "query": [
+    "op_id",
+    "current"
+   ],
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/practices/op",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/report?id={id}",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/practices/report/approve",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "POST",
+   "path": "/api/practices/report/create",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/report/emp_stats",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "value": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/report/grades",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "value": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/practices/report/types",
+   "module": "practices",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "value": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "PUT",
+   "path": "/api/practices/report/update",
+   "module": "practices",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/queues/",
+   "module": "queues",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/queues/",
+   "query": [
+    "table_id",
+    "type_id"
+   ],
+   "module": "queues",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/queues/",
+   "module": "queues",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/queues/archive",
+   "module": "queues",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "table_id": "number",
+      "table_name": "string",
+      "table_address": "string",
+      "queue_comment": "string",
+      "application_id": "number",
+      "type_id": "number",
+      "date": "string",
+      "phone": "string",
+      "comment": "string",
+      "consult_id": "null",
+      "consult_fio": "null"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/queues/current",
+   "module": "queues",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/queues/slots",
+   "query": [
+    "table_id",
+    "type_id"
+   ],
+   "module": "queues",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/record_book/{currentPlan}/{currentSemester}",
+   "module": "record_book",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/record_book/{id}",
+   "module": "record_book",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/record_book/specializations",
+   "module": "record_book",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "main_plan": "number",
+      "semesters": [
+       "object"
+      ],
+      "specialization_name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/{requestId}",
+   "module": "requests",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/all",
+   "module": "requests",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "color": "string",
+      "icon": "string",
+      "order": "number",
+      "requests": [
+       "object"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/dict/{dictId}",
+   "module": "requests",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/form_update",
+   "module": "requests",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/my",
+   "module": "requests",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "notice": "string",
+      "status": "number",
+      "status_name": "string",
+      "template_id": "number",
+      "updated_at": "string",
+      "created_at": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/my/{requestId}",
+   "module": "requests",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/my/{requestId}",
+   "module": "requests",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/my/{requestId}/download",
+   "module": "requests",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/send",
+   "module": "requests",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/access-definitions",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/access-definitions",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/access-definitions/{code}/users",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/access-definitions/{code}/users",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/v2/access-definitions/{selectedCode}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/access-definitions/{selectedCode}/refresh",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/access-definitions/admin-access",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/access-definitions/options",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/access-definitions/test",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/admin/process-instances",
+   "query": [
+    "status",
+    "search",
+    "page",
+    "size"
+   ],
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/v2/admin/process-instances/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/admin/process-instances/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/admin/process-instances/{id}/activities/{activityId}/restart",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/admin/process-instances/{id}/jobs/{id}/retry",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/categories",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/categories",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/v2/categories/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/context-enrichments",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/dictionaries",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "code": "string",
+      "name": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/dictionaries/admin",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/dictionaries/admin",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/dictionaries/admin-access",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/v2/dictionaries/admin/{selectedCode}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/dictionaries/test",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/forms",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/forms",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/forms/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/forms/{id}/access",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/platform-roles",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/v2/platform-roles/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/platform-roles/{userId}?role={role}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/platform-roles/me",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/prefills",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/processes",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/requests/v2/processes/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/processes/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/processes/{id}/config",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PUT",
+   "path": "/api/requests/v2/processes/{id}/config",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/processes/{id}/publish",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/processes/{id}/suspend",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/processes/deploy",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/processes/draft",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/requests",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/requests/{id}",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/requests/mine",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "formCode": "string",
+      "formName": "string",
+      "status": "string",
+      "subStatus": "null",
+      "createdAt": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/requests/my-tasks",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/requests/observed",
+   "query": [
+    "page",
+    "size",
+    "formCode",
+    "status",
+    "requestId",
+    "initiator"
+   ],
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/requests/observed/types",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/requests/task-counts",
+   "module": "requests",
+   "audience": "mixed",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "ownRequestTasks": "number",
+     "assignedRequestTasks": "number"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/tasks",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/requests/v2/tasks/{id}/complete",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/tasks/mine/by-request/{id}",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/tasks/mine/request-ids",
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/requests/v2/users",
+   "query": [
+    "query",
+    "limit"
+   ],
+   "module": "requests",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/schedule/meta/time_slots",
+   "module": "schedule",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "order": "number",
+      "time_start": "string",
+      "time_end": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/schedule/schedule/personal",
+   "query": [
+    "date_start",
+    "date_end",
+    "subject_id"
+   ],
+   "module": "schedule",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/schedule/subjects",
+   "module": "schedule",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 404
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/filters/course",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/filters/groups",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/filters/op",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/services/record_book/{currentPlan}/{currentSemester}?isu={id}",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/services/record_book/details?est_id={estId}&isu={isu}",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/services/record_book/specializations?isu={id}",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/services/replace/{isu}/{planId}",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/services/schedule",
+   "query": [
+    "date_start",
+    "date_end",
+    "isu"
+   ],
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/students",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/students/{id}",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/students/{id}/activities",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/adviser/students/{isu}/scholarship",
+   "module": "services",
+   "audience": "adviser",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/services/checklist/bypass",
+   "module": "services",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/sport/briefing/{id}/sign",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/competitions/list",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/competitions/list/limits",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "4323": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4326": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4328": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4332": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4333": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4335": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4336": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4337": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4338": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4339": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4348": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4349": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4353": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4355": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4373": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4375": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4377": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4384": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4460": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4490": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4507": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4510": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4516": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4517": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     },
+     "4518": {
+      "competition_id": "number",
+      "limit": "number",
+      "available": "number",
+      "date_start": "string"
+     }
+    }
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/api/sport/personal/briefing",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/briefing/{id}/signed",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/briefing/list",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "brief_id": "number",
+     "signed": "boolean",
+     "briefs": []
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/calendar?date_start={dateStart}&date_end={dateEnd}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/debt",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "is_having_debt": "boolean",
+     "needed_score": "number",
+     "free_attempts": "number"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/externat",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "signed": "boolean",
+     "externat_status_id": "null",
+     "decline_reason": "null"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/have_attempts",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "total_attempts": "number",
+     "used_attempts": "number",
+     "free_attempts": "number",
+     "can_sign_in": "boolean"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/health_level",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "health_level": {
+      "isu": "number",
+      "id": "number",
+      "name": "string"
+     }
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/open_form?section={id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/open_form/ranks",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "value": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/score",
+   "query": [
+    "semester_id"
+   ],
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/selections",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "requisites": [
+       "object"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/personal/sign_attempts",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": "number"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/projects/list",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "name": "string",
+      "description": "string",
+      "signed": "boolean",
+      "limit": "number",
+      "available": "number",
+      "instruction_link": "string",
+      "instruction_description": "string",
+      "requisite_available": "boolean",
+      "link": "null"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/semesters/current",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "id": "number",
+     "study_year": "string",
+     "semester": "number",
+     "date_start": "string",
+     "date_end": "string",
+     "hard_date_end": "string",
+     "current": "boolean",
+     "choice_start": "string",
+     "bachelor_bound": "string",
+     "ppa1_start": "string",
+     "ppa1_end": "string",
+     "ppa2_start": "string",
+     "ppa2_end": "string",
+     "sign_duration": "number"
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/semesters/list",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "value": "string",
+      "comment": "null"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/sign/chosen",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": []
+   }
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/sport/sign/competitions/{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/sport/sign/competitions/{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/sport/sign/projects/{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/sport/sign/projects/{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/sign/schedule?{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/sign/schedule/filters",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "building_id": [
+      "object"
+     ],
+     "section_id": [
+      "object"
+     ],
+     "sport_type_id": [
+      "object"
+     ],
+     "teacher_isu": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/sport/sign/schedule/lesson_groups/{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/sport/sign/schedule/lesson_groups/{id}",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/sport/sign/schedule/lessons",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/sport/sign/schedule/lessons",
+   "module": "sport",
+   "audience": "student",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/sign/schedule/lessons/{id}/other",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/sign/schedule/limits",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "11700": {
+      "122035": "object",
+      "122157": "object",
+      "122279": "object"
+     },
+     "11701": {
+      "122034": "object",
+      "122156": "object",
+      "122278": "object"
+     },
+     "11702": {
+      "122082": "object",
+      "122204": "object",
+      "122326": "object"
+     },
+     "11703": {
+      "122081": "object",
+      "122203": "object",
+      "122325": "object"
+     },
+     "11704": {
+      "122080": "object",
+      "122202": "object",
+      "122324": "object"
+     },
+     "11705": {
+      "122079": "object",
+      "122201": "object",
+      "122323": "object"
+     },
+     "11706": {
+      "122078": "object",
+      "122200": "object",
+      "122322": "object"
+     },
+     "11707": {
+      "122077": "object",
+      "122199": "object",
+      "122321": "object"
+     },
+     "11709": {
+      "122075": "object",
+      "122197": "object",
+      "122319": "object"
+     },
+     "11713": {
+      "122071": "object",
+      "122193": "object",
+      "122315": "object"
+     },
+     "11714": {
+      "122070": "object",
+      "122192": "object",
+      "122314": "object"
+     },
+     "11715": {
+      "122069": "object",
+      "122191": "object",
+      "122313": "object"
+     },
+     "11716": {
+      "122068": "object",
+      "122190": "object",
+      "122312": "object"
+     },
+     "11717": {
+      "122067": "object",
+      "122189": "object",
+      "122311": "object"
+     },
+     "11718": {
+      "122066": "object",
+      "122188": "object",
+      "122310": "object"
+     },
+     "11719": {
+      "122065": "object",
+      "122187": "object",
+      "122309": "object"
+     },
+     "11721": {
+      "122063": "object",
+      "122185": "object",
+      "122307": "object"
+     },
+     "11722": {
+      "122062": "object",
+      "122184": "object",
+      "122306": "object"
+     },
+     "11723": {
+      "122061": "object",
+      "122183": "object",
+      "122305": "object"
+     },
+     "11724": {
+      "122060": "object",
+      "122182": "object",
+      "122304": "object"
+     },
+     "11725": {
+      "122059": "object",
+      "122181": "object",
+      "122303": "object"
+     },
+     "11726": {
+      "122058": "object",
+      "122180": "object",
+      "122302": "object"
+     },
+     "11727": {
+      "122057": "object",
+      "122179": "object",
+      "122301": "object"
+     },
+     "11728": {
+      "122056": "object",
+      "122178": "object",
+      "122300": "object"
+     },
+     "11729": {
+      "122055": "object",
+      "122177": "object",
+      "122299": "object"
+     }
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/sport_types",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "value": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/sport/time_slots",
+   "module": "sport",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "id": "number",
+      "time_start": "string",
+      "time_end": "string"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/system/dashboard",
+   "module": "system",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": [
+     {
+      "i": "string",
+      "x": "number",
+      "y": "number",
+      "w": "number",
+      "h": "number",
+      "widget": "string",
+      "min_w": "null",
+      "min_h": "null",
+      "max_w": "null",
+      "max_h": "null",
+      "is_draggable": "null",
+      "is_resizable": "null",
+      "static": "boolean",
+      "drag_ignore_from": "null",
+      "drag_allow_from": "null",
+      "resize_ignore_from": "null",
+      "preserve_aspect_ratio": "null"
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/system/v1/menu/items",
+   "module": "system",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "menu": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/system/v1/menu/services",
+   "module": "system",
+   "audience": "student",
+   "mutating": false,
+   "risk": null,
+   "probe": {
+    "status": 200,
+    "shape": {
+     "menu": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/calendar",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/employees",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters/assigned",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters/people",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters/personal",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters/positions",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters/types",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/filters/uto_reasons",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/me/access",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/me/balance",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/me/calendar",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/me/vacation_conflict_with_days",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/me/vacations",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/vacation/me/vacations",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/vacation/me/vacations/{id}",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/me/vacations/upcoming",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "POST",
+   "path": "/api/vacation/me/vacations/uto",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": true,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/pending-approval",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/pending-approval/{id}",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/pending-approval/count",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/unapproved-vacations",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/vacation/vacation/{id}/reject",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  },
+  {
+   "method": "GET",
+   "path": "/api/vacation/vacations",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": false,
+   "risk": null
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/vacation/vacations/approve",
+   "module": "vacation",
+   "audience": "staff",
+   "mutating": true,
+   "risk": "approval"
+  }
+ ]
+}
