@@ -1,0 +1,14 @@
+LTspice 26.0.2 for MacOS
+Circuit: /Users/admin/personal-projects/itmo-corp/study/electronics/Draft2.net
+Start Time: Tue Oct 27 15:14:57 2026
+solver = Normal
+Maximum thread count: 10
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.065 seconds.
+
+Files loaded:
+/Users/admin/personal-projects/itmo-corp/study/electronics/Draft2.net
+

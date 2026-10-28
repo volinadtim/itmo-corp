@@ -1,0 +1,9 @@
+*
+I1 0 N001 1.5
+R1 N001 N002 {6*r}
+R2 N002 0 {2*r}
+R3 N001 0 {2*r}
+.op
+.param r=400
+.backanno
+.end
