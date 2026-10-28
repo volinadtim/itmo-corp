@@ -1,0 +1,151 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 731.6 240' width='731.6' height='240'>
+<rect width='731.6' height='240' fill='white'/>
+<text x='365.8' y='16' font-family='Helvetica, Arial, sans-serif' font-size='13' text-anchor='middle' fill='#222' font-weight='bold'>NRZ: участки постоянного уровня = полуволны, f = C/(2L)</text>
+<line x1='30.0' y1='60.0' x2='30.0' y2='140.0' stroke='#444' stroke-width='1'/>
+<line x1='51.3' y1='60.0' x2='51.3' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='72.6' y1='60.0' x2='72.6' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='93.9' y1='60.0' x2='93.9' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='115.2' y1='60.0' x2='115.2' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='136.5' y1='60.0' x2='136.5' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='157.8' y1='60.0' x2='157.8' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='179.1' y1='60.0' x2='179.1' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='200.4' y1='60.0' x2='200.4' y2='140.0' stroke='#444' stroke-width='1'/>
+<line x1='221.7' y1='60.0' x2='221.7' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='243.0' y1='60.0' x2='243.0' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='264.3' y1='60.0' x2='264.3' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='285.6' y1='60.0' x2='285.6' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='306.9' y1='60.0' x2='306.9' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='328.2' y1='60.0' x2='328.2' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='349.5' y1='60.0' x2='349.5' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='370.8' y1='60.0' x2='370.8' y2='140.0' stroke='#444' stroke-width='1'/>
+<line x1='392.1' y1='60.0' x2='392.1' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='413.4' y1='60.0' x2='413.4' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='434.7' y1='60.0' x2='434.7' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='456.0' y1='60.0' x2='456.0' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='477.3' y1='60.0' x2='477.3' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='498.6' y1='60.0' x2='498.6' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='519.9' y1='60.0' x2='519.9' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='541.2' y1='60.0' x2='541.2' y2='140.0' stroke='#444' stroke-width='1'/>
+<line x1='562.5' y1='60.0' x2='562.5' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='583.8' y1='60.0' x2='583.8' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='605.1' y1='60.0' x2='605.1' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='626.4' y1='60.0' x2='626.4' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='647.7' y1='60.0' x2='647.7' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='669.0' y1='60.0' x2='669.0' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='690.3' y1='60.0' x2='690.3' y2='140.0' stroke='#e4e4e4' stroke-width='0.6'/>
+<line x1='711.6' y1='60.0' x2='711.6' y2='140.0' stroke='#444' stroke-width='1'/>
+<text x='40.65' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='61.95' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='83.25' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='104.55' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='125.85000000000001' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='147.15' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='168.45000000000002' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='189.75' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='211.05' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='232.35' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='253.65' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='274.95000000000005' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='296.25' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='317.55' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='338.85' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='360.15000000000003' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='381.45' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='402.75' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='424.05' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='445.35' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='466.65000000000003' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='487.95' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='509.25' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='530.55' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='551.85' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='573.15' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='594.45' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='615.75' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='637.0500000000001' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='658.35' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='679.65' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>0</text>
+<text x='700.95' y='54' font-family='Helvetica, Arial, sans-serif' font-size='12' text-anchor='middle' fill='#222' font-weight='bold'>1</text>
+<text x='115.2' y='38' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='middle' fill='#555' font-weight='normal'>C4</text>
+<text x='285.6' y='38' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='middle' fill='#555' font-weight='normal'>E0</text>
+<text x='456.0' y='38' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='middle' fill='#555' font-weight='normal'>D2</text>
+<text x='626.4' y='38' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='middle' fill='#555' font-weight='normal'>CD</text>
+<path d='M30.0,68.0 L72.6,68.0 L72.6,124.0 L136.5,124.0 L136.5,68.0 L157.8,68.0 L157.8,124.0 L200.4,124.0 L200.4,68.0 L264.3,68.0 L264.3,124.0 L370.8,124.0 L370.8,68.0 L413.4,68.0 L413.4,124.0 L434.7,124.0 L434.7,68.0 L456.0,68.0 L456.0,124.0 L498.6,124.0 L498.6,68.0 L519.9,68.0 L519.9,124.0 L541.2,124.0 L541.2,68.0 L583.8,68.0 L583.8,124.0 L626.4,124.0 L626.4,68.0 L669.0,68.0 L669.0,124.0 L690.3,124.0 L690.3,68.0 L711.6,68.0' fill='none' stroke='#1f5fa8' stroke-width='2' stroke-linejoin='round'/>
+<line x1='32.0' y1='150.0' x2='70.6' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='32.0' y1='146.0' x2='32.0' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='70.6' y1='146.0' x2='70.6' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='51.3' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='74.6' y1='150.0' x2='134.5' y2='150.0' stroke='#7b3fa0' stroke-width='3'/>
+<line x1='74.6' y1='146.0' x2='74.6' y2='154.0' stroke='#7b3fa0' stroke-width='1.5'/>
+<line x1='134.5' y1='146.0' x2='134.5' y2='154.0' stroke='#7b3fa0' stroke-width='1.5'/>
+<text x='104.55' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#7b3fa0' font-weight='bold'>L=3</text>
+<line x1='138.5' y1='150.0' x2='155.8' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='138.5' y1='146.0' x2='138.5' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='155.8' y1='146.0' x2='155.8' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='147.15' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='159.8' y1='150.0' x2='198.4' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='159.8' y1='146.0' x2='159.8' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='198.4' y1='146.0' x2='198.4' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='179.10000000000002' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='202.4' y1='150.0' x2='262.3' y2='150.0' stroke='#7b3fa0' stroke-width='3'/>
+<line x1='202.4' y1='146.0' x2='202.4' y2='154.0' stroke='#7b3fa0' stroke-width='1.5'/>
+<line x1='262.3' y1='146.0' x2='262.3' y2='154.0' stroke='#7b3fa0' stroke-width='1.5'/>
+<text x='232.35000000000002' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#7b3fa0' font-weight='bold'>L=3</text>
+<line x1='266.3' y1='150.0' x2='368.8' y2='150.0' stroke='#c0392b' stroke-width='3'/>
+<line x1='266.3' y1='146.0' x2='266.3' y2='154.0' stroke='#c0392b' stroke-width='1.5'/>
+<line x1='368.8' y1='146.0' x2='368.8' y2='154.0' stroke='#c0392b' stroke-width='1.5'/>
+<text x='317.55' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#c0392b' font-weight='bold'>L=5</text>
+<line x1='372.8' y1='150.0' x2='411.4' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='372.8' y1='146.0' x2='372.8' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='411.4' y1='146.0' x2='411.4' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='392.1' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='415.4' y1='150.0' x2='432.7' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='415.4' y1='146.0' x2='415.4' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='432.7' y1='146.0' x2='432.7' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='424.05' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='436.7' y1='150.0' x2='454.0' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='436.7' y1='146.0' x2='436.7' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='454.0' y1='146.0' x2='454.0' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='445.35' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='458.0' y1='150.0' x2='496.6' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='458.0' y1='146.0' x2='458.0' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='496.6' y1='146.0' x2='496.6' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='477.3' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='500.6' y1='150.0' x2='517.9' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='500.6' y1='146.0' x2='500.6' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='517.9' y1='146.0' x2='517.9' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='509.25000000000006' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='521.9' y1='150.0' x2='539.2' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='521.9' y1='146.0' x2='521.9' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='539.2' y1='146.0' x2='539.2' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='530.5500000000001' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='543.2' y1='150.0' x2='581.8' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='543.2' y1='146.0' x2='543.2' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='581.8' y1='146.0' x2='581.8' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='562.5' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='585.8' y1='150.0' x2='624.4' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='585.8' y1='146.0' x2='585.8' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='624.4' y1='146.0' x2='624.4' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='605.1' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='628.4' y1='150.0' x2='667.0' y2='150.0' stroke='#d98200' stroke-width='3'/>
+<line x1='628.4' y1='146.0' x2='628.4' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<line x1='667.0' y1='146.0' x2='667.0' y2='154.0' stroke='#d98200' stroke-width='1.5'/>
+<text x='647.7' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#d98200' font-weight='bold'>L=2</text>
+<line x1='671.0' y1='150.0' x2='688.3' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='671.0' y1='146.0' x2='671.0' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='688.3' y1='146.0' x2='688.3' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='679.6500000000001' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='692.3' y1='150.0' x2='709.6' y2='150.0' stroke='#2e8b57' stroke-width='3'/>
+<line x1='692.3' y1='146.0' x2='692.3' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<line x1='709.6' y1='146.0' x2='709.6' y2='154.0' stroke='#2e8b57' stroke-width='1.5'/>
+<text x='700.95' y='166' font-family='Helvetica, Arial, sans-serif' font-size='10' text-anchor='middle' fill='#2e8b57' font-weight='bold'>L=1</text>
+<line x1='30.0' y1='205.0' x2='46.0' y2='205.0' stroke='#2e8b57' stroke-width='3'/>
+<text x='52' y='209' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='start' fill='#222' font-weight='normal'>L = 1τ → f = 5 МГц</text>
+<line x1='200.0' y1='205.0' x2='216.0' y2='205.0' stroke='#d98200' stroke-width='3'/>
+<text x='222' y='209' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='start' fill='#222' font-weight='normal'>L = 2τ → f = 2,5 МГц</text>
+<line x1='370.0' y1='205.0' x2='386.0' y2='205.0' stroke='#7b3fa0' stroke-width='3'/>
+<text x='392' y='209' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='start' fill='#222' font-weight='normal'>L = 3τ → f = 1,67 МГц</text>
+<line x1='540.0' y1='205.0' x2='556.0' y2='205.0' stroke='#c0392b' stroke-width='3'/>
+<text x='562' y='209' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='start' fill='#222' font-weight='normal'>L = 5τ → f = 1 МГц</text>
+<text x='365.8' y='226' font-family='Helvetica, Arial, sans-serif' font-size='11' text-anchor='middle' fill='#555' font-weight='normal'>fв = 5 МГц (самый короткий, L=1), fн = 1 МГц (самый длинный, L=5), S = 4 МГц</text>
+</svg>
