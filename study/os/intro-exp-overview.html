@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЛР1 intro-exp: обзор</title>
+<style>
+:root{
+  --bg:#fbfaf7; --fg:#1d1d1f; --muted:#6b6b70; --card:#ffffff; --line:#e3e1db;
+  --accent:#2f5bd3; --accent-soft:#e8eefc; --ok:#1f8a4c; --warn:#b25e09; --bad:#c0392b;
+  --code:#f3f1ec; --formal:#f4f6fb; --formal-line:#2f5bd3;
+  --c-read:#2f5bd3; --c-mmap:#1f8a4c; --c-dev:#b25e09; --c-mem:#7b4bc4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16171a; --fg:#e8e8ea; --muted:#9a9aa2; --card:#1f2024; --line:#33343a;
+    --accent:#7fa2ff; --accent-soft:#25304d; --ok:#4cc27f; --warn:#e3a14f; --bad:#ef6b5d;
+    --code:#26272c; --formal:#1c2232; --formal-line:#7fa2ff;
+    --c-read:#7fa2ff; --c-mmap:#4cc27f; --c-dev:#e3a14f; --c-mem:#b79cf0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16171a; --fg:#e8e8ea; --muted:#9a9aa2; --card:#1f2024; --line:#33343a;
+  --accent:#7fa2ff; --accent-soft:#25304d; --ok:#4cc27f; --warn:#e3a14f; --bad:#ef6b5d;
+  --code:#26272c; --formal:#1c2232; --formal-line:#7fa2ff;
+  --c-read:#7fa2ff; --c-mmap:#4cc27f; --c-dev:#e3a14f; --c-mem:#b79cf0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:920px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:28px;margin:8px 0 4px}
+h2{font-size:22px;margin:48px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:24px 0 6px}
+.sub{color:var(--muted);margin:0 0 20px}
+code{font:13.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow-x:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+pre code{background:none;padding:0}
+blockquote.formal{margin:14px 0;padding:10px 14px;background:var(--formal);border-left:4px solid var(--formal-line);border-radius:0 8px 8px 0;font-size:15px}
+blockquote.formal::before{content:"Строго";display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0}
+.plan{list-style:none;padding:0;margin:0}
+.plan li{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.plan li:last-child{border-bottom:0}
+.plan input{width:18px;height:18px;margin-top:3px;accent-color:var(--ok)}
+.plan .t{font-weight:600}
+.plan .d{color:var(--muted);font-size:14px}
+.plan .time{font:13px ui-monospace,Menlo,monospace;color:var(--muted);white-space:nowrap}
+.plan li.done .t{text-decoration:line-through;color:var(--muted)}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:10px 0 0}
+.progress>div{height:100%;background:var(--ok);width:0;transition:width .2s}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:10px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--code)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:10px auto}
+svg text{fill:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.muted{color:var(--muted)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.warnbox{border-left:4px solid var(--warn);background:var(--card);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}.plan li{grid-template-columns:24px 1fr}.plan .time{grid-column:2}}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+
+<h1>ЛР1 intro-exp: вид сверху</h1>
+<p class="sub">Вариант: <b>Write, No cache, 10M vs 1M, Rand</b> · группа P3331 · сдача 12.10.2026 13:00</p>
+
+<div class="card">
+<b>Как пользоваться.</b> Сначала за полчаса прочитай эту страницу целиком: это карта всей лабы. Потом иди по пунктам плана сверху вниз. Каждый пункт мы разбираем подробно в чате, после разбора ставишь галочку (сохраняется в браузере).
+Блоки с пометкой <span class="tag">Строго</span> — точные формулировки, которые можно говорить на защите.
+</div>
+
+<h2 id="plan">План на 4,5 часа</h2>
+<div class="card">
+<ul class="plan" id="plan-list">
+  <li data-id="p1"><input type="checkbox"><div><div class="t">1. Смысл лабы и вариант</div><div class="d">Что сравниваем, что такое эксперимент, гипотеза, метрика. Что значит каждая буква варианта.</div></div><div class="time">≈20 мин</div></li>
+  <li data-id="p2"><input type="checkbox"><div><div class="t">2. Память: виртуальная память, страницы, page fault</div><div class="d">Адресное пространство, таблица страниц, TLB, minor/major fault, иерархия задержек.</div></div><div class="time">≈35 мин</div></li>
+  <li data-id="p3"><input type="checkbox"><div><div class="t">3. Ввод-вывод: read/write, page cache, O_DIRECT</div><div class="d">Системный вызов, копирование, грязные страницы и writeback, прямой ввод-вывод и выравнивание по 512 Б.</div></div><div class="time">≈35 мин</div></li>
+  <li data-id="p4"><input type="checkbox"><div><div class="t">4. mmap</div><div class="d">Отображение файла, MAP_SHARED, ленивая подкачка, fault на запись, msync, madvise. Почему «no-cache» у mmap — только совет ядру.</div></div><div class="time">≈35 мин</div></li>
+  <li data-id="p5"><input type="checkbox"><div><div class="t">5. Обе программы и граф изнутри</div><div class="d">Формат файла, graphgen, что делает обход на каждой вершине, сколько системных вызовов и операций с диском.</div></div><div class="time">≈30 мин</div></li>
+  <li data-id="p6"><input type="checkbox"><div><div class="t">6. Постановка эксперимента и инструменты</div><div class="d">governor, Turbo, taskset, nice, drop_caches, интерливинг, прогрев. time -v, strace, perf stat, iostat.</div></div><div class="time">≈30 мин</div></li>
+  <li data-id="p7"><input type="checkbox"><div><div class="t">7. Статистика</div><div class="d">Среднее, СКО, стандартная ошибка, ДИ по Стьюденту, как выбрать N, выбросы, гистограмма против KDE.</div></div><div class="time">≈30 мин</div></li>
+  <li data-id="p8"><input type="checkbox"><div><div class="t">8. Мои результаты</div><div class="d">Числа, проверка гипотез, находка про NVMe-диск, что в отчёте и почему.</div></div><div class="time">≈30 мин</div></li>
+  <li data-id="p9"><input type="checkbox"><div><div class="t">9. Отчёт целиком + пробная защита</div><div class="d">Читаешь отчёт от начала до конца, потом я задаю вопросы как практик.</div></div><div class="time">≈45 мин</div></li>
+</ul>
+<div class="progress"><div id="bar"></div></div>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="s1">1. Смысл лабы и вариант</h2>
+
+<p>Есть файл на диске, в нём записи (вершины графа). Программа идёт по цепочке: прочитала вершину, узнала номер следующей, прыгнула к ней. В режиме записи ещё и увеличивает число в каждой вершине на 1. Это модель базы данных, которая ходит по записям.</p>
+<p>Одну и ту же работу делают <b>две программы</b>, отличающиеся только способом доступа к файлу:</p>
+<div class="grid2">
+<div class="card"><b style="color:var(--c-read)">graph_traverse</b><br>Обычные системные вызовы: <code>lseek()</code> встать на позицию, <code>read()</code> прочитать, <code>write()</code> записать. Каждое обращение — просьба к ядру.</div>
+<div class="card"><b style="color:var(--c-mmap)">graph_traverse_mmap</b><br>Файл <code>mmap()</code>-ом отображается в память процесса, дальше программа читает и пишет его как обычный массив. Ядро подгружает страницы само, когда к ним обращаются.</div>
+</div>
+
+<p>Лаба учит не столько «что быстрее», сколько <b>как честно мерить</b>: паспорт системы, контроль окружения, гипотеза до замеров, серия из N запусков, доверительный интервал, вывод.</p>
+
+<h3>Мой вариант</h3>
+<div class="tablewrap"><table>
+<tr><th>Параметр</th><th>Значение</th><th>Что это значит</th></tr>
+<tr><td>Read/Write</td><td><b>Write</b></td><td>оба обходчика запускаются с <code>--write</code>: каждая вершина читается и перезаписывается</td></tr>
+<tr><td>Cache/No cache</td><td><b>No cache</b></td><td>ключ <code>--no-cache</code>: просим ядро не держать данные файла в памяти</td></tr>
+<tr><td>Size</td><td><b>10M vs 1M</b></td><td>сравниваем два файла: 10 МиБ (436 905 вершин) и 1 МиБ (43 689 вершин)</td></tr>
+<tr><td>Seq/Rand</td><td><b>Rand</b></td><td>соседние в цепочке вершины лежат в файле далеко друг от друга (на разных страницах)</td></tr>
+</table></div>
+<p>Итого 4 конфигурации: {read-версия, mmap-версия} × {10M, 1M}, все с <code>--write --no-cache</code>, топология случайная. Главный вопрос варианта: <b>как растёт время обхода, когда файл больше в 10 раз, если кэш выключен?</b></p>
+
+<blockquote class="formal">Эксперимент — это управляемое изменение одного фактора (здесь — размера файла) при фиксации остальных условий с последующей статистической оценкой отклика (времени обхода). Результат каждой конфигурации — точечная оценка математического ожидания времени с доверительным интервалом, а не единичное измерение.</blockquote>
+
+<!-- ================================================================== -->
+<h2 id="s2">2. Память: виртуальная память, страницы, page fault</h2>
+
+<p>Каждый процесс видит свою «виртуальную» память: адреса от 0 до огромного числа. Реальная оперативная память (физическая) раздаётся кусками по <b>4 КиБ — страницами</b>. Таблица страниц говорит: «виртуальная страница № X лежит в физической рамке № Y» (или «пока нигде»). Процессор переводит адреса сам (блок MMU), а последние переводы держит в маленьком кэше — <b>TLB</b>.</p>
+
+<svg viewBox="0 0 760 210" role="img" aria-label="Трансляция виртуального адреса">
+  <rect x="10" y="40" width="170" height="130" rx="8" fill="none" stroke="var(--c-read)" stroke-width="2"/>
+  <text x="95" y="30" text-anchor="middle" font-size="14" font-weight="600">Виртуальная память</text>
+  <rect x="25" y="55" width="140" height="22" fill="var(--accent-soft)"/><text x="95" y="71" text-anchor="middle" font-size="12">стр. 0: код</text>
+  <rect x="25" y="82" width="140" height="22" fill="var(--accent-soft)"/><text x="95" y="98" text-anchor="middle" font-size="12">стр. 1: данные</text>
+  <rect x="25" y="109" width="140" height="22" fill="none" stroke="var(--line)" stroke-dasharray="4 3"/><text x="95" y="125" text-anchor="middle" font-size="12">стр. 2: файл (mmap)</text>
+  <rect x="25" y="136" width="140" height="22" fill="var(--accent-soft)"/><text x="95" y="152" text-anchor="middle" font-size="12">стр. 3: стек</text>
+  <rect x="260" y="60" width="200" height="90" rx="8" fill="var(--card)" stroke="var(--line)"/>
+  <text x="360" y="50" text-anchor="middle" font-size="14" font-weight="600">MMU + TLB + таблица страниц</text>
+  <text x="360" y="85" text-anchor="middle" font-size="12">0 → рамка 17</text>
+  <text x="360" y="103" text-anchor="middle" font-size="12">1 → рамка 4</text>
+  <text x="360" y="121" text-anchor="middle" font-size="12" fill="var(--bad)">2 → нет (page fault!)</text>
+  <text x="360" y="139" text-anchor="middle" font-size="12">3 → рамка 9</text>
+  <rect x="560" y="40" width="190" height="130" rx="8" fill="none" stroke="var(--c-mem)" stroke-width="2"/>
+  <text x="655" y="30" text-anchor="middle" font-size="14" font-weight="600">Физическая RAM</text>
+  <text x="655" y="100" text-anchor="middle" font-size="12">рамки по 4 КиБ</text>
+  <line x1="180" y1="105" x2="255" y2="105" stroke="var(--muted)" marker-end="url(#a)"/>
+  <line x1="460" y1="105" x2="555" y2="105" stroke="var(--muted)" marker-end="url(#a)"/>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/></marker></defs>
+</svg>
+
+<p>Если в таблице для страницы «нет», процессор бросает исключение — <b>страничный промах (page fault)</b>. Ядро его обрабатывает:</p>
+<ul>
+<li><b>minor fault</b> — данные уже в RAM (например, в page cache), надо лишь вписать строчку в таблицу страниц. Микросекунды.</li>
+<li><b>major fault</b> — данных в RAM нет, надо читать с диска. Сотни микросекунд на NVMe, миллисекунды на HDD.</li>
+</ul>
+
+<blockquote class="formal">Страничный промах — синхронное исключение процессора при обращении к виртуальной странице, для которой в таблице страниц нет действительного отображения или права доступа не допускают операцию. Обработчик ядра либо устанавливает отображение на уже резидентную рамку (minor), либо инициирует ввод-вывод для загрузки страницы с носителя (major), либо посылает процессу SIGSEGV, если адрес не принадлежит ни одной области памяти.</blockquote>
+
+<h3>Шкала задержек (держи в голове порядки)</h3>
+<svg viewBox="0 0 760 270" role="img" aria-label="Шкала задержек, логарифмическая">
+  <g font-size="12">
+    <text x="10" y="30">L1-кэш CPU</text><rect x="190" y="18" width="20" height="16" fill="var(--c-mem)"/><text x="218" y="31">~1 нс</text>
+    <text x="10" y="56">L3-кэш CPU</text><rect x="190" y="44" width="70" height="16" fill="var(--c-mem)"/><text x="268" y="57">~10 нс</text>
+    <text x="10" y="82">DRAM</text><rect x="190" y="70" width="125" height="16" fill="var(--c-mem)"/><text x="323" y="83">~80 нс</text>
+    <text x="10" y="108">системный вызов</text><rect x="190" y="96" width="150" height="16" fill="var(--c-read)"/><text x="348" y="109">~0,1–0,5 мкс</text>
+    <text x="10" y="134">minor fault</text><rect x="190" y="122" width="190" height="16" fill="var(--c-mmap)"/><text x="388" y="135">~0,5–2 мкс</text>
+    <text x="10" y="160">чтение 512 Б с NVMe</text><rect x="190" y="148" width="360" height="16" fill="var(--c-dev)"/><text x="558" y="161">~100 мкс (у нас 110)</text>
+    <text x="10" y="186">то же, «медленная фаза»</text><rect x="190" y="174" width="400" height="16" fill="var(--c-dev)" opacity=".7"/><text x="598" y="187">~300 мкс</text>
+    <text x="10" y="212">чтение с HDD</text><rect x="190" y="200" width="520" height="16" fill="var(--bad)" opacity=".7"/><text x="600" y="235" text-anchor="middle">~5–10 мс</text>
+  </g>
+  <text x="380" y="262" text-anchor="middle" font-size="11" fill="var(--muted)">шкала логарифмическая: каждый шаг вправо — примерно ×10</text>
+</svg>
+<p>Вывод из шкалы: <b>поход к диску в тысячи раз дороже всего, что делает процессор</b>. Поэтому в моём варианте время почти целиком — это ожидание диска.</p>
+
+<!-- ================================================================== -->
+<h2 id="s3">3. Ввод-вывод: read/write, page cache, O_DIRECT</h2>
+
+<p>Обычно ядро держит прочитанные куски файлов в свободной RAM — это <b>page cache</b> (в <code>free -h</code> колонка <code>buff/cache</code>). Второй <code>read()</code> того же места приходит из памяти, диск не трогается. <code>write()</code> тоже по умолчанию лишь пишет в page cache и помечает страницу <b>грязной (dirty)</b>; на диск её позже сбросит фоновый поток ядра (writeback).</p>
+
+<svg viewBox="0 0 760 250" role="img" aria-label="Пути доступа к файлу">
+  <defs><marker id="b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/></marker></defs>
+  <rect x="10" y="10" width="740" height="60" rx="8" fill="var(--accent-soft)"/>
+  <text x="20" y="32" font-size="13" font-weight="600">Пространство пользователя</text>
+  <rect x="40" y="38" width="150" height="26" rx="5" fill="var(--card)" stroke="var(--c-read)"/><text x="115" y="56" text-anchor="middle" font-size="12">буфер программы</text>
+  <rect x="520" y="38" width="200" height="26" rx="5" fill="var(--card)" stroke="var(--c-mmap)"/><text x="620" y="56" text-anchor="middle" font-size="12">отображённая область (mmap)</text>
+  <rect x="10" y="85" width="740" height="95" rx="8" fill="none" stroke="var(--line)"/>
+  <text x="20" y="105" font-size="13" font-weight="600">Ядро</text>
+  <rect x="300" y="115" width="180" height="40" rx="6" fill="var(--card)" stroke="var(--c-mem)" stroke-width="2"/><text x="390" y="140" text-anchor="middle" font-size="13">page cache</text>
+  <rect x="200" y="200" width="380" height="40" rx="6" fill="var(--card)" stroke="var(--c-dev)" stroke-width="2"/><text x="390" y="225" text-anchor="middle" font-size="13">NVMe-диск (блоки по 512 Б)</text>
+  <line x1="150" y1="64" x2="320" y2="115" stroke="var(--c-read)" stroke-width="2" marker-end="url(#b)"/>
+  <text x="170" y="100" font-size="11" fill="var(--c-read)">обычный read/write: копия</text>
+  <line x1="80" y1="64" x2="230" y2="200" stroke="var(--c-read)" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#b)"/>
+  <text x="40" y="190" font-size="11" fill="var(--c-read)">O_DIRECT: мимо кэша</text>
+  <line x1="600" y1="64" x2="460" y2="115" stroke="var(--c-mmap)" stroke-width="2" marker-end="url(#b)"/>
+  <text x="560" y="100" font-size="11" fill="var(--c-mmap)">mmap: те же страницы, без копии</text>
+  <line x1="390" y1="155" x2="390" y2="198" stroke="var(--c-mem)" stroke-width="2" marker-end="url(#b)"/>
+  <text x="400" y="182" font-size="11">readahead / writeback</text>
+</svg>
+
+<p><b>O_DIRECT</b> — флаг при <code>open()</code>: «читай и пиши прямо с диска в мой буфер, page cache не используй». Цена: диск работает блоками, поэтому адрес буфера, смещение в файле и длина должны быть <b>кратны размеру блока</b> (у нас 512 байт). Наша вершина — 24 байта, поэтому программа читает целый блок в 512 Б, а для записи делает <b>read-modify-write</b>: прочитать блок → поменять 8 байт → записать блок обратно.</p>
+
+<blockquote class="formal">Страничный кэш (page cache) — область оперативной памяти ядра, в которой хранятся страницы файлов, отображённые на их смещения. Буферизованный ввод-вывод копирует данные между page cache и буфером процесса; изменённые страницы помечаются как грязные и асинхронно сбрасываются на носитель механизмом writeback. Флаг O_DIRECT предписывает выполнять передачу непосредственно между буфером процесса и устройством, минуя page cache, при условии выравнивания адреса, смещения и длины по логическому блоку устройства. O_DIRECT не гарантирует долговечности записи (для этого нужен O_SYNC/fsync) и не отключает внутренний кэш самого накопителя.</blockquote>
+
+<p><code>drop_caches</code>: <code>sync; echo 3 | sudo tee /proc/sys/vm/drop_caches</code> — сначала сбросить грязные страницы на диск, потом выкинуть чистые страницы из page cache (и dentry/inode-кэши). Так каждый запуск начинается с холодного кэша.</p>
+
+<!-- ================================================================== -->
+<h2 id="s4">4. mmap</h2>
+
+<pre><code>char *p = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+p[100] += 1;        // это обращение к памяти, а не системный вызов</code></pre>
+<p>После <code>mmap()</code> никаких данных ещё не прочитано. Ядро лишь записало: «этот диапазон адресов = этот файл». При первом обращении к странице — page fault, ядро находит страницу в page cache (или читает с диска, захватив заодно соседние — <b>readahead</b>) и вписывает её в таблицу страниц. Дальше доступ — обычная скорость памяти.</p>
+<p><b>MAP_SHARED</b>: изменения видны всем и попадают в файл (через тот же page cache). При записи: страница сначала отображается только на чтение; первая запись вызывает ещё один (minor) fault, ядро помечает страницу грязной и разрешает запись. Отсюда в режиме <code>--write</code> примерно <b>два промаха на страницу</b>.</p>
+
+<div class="warnbox"><b>Главный нюанс лабы.</b> У mmap нет аналога O_DIRECT: отображение всегда работает через page cache. Поэтому в <code>graph_traverse_mmap</code> ключ <code>--no-cache</code> — это лишь советы ядру:
+<code>madvise(MADV_SEQUENTIAL)</code> в начале (агрессивный readahead), а в конце <code>msync(MS_SYNC)</code> (синхронно записать грязные страницы) и <code>madvise(MADV_DONTNEED)</code> (выкинуть отображение). Это есть даже в справке программы: «advisory madvise only; mmap still uses the page cache». Значит, сравнение read против mmap «без кэша» — сравнение двух разных вещей.</div>
+
+<blockquote class="formal">mmap(2) создаёт в адресном пространстве процесса отображение области файла. Страницы загружаются лениво — по страничным промахам при первом обращении. При MAP_SHARED изменения записываются в общие страницы page cache и попадают в файл при writeback или явном msync(2). madvise(2) передаёт ядру рекомендации о характере доступа (MADV_SEQUENTIAL, MADV_RANDOM, MADV_DONTNEED); ядро вправе их не выполнять, и MADV_DONTNEED для файлового отображения снимает отображение у процесса, но не гарантирует вытеснение страниц из page cache.</blockquote>
+
+<!-- ================================================================== -->
+<h2 id="s5">5. Обе программы и граф изнутри</h2>
+
+<p>Файл: заголовок, затем записи по 24 байта: <code>value</code> (8 Б), <code>degree</code> (4 Б), заполнитель, <code>child</code> (8 Б, номер следующей вершины). Адрес вершины i = заголовок + 24·i. Топология Rand: <code>graphgen.py --topology chain -b 0.5 --min-step-pages 2</code> — цепочка проходит все вершины, но каждый прыжок минимум на 2 страницы (8 КиБ), половина прыжков — назад.</p>
+
+<svg viewBox="0 0 760 120" role="img" aria-label="Случайная цепочка в файле">
+  <text x="10" y="18" font-size="12" fill="var(--muted)">файл (каждая клетка — страница 4 КиБ)</text>
+  <g id="cells"></g>
+  <g fill="var(--card)" stroke="var(--line)">
+    <rect x="10" y="28" width="60" height="30"/><rect x="70" y="28" width="60" height="30"/><rect x="130" y="28" width="60" height="30"/><rect x="190" y="28" width="60" height="30"/><rect x="250" y="28" width="60" height="30"/><rect x="310" y="28" width="60" height="30"/><rect x="370" y="28" width="60" height="30"/><rect x="430" y="28" width="60" height="30"/><rect x="490" y="28" width="60" height="30"/><rect x="550" y="28" width="60" height="30"/><rect x="610" y="28" width="60" height="30"/><rect x="670" y="28" width="60" height="30"/>
+  </g>
+  <g fill="none" stroke="var(--c-read)" stroke-width="2">
+    <path d="M40,58 Q190,110 340,58"/><path d="M340,58 Q520,110 700,58"/><path d="M700,58 Q460,0 220,28"/><path d="M220,58 Q400,110 580,58"/>
+  </g>
+  <g font-size="12" font-weight="600"><text x="34" y="48">1</text><text x="334" y="48">2</text><text x="694" y="48">3</text><text x="214" y="48">4</text><text x="574" y="48">5</text></g>
+</svg>
+
+<h3>Что происходит на одной вершине (read-версия, --write --no-cache)</h3>
+<pre><code>lseek(blk) ; read(512 Б)    # прочитать блок с вершиной       → диск: чтение
+lseek(blk) ; read(512 Б)    # RMW: перечитать тот же блок      → диск: чтение
+lseek(blk) ; write(512 Б)   # RMW: записать блок с value+1     → диск: запись</code></pre>
+<p>6 системных вызовов и <b>3 операции с диском на каждую вершину</b>: 2 чтения + 1 запись. Это видно в счётчиках <code>/usr/bin/time -v</code>: «File system inputs» ≈ 2·(число вершин), «outputs» ≈ 1·(число вершин), в единицах по 512 Б. Для 1M: 90 736 и 43 697 при 43 689 вершинах. Сходится.</p>
+<p><b>mmap-версия</b> на той же вершине делает просто <code>node->value++</code> в памяти. Системные вызовы только по краям: <code>open, mmap, madvise, msync, madvise, munmap</code>.</p>
+
+<!-- ================================================================== -->
+<h2 id="s6">6. Постановка эксперимента и инструменты</h2>
+
+<div class="tablewrap"><table>
+<tr><th>Что делаем</th><th>Зачем</th></tr>
+<tr><td><code>cpupower frequency-set -g performance</code></td><td>частота не скачет по нагрузке</td></tr>
+<tr><td>Turbo выключен (<code>no_turbo=1</code>)</td><td>иначе частота зависит от температуры: первые запуски быстрее последних</td></tr>
+<tr><td><code>taskset -c 2</code></td><td>процесс не мигрирует между ядрами; CPU 0 оставляем прерываниям</td></tr>
+<tr><td><code>nice -n -5</code></td><td>повыше приоритет у планировщика</td></tr>
+<tr><td><code>sync; drop_caches</code> перед каждым запуском</td><td>одинаковое (холодное) состояние кэша для всех конфигураций</td></tr>
+<tr><td>Фоновые программы на паузе (SIGSTOP Firefox и т. п.)</td><td>не конкурируют за диск и процессор</td></tr>
+<tr><td>Интерливинг: в каждом раунде все 4 конфигурации, порядок перемешан</td><td>медленный дрейф условий (нагрев, фоновые задачи, состояние диска) не ложится целиком на одну конфигурацию</td></tr>
+<tr><td>Первые 2 раунда отбрасываем (решено заранее)</td><td>прогрев</td></tr>
+</table></div>
+
+<div class="tablewrap"><table>
+<tr><th>Инструмент</th><th>Что показывает</th><th>Когда</th></tr>
+<tr><td><code>time</code>, <code>/usr/bin/time -v</code></td><td>wall/user/sys, страничные промахи, переключения контекста, объём ввода-вывода</td><td>финальная серия (минимально мешает)</td></tr>
+<tr><td><code>strace -c</code></td><td>какие системные вызовы и сколько</td><td>только ознакомительно: тормозит программу в разы</td></tr>
+<tr><td><code>perf stat</code></td><td>аппаратные и программные счётчики: context-switches, page-faults, cache-misses</td><td>ознакомительно</td></tr>
+<tr><td><code>iostat -dx</code></td><td>операции диска в секунду и задержка устройства (<code>r_await</code>, <code>w_await</code>)</td><td>параллельно серии: объяснение разброса</td></tr>
+</table></div>
+
+<p><b>wall, user, sys.</b> wall — реальное время по часам; user — время процессора в коде программы; sys — в ядре по просьбе программы. Если wall ≫ user + sys, процесс <b>ждал</b> (здесь — диск). У read-версии на 1M: wall ≈ 11 с, user + sys ≈ 0,65 с. 94% времени — ожидание устройства.</p>
+
+<blockquote class="formal">Произвольное (voluntary) переключение контекста происходит, когда процесс сам блокируется в ожидании ресурса (например, завершения ввода-вывода); принудительное (involuntary) — когда планировщик вытесняет процесс по истечении кванта или ради более приоритетной задачи. У read-версии с O_DIRECT около трёх произвольных переключений на вершину — по одному на каждую синхронную операцию с устройством.</blockquote>
+
+<!-- ================================================================== -->
+<h2 id="s7">7. Статистика</h2>
+<p>Каждый запуск даёт немного разное время. Мы оцениваем «истинное» среднее по выборке из N запусков:</p>
+<pre><code>x̄ = (1/N)·Σxᵢ                     среднее
+s = √( Σ(xᵢ − x̄)² / (N−1) )       стандартное отклонение (разброс запусков)
+SE = s / √N                        стандартная ошибка (неточность среднего)
+ДИ95 = x̄ ± t(0.975; N−1) · SE      доверительный интервал, t для N=10 ≈ 2,26
+N ≈ (t · s / E)²                   сколько нужно запусков для полуширины E</code></pre>
+
+<svg viewBox="0 0 760 140" role="img" aria-label="Сравнение доверительных интервалов">
+  <line x1="40" y1="110" x2="720" y2="110" stroke="var(--line)"/>
+  <g stroke-width="3">
+    <line x1="120" y1="45" x2="220" y2="45" stroke="var(--c-read)"/><circle cx="170" cy="45" r="6" fill="var(--c-read)"/>
+    <line x1="480" y1="45" x2="600" y2="45" stroke="var(--c-dev)"/><circle cx="540" cy="45" r="6" fill="var(--c-dev)"/>
+    <line x1="120" y1="85" x2="300" y2="85" stroke="var(--c-read)"/><circle cx="210" cy="85" r="6" fill="var(--c-read)"/>
+    <line x1="250" y1="85" x2="420" y2="85" stroke="var(--c-dev)" opacity=".8"/><circle cx="335" cy="85" r="6" fill="var(--c-dev)"/>
+  </g>
+  <text x="620" y="50" font-size="12">не пересекаются → разница значима</text>
+  <text x="440" y="90" font-size="12">пересекаются → по этим данным не различить</text>
+</svg>
+
+<blockquote class="formal">Доверительный интервал уровня 95% — интервал, построенный по выборке процедурой, которая в 95% повторений эксперимента накрывает истинное математическое ожидание. При неизвестной дисперсии и малом N используется квантиль распределения Стьюдента с N−1 степенями свободы. ДИ характеризует неопределённость оценки среднего и сужается как 1/√N; стандартное отклонение характеризует разброс отдельных измерений и с ростом N не уменьшается.</blockquote>
+
+<p><b>Гистограмма против KDE.</b> Гистограмма раскладывает точки по корзинам, форма зависит от ширины и границ корзин. KDE (оценка плотности ядром) кладёт на каждую точку маленький «холмик» (гауссиану) и суммирует их: получается гладкая кривая, зависящая от ширины холмика (bandwidth). Обе нужны, чтобы увидеть, что распределение времени <b>не нормальное</b>: у нас оно двугорбое из-за диска.</p>
+
+<!-- ================================================================== -->
+<h2 id="s8">8. Мои результаты (предварительно, серия идёт)</h2>
+<div class="warnbox">Числа ниже — из пилотных запусков утром 12.10. Финальные после серии (12 раундов, 10 в обработке) появятся здесь и в отчёте.</div>
+<div class="tablewrap"><table>
+<tr><th>Конфигурация</th><th>Время одного обхода</th><th>На вершину</th></tr>
+<tr><td>read-версия, 1M</td><td class="num">≈11,1 с (иногда 16–19 с)</td><td class="num">≈254 мкс</td></tr>
+<tr><td>read-версия, 10M</td><td class="num">≈155 с</td><td class="num">≈354 мкс</td></tr>
+<tr><td>mmap-версия, 1M</td><td class="num">≈0,013–0,018 с</td><td class="num">≈0,3–0,4 мкс</td></tr>
+<tr><td>mmap-версия, 10M</td><td class="num">≈0,06 с</td><td class="num">≈0,15 мкс</td></tr>
+</table></div>
+<ul>
+<li><b>read-версия масштабируется хуже, чем линейно:</b> файл в 10 раз больше, а время в ~14 раз. Стоимость одной вершины растёт с размером файла. Кандидат на объяснение — сам накопитель (Kingston NV3, без DRAM; таблица трансляции адресов кэшируется в RAM хоста (HMB), и чем шире разброс адресов, тем чаще промах этой таблицы). Это проверяем серией.</li>
+<li><b>mmap-версия быстрее на 3–4 порядка:</b> вместо трёх синхронных обращений к диску на вершину — один page fault на страницу (на странице ~170 вершин), чтение кусками с readahead и одна запись грязных страниц через msync в конце.</li>
+<li><b>Шум от диска:</b> в «медленные» периоды задержка чтения устройства (<code>r_await</code> в iostat) растёт с 0,11 до 0,30 мс. Это свойство железа, не моя ошибка в методике. В старой серии от 28.09 добавлялся ещё фоновый Firefox, отсюда разброс 68%.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="s9">9. Отчёт и защита</h2>
+<p>По README практик может попросить:</p>
+<ul>
+<li>заново прогнать сбор (генерация графа → сборка → <code>collect_variant.sh</code>);</li>
+<li>объяснить каждое решение по окружению (раздел 6 выше);</li>
+<li>объяснить ДИ и что будет при большем или меньшем N (раздел 7);</li>
+<li>обосновать размер графа относительно RAM: 10 МиБ ≪ 31 ГиБ, без <code>--no-cache</code> и <code>drop_caches</code> файл целиком жил бы в page cache и диск бы вообще не участвовал;</li>
+<li>рассказать, как устроены обе программы и что делает mmap (это спрашивают особенно часто).</li>
+</ul>
+
+</main>
+<script>
+(function(){
+  var KEY='intro-exp-plan-v1', state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  var items=document.querySelectorAll('#plan-list li'), bar=document.getElementById('bar');
+  function render(){
+    var done=0;
+    items.forEach(function(li){
+      var on=!!state[li.dataset.id];
+      li.querySelector('input').checked=on;
+      li.classList.toggle('done',on);
+      if(on) done++;
+    });
+    bar.style.width=(100*done/items.length)+'%';
+  }
+  items.forEach(function(li){
+    li.querySelector('input').addEventListener('change',function(e){
+      state[li.dataset.id]=e.target.checked;
+      try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(err){}
+      render();
+    });
+  });
+  render();
+})();
+</script>
+</body>
+</html>
