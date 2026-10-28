@@ -49,10 +49,17 @@ do_login() {
   local snap
   snap="$($AB snapshot -i 2>&1)" || true
 
-  if echo "$snap" | grep -q 'textbox "Email"'; then
-    $AB fill @e4 "$MY_ITMO_EMAIL" >/dev/null
-    $AB fill @e5 "$MY_ITMO_PASSWORD" >/dev/null
-    $AB click @e9 >/dev/null
+  if echo "$snap" | grep -qE 'textbox "E-?mail"'; then
+    # Refs go stale after re-render: take a fresh snapshot and read refs by name
+    sleep 1
+    snap="$($AB snapshot -i 2>&1)" || true
+    local ref_email ref_pass ref_btn
+    ref_email="$(echo "$snap" | grep -E 'textbox "E-?mail"' | grep -o 'ref=e[0-9]*' | head -1 | cut -d= -f2)"
+    ref_pass="$(echo "$snap" | grep -E 'textbox "(Пароль|Password)"' | grep -o 'ref=e[0-9]*' | head -1 | cut -d= -f2)"
+    ref_btn="$(echo "$snap" | grep -E 'button "(Вход|Sign In)"' | grep -o 'ref=e[0-9]*' | head -1 | cut -d= -f2)"
+    $AB fill "@${ref_email}" "$MY_ITMO_EMAIL" >/dev/null
+    $AB fill "@${ref_pass}" "$MY_ITMO_PASSWORD" >/dev/null
+    $AB click "@${ref_btn}" >/dev/null
   elif echo "$snap" | grep -qi 'username\|email'; then
     $AB find label "Email" fill "$MY_ITMO_EMAIL" >/dev/null 2>&1 || \
       $AB fill "#username" "$MY_ITMO_EMAIL" >/dev/null 2>&1 || \
