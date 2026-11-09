@@ -29,3 +29,7 @@ study/ai-systems/lab1/.venv/
 # Local agent worktrees / Python cache
 .claude/worktrees/
 __pycache__/
+
+# Jupyter checkpoints and large datasets
+**/.ipynb_checkpoints/
+study/ai-systems/materials/tg/train.csv
