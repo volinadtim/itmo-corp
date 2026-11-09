@@ -33,3 +33,6 @@ __pycache__/
 # Jupyter checkpoints and large datasets
 **/.ipynb_checkpoints/
 study/ai-systems/materials/tg/train.csv
+
+# Personal data exports from ISU (other students)
+study/isu/
