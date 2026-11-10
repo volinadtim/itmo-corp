@@ -1,0 +1,16 @@
+OK   без модуля: ENOSYS и подсказка
+OK   PID 1: comm
+OK   PID 1: ppid
+OK   PID 1: state
+OK   sleep: comm sleep
+OK   sleep: ppid = этот скрипт
+OK   sleep: state S
+OK   nice 10: static_prio 130
+OK   PID 2: kthreadd, total_vm 0
+OK   поток 2836: pid 2836, tgid 2835
+OK   нет такого PID: код 1
+OK   буквы вместо PID: код 2
+OK   без аргумента: код 2
+OK   PID 0: код 2
+OK   после rmmod: код 1
+passed 15, failed 0

@@ -1,0 +1,5 @@
+filename:       /home/volin/projects/vtkm-example/src/vtkm.ko
+license:        GPL
+depends:        
+name:           vtkm
+vermagic:       6.18.0+ SMP preempt mod_unload modversions 

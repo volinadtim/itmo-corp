@@ -1,0 +1,15 @@
+struct task_struct of PID 1
+  comm         systemd
+  pid          1
+  tgid         1
+  ppid         0
+  state        S
+  prio         120
+  static_prio  120 (nice 0)
+  policy       0 (SCHED_OTHER)
+  threads      1
+  utime        693000000 ns
+  stime        1130601219 ns
+  nvcsw        4524
+  nivcsw       910
+  total_vm     5503 pages (22012 kB)

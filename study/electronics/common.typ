@@ -23,7 +23,7 @@
   body
 }
 
-#let titlepage(title: "", variant: "", submitted: "", year: "2026") = {
+#let titlepage(title: "", variant: "", submitted: "", year: "2026", name: none) = {
   set page(numbering: none)
   set par(first-line-indent: 0pt, justify: false)
   v(30mm)
@@ -43,7 +43,7 @@
   v(1fr)
   block(inset: (left: 70mm))[
     #set text(size: 12pt)
-    Выполнил: #author.name \
+    Выполнил: #if name == none { author.name } else { name } \
     #v(4mm)
     Дата сдачи отчета: #submitted \
     #v(4mm)

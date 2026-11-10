@@ -1,0 +1,15 @@
+struct task_struct of PID 7779
+  comm         sleep
+  pid          7779
+  tgid         7779
+  ppid         7561
+  state        S
+  prio         125
+  static_prio  125 (nice 5)
+  policy       0 (SCHED_OTHER)
+  threads      1
+  utime        0 ns
+  stime        1000000 ns
+  nvcsw        1
+  nivcsw       0
+  total_vm     1531 pages (6124 kB)

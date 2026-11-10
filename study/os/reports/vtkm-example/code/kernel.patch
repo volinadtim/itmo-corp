@@ -1,0 +1,112 @@
+From cac2c45d1ecb5889b66052364305ecc48a96705c Mon Sep 17 00:00:00 2001
+From: Timofey Danilov <volinadtim@gmail.com>
+Date: Mon, 9 Nov 2026 10:07:31 +0000
+Subject: [PATCH] vtkm: syscall 549, handler is registered by a module
+
+---
+ arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+ include/linux/vtkm.h                   | 13 +++++++
+ kernel/Makefile                        |  1 +
+ kernel/vtkm_syscall.c                  | 51 ++++++++++++++++++++++++++
+ 4 files changed, 66 insertions(+)
+ create mode 100644 include/linux/vtkm.h
+ create mode 100644 kernel/vtkm_syscall.c
+
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 5952c43c9..b74985e72 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -440,4 +440,5 @@
+ # This is the end of the legacy x32 range.  Numbers 548 and above are
+ # not special and are not to be used for x32-specific syscalls.
+ 548     common  hello                   sys_hello
++549	common	vtkm			sys_vtkm
+ 
+diff --git a/include/linux/vtkm.h b/include/linux/vtkm.h
+new file mode 100644
+index 000000000..f5997d3d2
+--- /dev/null
++++ b/include/linux/vtkm.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_VTKM_H
++#define _LINUX_VTKM_H
++
++#include <linux/types.h>
++
++/* Обработчик системного вызова vtkm, его даёт загружаемый модуль */
++typedef long (*vtkm_handler_t)(int pid, void __user *buf, size_t size);
++
++int vtkm_register(vtkm_handler_t handler);
++void vtkm_unregister(void);
++
++#endif
+diff --git a/kernel/Makefile b/kernel/Makefile
+index b492614e3..ff9c0d71a 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -208,3 +208,4 @@ $(obj)/kheaders.md5: $(obj)/kheaders-srclist FORCE
+ clean-files := kheaders.md5 kheaders-srclist kheaders-objlist
+ 
+ obj-y += hello_syscall.o
++obj-y += vtkm_syscall.o
+diff --git a/kernel/vtkm_syscall.c b/kernel/vtkm_syscall.c
+new file mode 100644
+index 000000000..ce5c8d2d1
+--- /dev/null
++++ b/kernel/vtkm_syscall.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Заглушка системного вызова vtkm. Сама ничего не делает: вызывает
++ * обработчик, который зарегистрировал модуль vtkm.ko. Без модуля -ENOSYS.
++ */
++#include <linux/errno.h>
++#include <linux/export.h>
++#include <linux/mutex.h>
++#include <linux/syscalls.h>
++#include <linux/vtkm.h>
++
++static DEFINE_MUTEX(vtkm_lock);
++static vtkm_handler_t vtkm_handler;
++
++int vtkm_register(vtkm_handler_t handler)
++{
++	int ret = 0;
++
++	mutex_lock(&vtkm_lock);
++	if (vtkm_handler)
++		ret = -EBUSY;
++	else
++		vtkm_handler = handler;
++	mutex_unlock(&vtkm_lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(vtkm_register);
++
++/*
++ * Мьютекс держится и во время вызова обработчика, поэтому unregister
++ * ждёт, пока закончатся вызовы, которые уже внутри модуля. После этого
++ * модуль можно выгружать.
++ */
++void vtkm_unregister(void)
++{
++	mutex_lock(&vtkm_lock);
++	vtkm_handler = NULL;
++	mutex_unlock(&vtkm_lock);
++}
++EXPORT_SYMBOL_GPL(vtkm_unregister);
++
++SYSCALL_DEFINE3(vtkm, int, pid, void __user *, buf, size_t, size)
++{
++	long ret = -ENOSYS;
++
++	mutex_lock(&vtkm_lock);
++	if (vtkm_handler)
++		ret = vtkm_handler(pid, buf, size);
++	mutex_unlock(&vtkm_lock);
++	return ret;
++}
+-- 
+2.43.0
+

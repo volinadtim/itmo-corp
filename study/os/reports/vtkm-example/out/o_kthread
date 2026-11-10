@@ -1,0 +1,15 @@
+struct task_struct of PID 2
+  comm         kthreadd
+  pid          2
+  tgid         2
+  ppid         0
+  state        S
+  prio         120
+  static_prio  120 (nice 0)
+  policy       0 (SCHED_OTHER)
+  threads      1
+  utime        0 ns
+  stime        2000000 ns
+  nvcsw        274
+  nivcsw       1
+  total_vm     0 pages (0 kB)
